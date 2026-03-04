@@ -308,7 +308,9 @@ body.aj-custom-header #masthead {
         grid-template-columns: auto 1fr auto;
         align-items: center;
         gap: 24px;
-        overflow: visible;
+        overflow: visible !important;
+        height: auto !important;
+        max-height: none !important;
     }
     .aj-navbar__logo {
         grid-column: 1;
@@ -319,10 +321,12 @@ body.aj-custom-header #masthead {
         min-width: 0;
         position: static;
         width: 100%;
-        height: auto;
+        height: auto !important;
+        max-height: none !important;
         background: transparent;
-        overflow-x: hidden;
-        overflow-y: visible;
+        overflow: visible !important;
+        overflow-x: visible !important;
+        overflow-y: visible !important;
         transform: none;
         visibility: visible;
         justify-content: center;
@@ -331,7 +335,11 @@ body.aj-custom-header #masthead {
         display: flex !important;
         justify-content: center;
         min-width: 0;
-        overflow: visible;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        overflow-x: visible !important;
+        overflow-y: visible !important;
     }
     .aj-nav-list {
         flex-wrap: nowrap;
@@ -1115,17 +1123,21 @@ body.aj-custom-header #masthead {
         border-bottom: 1px solid var(--aj-light);
     }
     .aj-drawer__auth .aj-auth-link--block { margin: 0; min-width: 0; }
-    .aj-navbar__menu {
+    /* Scroll uniquement dans le drawer ouvert (mobile), pas dans la navbar */
+    .aj-header__drawer .aj-navbar__menu {
         display: block !important;
         position: static;
         flex: 1;
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
+        min-height: 0;
         padding: 12px 0 24px;
         box-shadow: none;
         border-radius: 0;
         background: transparent;
+    }
+    body.menu-open .aj-header__drawer .aj-navbar__menu {
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
     }
     .aj-nav-list {
         flex-direction: column;
