@@ -295,37 +295,64 @@ body.aj-custom-header #masthead {
     color: #fff;
 }
 
-/* Desktop (>= 992px): only navbar (logo + menu + auth desktop); hide toggle + drawer chrome + auth mobile */
-@media (min-width: 992px) {
+/* Desktop (>= 1200px): 3-col grid — logo | menu (centered) | actions; no overlap */
+@media (min-width: 1200px) {
     .aj-header__toggle,
     .aj-header__drawer .aj-drawer__header,
     .aj-header__drawer .aj-drawer__auth,
     .aj-header__auth--mobile {
         display: none !important;
     }
+    .aj-navbar__inner {
+        display: grid !important;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 24px;
+        overflow: visible;
+    }
+    .aj-navbar__logo {
+        grid-column: 1;
+    }
     .aj-header__drawer {
         display: flex !important;
-        flex: 1 1 auto;
+        grid-column: 2;
         min-width: 0;
         position: static;
-        width: auto;
+        width: 100%;
         height: auto;
         background: transparent;
-        overflow: visible;
+        overflow-x: hidden;
+        overflow-y: visible;
         transform: none;
         visibility: visible;
+        justify-content: center;
+    }
+    .aj-navbar__menu {
+        display: flex !important;
+        justify-content: center;
+        min-width: 0;
+        overflow: visible;
+    }
+    .aj-nav-list {
+        flex-wrap: nowrap;
+        gap: 18px;
+        justify-content: center;
     }
     .aj-header__auth--desktop {
         display: flex !important;
+        grid-column: 3;
         flex: 0 0 auto;
-        gap: 12px;
+        gap: 10px;
         align-items: center;
-        min-width: 0;
+        white-space: nowrap;
     }
     .aj-header__auth--desktop .aj-auth-link {
+        display: inline-flex;
+        align-items: center;
         min-width: 5rem;
         white-space: nowrap;
         line-height: 1.25;
+        padding: 6px 14px;
     }
 }
 
@@ -1013,8 +1040,8 @@ body.aj-custom-header #masthead {
     .aj-nav-list > li > a { padding: 16px 10px; font-size: .82rem; }
 }
 
-/* Tablet + Mobile (< 992px): auth desktop hidden; toggle visible; drawer hidden until body.menu-open */
-@media (max-width: 991.98px) {
+/* Tablet + Medium (< 1200px): hamburger + drawer; auth in drawer only */
+@media (max-width: 1199.98px) {
     .aj-header__auth--desktop { display: none !important; }
     .aj-header__toggle {
         display: flex !important;
