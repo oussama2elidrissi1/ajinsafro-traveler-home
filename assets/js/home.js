@@ -12,18 +12,24 @@
     var navMenu = document.getElementById('aj-nav-menu');
 
     function openDrawer() {
+        if (document.body) {
+            document.body.classList.add('menu-open');
+            document.body.style.overflow = 'hidden';
+        }
         if (drawer) {
             drawer.classList.add('aj-menu-open');
             drawer.setAttribute('aria-hidden', 'false');
-            if (document.body) document.body.style.overflow = 'hidden';
         }
         if (burger) burger.setAttribute('aria-expanded', 'true');
     }
     function closeDrawer() {
+        if (document.body) {
+            document.body.classList.remove('menu-open');
+            document.body.style.overflow = '';
+        }
         if (drawer) {
             drawer.classList.remove('aj-menu-open');
             drawer.setAttribute('aria-hidden', 'true');
-            if (document.body) document.body.style.overflow = '';
         }
         if (burger) burger.setAttribute('aria-expanded', 'false');
     }
