@@ -59,12 +59,7 @@ if ( preg_match( '/\[([a-zA-Z0-9_\-:]+)/', $search_shortcode, $m ) ) {
         <i class="aj-sep"></i>
 
         <div class="aj-sf aj-sf--more">
-            <button type="button" class="aj-more-btn" aria-expanded="false" aria-controls="aj-search-more">Plus +</button>
-        </div>
-        <div class="aj-search__more-content" id="aj-search-more" role="region" aria-label="<?php esc_attr_e( 'Champs avancés', 'ajinsafro-traveler-home' ); ?>">
-            <div class="aj-search__more-inner">
-                <div class="aj-sf"><span class="aj-sf__ico"></span><div class="aj-sf__txt"><small><?php esc_html_e( 'Budget / Autres', 'ajinsafro-traveler-home' ); ?></small><input type="text" name="extra" placeholder="<?php esc_attr_e( 'Optionnel', 'ajinsafro-traveler-home' ); ?>"></div></div>
-            </div>
+            <button type="button" class="aj-more-btn">Plus +</button>
         </div>
 
         <button type="submit" class="aj-search__btn">

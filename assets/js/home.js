@@ -85,16 +85,6 @@
         });
     });
 
-    /* ── Plus + accordion (mobile search) ───────────────────────── */
-    var moreBtn = document.querySelector('.aj-more-btn');
-    var moreContent = document.getElementById('aj-search-more');
-    if (moreBtn && moreContent) {
-        moreBtn.addEventListener('click', function () {
-            var open = moreContent.classList.toggle('aj-open');
-            moreBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        });
-    }
-
     /* ── Slider ────────────────────────────────────────────────── */
     var track = document.getElementById('aj-lm-track');
     if (track) {
