@@ -1,22 +1,55 @@
 /**
  * Ajinsafro Traveler Home — home.js
- * Mobile menu + Tab switching + horizontal slider prev/next
+ * Mobile drawer menu + accordion sub-menus + Tab switching + horizontal slider
  */
 (function(){
     'use strict';
 
-    /* ── Mobile burger menu ───────────────────────────────────── */
+    /* ── Mobile drawer (burger opens drawer, close button, overlay) ── */
     var burger = document.getElementById('aj-burger');
+    var drawer = document.getElementById('aj-drawer');
+    var drawerClose = document.getElementById('aj-drawer-close');
     var navMenu = document.getElementById('aj-nav-menu');
-    if (burger && navMenu) {
+
+    function openDrawer() {
+        if (drawer) {
+            drawer.classList.add('aj-menu-open');
+            drawer.setAttribute('aria-hidden', 'false');
+            if (document.body) document.body.style.overflow = 'hidden';
+        }
+        if (burger) burger.setAttribute('aria-expanded', 'true');
+    }
+    function closeDrawer() {
+        if (drawer) {
+            drawer.classList.remove('aj-menu-open');
+            drawer.setAttribute('aria-hidden', 'true');
+            if (document.body) document.body.style.overflow = '';
+        }
+        if (burger) burger.setAttribute('aria-expanded', 'false');
+    }
+
+    if (burger && drawer) {
         burger.addEventListener('click', function () {
-            var open = navMenu.classList.toggle('aj-menu-open');
-            burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (drawer.classList.contains('aj-menu-open')) closeDrawer();
+            else openDrawer();
         });
-        document.addEventListener('click', function (e) {
-            if (!burger.contains(e.target) && !navMenu.contains(e.target)) {
-                navMenu.classList.remove('aj-menu-open');
-                burger.setAttribute('aria-expanded', 'false');
+    }
+    if (drawerClose && drawer) {
+        drawerClose.addEventListener('click', closeDrawer);
+    }
+    window.addEventListener('resize', function () {
+        if (window.innerWidth > 991 && drawer && drawer.classList.contains('aj-menu-open')) closeDrawer();
+    });
+
+    /* Accordion sub-menus in drawer (mobile) */
+    if (drawer && navMenu) {
+        navMenu.addEventListener('click', function (e) {
+            var li = e.target.closest('li.aj-has-sub, li.menu-item-has-children');
+            if (!li || !li.querySelector('.aj-sub-menu, .sub-menu')) return;
+            var link = li.querySelector(':scope > a');
+            if (link && link.contains(e.target)) {
+                e.preventDefault();
+                li.classList.toggle('aj-sub-open');
             }
         });
     }
