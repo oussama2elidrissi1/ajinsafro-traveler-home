@@ -1020,7 +1020,10 @@ body.aj-custom-header #masthead {
         display: flex !important;
         align-items: center;
         justify-content: center;
-        padding: 10px;
+        padding: 12px;
+        min-width: 44px;
+        min-height: 44px;
+        -webkit-tap-highlight-color: transparent;
     }
     .aj-header__drawer {
         display: none;
@@ -1040,7 +1043,7 @@ body.aj-custom-header #masthead {
         visibility: hidden;
     }
     body.menu-open .aj-header__drawer {
-        display: flex;
+        display: flex !important;
         flex-direction: column;
         transform: translateX(0);
         visibility: visible;
