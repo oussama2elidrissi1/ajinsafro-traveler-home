@@ -69,10 +69,26 @@ function ajth_enqueue_front_assets() {
         return;
     }
 
+    // FontAwesome for icons
+    wp_enqueue_style(
+        'ajth-fontawesome',
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+        array(),
+        '6.4.0'
+    );
+
+    // Google Fonts - Poppins
+    wp_enqueue_style(
+        'ajth-google-fonts',
+        'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap',
+        array(),
+        null
+    );
+
     wp_enqueue_style(
         'ajth-home-css',
         AJTH_URL . 'assets/css/home.css',
-        array(),
+        array( 'ajth-fontawesome' ),
         AJTH_VERSION
     );
 
@@ -99,7 +115,7 @@ function ajth_critical_header_css() {
     if ( ! $on_home && empty( $h['show_header_sitewide'] ) ) {
         return;
     }
-    $css = 'body.aj-custom-header #header,body.aj-custom-header .site-header,body.aj-custom-header .topbar,body.aj-custom-header .header-main,body.aj-custom-header>header:not(.aj-header),body.aj-custom-header #masthead{display:none!important}.aj-header{width:100%;z-index:1000;position:relative}.aj-topbar{background:#0B2C5D;color:rgba(255,255,255,.85);font-size:.78rem;line-height:1}.aj-topbar__inner{display:flex;align-items:center;justify-content:space-between;padding:8px 0}.aj-topbar__left,.aj-topbar__right{display:flex;align-items:center;gap:12px}.aj-topbar__item{display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,.85)}.aj-topbar__social{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff}.aj-navbar{background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.06);position:relative;z-index:999}.aj-navbar__inner{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:60px}.aj-container{max-width:1100px;margin:0 auto;padding:0 20px;width:100%}.aj-nav-list{list-style:none;margin:0;padding:0;display:flex;align-items:center;gap:0}.aj-nav-list>li>a{display:flex;align-items:center;gap:4px;padding:18px 16px;font-size:.88rem;font-weight:600;color:#222;text-decoration:none}.aj-navbar__brand{font-size:1.25rem;font-weight:800;color:#1a73a7}.aj-navbar__auth{display:flex!important;align-items:center;gap:10px;flex-shrink:0}.aj-auth-link{font-size:.85rem;font-weight:600;color:#222;padding:6px 14px;border-radius:6px;text-decoration:none;white-space:nowrap}.aj-auth-link--signup{background:#1a73a7;color:#fff}';
+    $css = 'body.aj-custom-header #header,body.aj-custom-header .site-header,body.aj-custom-header .topbar,body.aj-custom-header .header-main,body.aj-custom-header>header:not(.aj-header),body.aj-custom-header #masthead{display:none!important}.aj-header{width:100%;z-index:1000;position:relative}.aj-topbar{background:#0e3a5a;color:rgba(255,255,255,.9);font-size:11px;line-height:1}.aj-topbar__inner{display:flex;align-items:center;justify-content:space-between;padding:8px 0;gap:16px}.aj-topbar__left,.aj-topbar__right{display:flex;align-items:center;gap:16px}.aj-topbar__socials{display:flex;align-items:center;gap:12px;font-size:14px}.aj-topbar__social-link{color:rgba(255,255,255,.9);transition:color .2s}.aj-topbar__contact{display:flex;align-items:center;gap:16px;padding-left:16px;border-left:1px solid rgba(255,255,255,.2)}.aj-topbar__item{display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,.9)}.aj-topbar__selector{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;cursor:pointer}.aj-topbar__flag{width:16px;height:12px;object-fit:cover;border-radius:1px}.aj-topbar__auth{display:flex;align-items:center;gap:8px;padding-left:12px;margin-left:8px;border-left:1px solid rgba(255,255,255,.2)}.aj-topbar__auth-link{padding:6px 12px;color:rgba(255,255,255,.9);font-weight:500;border-radius:4px}.aj-topbar__auth-link--signup{background:#0083c4;color:#fff;border-radius:20px;padding:6px 16px}.aj-navbar{background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.06);position:sticky;top:0;z-index:999;border-bottom:1px solid rgba(0,0,0,.05)}.aj-navbar__inner{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:80px}.aj-container{max-width:1280px;margin:0 auto;padding:0 20px;width:100%}.aj-nav-list{list-style:none;margin:0;padding:0;display:flex;align-items:center;gap:4px}.aj-nav-list>li>a{display:flex;align-items:center;gap:6px;padding:8px 12px;font-size:13px;font-weight:600;color:#374151;text-decoration:none;text-transform:uppercase;letter-spacing:.3px;border-radius:8px;transition:color .2s,background .2s}.aj-nav-list>li>a:hover{color:#0083c4;background:rgba(0,131,196,.06)}.aj-navbar__brand{font-size:1.25rem;font-weight:800;color:#0083c4}.aj-lowcost-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(135deg,#f37a1f,#ef4444);color:#fff;font-size:13px;font-weight:700;text-transform:uppercase;border-radius:20px;box-shadow:0 4px 12px rgba(243,122,31,.3)}';
     echo '<style id="ajth-critical-header">' . $css . '</style>' . "\n";
 }
 add_action( 'wp_head', 'ajth_critical_header_css', 1 );
@@ -169,13 +185,14 @@ function ajth_get_header_settings() {
     $defaults = array(
         'enabled'          => true,
         'topbar_enabled'   => true,
-        'phone'            => '(000) 999 - 656 - 888',
+        'phone'            => '+212 5 39 32 38 74',
         'email'            => 'contact@ajinsafro.ma',
         'socials'          => array(
-            'facebook'  => '',
-            'twitter'   => '',
-            'instagram' => '',
-            'youtube'   => '',
+            'facebook'  => '#',
+            'twitter'   => '#',
+            'instagram' => '#',
+            'youtube'   => '#',
+            'linkedin'  => '#',
         ),
         'navbar_enabled'   => true,
         'logo_url'         => '',
@@ -186,6 +203,9 @@ function ajth_get_header_settings() {
         'wp_menu_location'      => 'primary',
         'show_header_sitewide'  => false,
         'links'                 => array(),
+        'lowcost_enabled'       => true,
+        'lowcost_text'          => 'Formule low cost',
+        'lowcost_url'           => '#',
     );
 
     $raw = get_option( 'aj_header_settings', '' );
