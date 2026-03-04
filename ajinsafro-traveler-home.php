@@ -45,14 +45,23 @@ function ajth_init() {
 add_action( 'plugins_loaded', 'ajth_init' );
 
 /* ──────────────────────────────────────────────
- * Enqueue front-end assets ONLY on the home page
+ * Enqueue front-end assets on home page OR pages
+ * containing [ajth_homepage] shortcode.
  * ────────────────────────────────────────────── */
 function ajth_enqueue_front_assets() {
-    if ( ! is_front_page() && ! is_home() ) {
+    $load = is_front_page() || is_home();
+
+    if ( ! $load && is_singular() ) {
+        global $post;
+        if ( $post && has_shortcode( $post->post_content, 'ajth_homepage' ) ) {
+            $load = true;
+        }
+    }
+
+    if ( ! $load ) {
         return;
     }
 
-    // Load AFTER the theme CSS so our rules win
     wp_enqueue_style(
         'ajth-home-css',
         AJTH_URL . 'assets/css/home.css',
@@ -69,6 +78,18 @@ function ajth_enqueue_front_assets() {
     );
 }
 add_action( 'wp_enqueue_scripts', 'ajth_enqueue_front_assets', 999 );
+
+/* ──────────────────────────────────────────────
+ * Shortcode: [ajth_homepage]
+ * Renders the full homepage inside any page.
+ * ────────────────────────────────────────────── */
+function ajth_homepage_shortcode( $atts ) {
+    ob_start();
+    $settings = ajth_get_settings();
+    include AJTH_DIR . 'templates/homepage.php';
+    return ob_get_clean();
+}
+add_shortcode( 'ajth_homepage', 'ajth_homepage_shortcode' );
 
 /* ──────────────────────────────────────────────
  * Helper: get plugin settings with defaults
