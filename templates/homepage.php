@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 ?>
 
 <div id="aj-home" class="aj-home">
+    <?php include AJTH_DIR . 'parts/header.php'; ?>
     <?php include AJTH_DIR . 'parts/hero.php'; ?>
 
     <?php if ( ! empty( $settings['sections']['last_minute'] ) ) : ?>

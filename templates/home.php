@@ -11,6 +11,7 @@ $settings = ajth_get_settings();
 ?>
 
 <div id="aj-home" class="aj-home">
+    <?php include AJTH_DIR . 'parts/header.php'; ?>
     <?php include AJTH_DIR . 'parts/hero.php'; ?>
     <?php if ( ! empty( $settings['sections']['last_minute'] ) ) : ?>
         <?php include AJTH_DIR . 'parts/last-minute.php'; ?>
