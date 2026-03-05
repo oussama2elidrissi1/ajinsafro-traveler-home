@@ -15,7 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 <div class="aj-home-wrap">
     <div class="aj-bg-pattern" aria-hidden="true">
-        <div class="aj-bg-pattern__texture"></div>
         <div class="aj-bg-pattern__gradient"></div>
     </div>
 
