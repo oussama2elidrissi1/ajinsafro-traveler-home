@@ -54,7 +54,7 @@ if ( empty( $promos ) ) {
 }
 ?>
 
-<section class="aj-promos" id="aj-promos" style="display:block !important;visibility:visible !important;opacity:1 !important;position:relative !important;z-index:10 !important;padding:50px 0 !important;min-height:320px !important;background:transparent;">
+<section class="aj-promos" id="aj-promos" style="display:block !important;visibility:visible !important;opacity:1 !important;position:relative !important;z-index:100 !important;padding:50px 0 !important;min-height:320px !important;background:#f0f9ff !important;border:3px solid #0083c4 !important;margin-bottom:20px !important;">
     <div class="aj-container" style="max-width:1280px;margin:0 auto;padding:0 16px;">
         <h2 class="aj-section-title" style="font-size:1.75rem;font-weight:700;color:#1f2937;margin-bottom:24px;"><?php echo esc_html( $section_title ); ?></h2>
 
