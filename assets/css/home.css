@@ -1190,53 +1190,47 @@ body.aj-custom-header #masthead {
 }
 
 /* ==========================================================================
-   7. BACKGROUND PATTERN — Islamic geometric pattern
-   Pattern on wrapper ::before (reliable); gradient in .aj-bg-pattern.
+   7. BACKGROUND PATTERN — Same method as index(2).html
+   body::before = pattern layer (fixed, z-index -2)
+   body::after  = white gradient overlay (fixed, z-index -1)
    ========================================================================== */
+body.aj-has-bg-pattern {
+    background-color: #fafbfc;
+    position: relative;
+}
+
+/* Pattern layer — exact same as mockup */
+body.aj-has-bg-pattern::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://i.ibb.co/4n5PwWsV/vecteezy-islamic-geometric-pattern-art-illustration-vector-14002298.jpg');
+    background-repeat: repeat;
+    background-size: 600px;
+    opacity: 0.1;
+    z-index: -2;
+    pointer-events: none;
+}
+
+/* White gradient overlay — exact same as mockup */
+body.aj-has-bg-pattern::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.8) 40%, rgba(255, 255, 255, 0) 100%);
+    z-index: -1;
+    pointer-events: none;
+}
+
 .aj-home-wrap {
     position: relative;
     min-height: 100vh;
-    background-color: #fafbfc;
-}
-
-/* Pattern layer — pseudo-element so it always paints with the wrapper */
-.aj-home-wrap::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-    pointer-events: none;
-    background-color: #fafbfc;
-    background-image: url('https://i.ibb.co/4n5PwWsV/vecteezy-islamic-geometric-pattern-art-illustration-vector-14002298.jpg');
-    background-repeat: repeat;
-    background-position: center;
-    background-size: 520px;
-    opacity: 0.22;
-}
-
-.aj-bg-pattern {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    min-height: 100%;
-    pointer-events: none;
-    z-index: 0;
-}
-
-/* Gradient overlay only (texture is on .aj-home-wrap::before) */
-.aj-bg-pattern__gradient {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse 80% 70% at center, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.15) 100%);
-}
-
-body.aj-has-bg-pattern {
-    background-color: #fafbfc;
 }
 
 .aj-home {

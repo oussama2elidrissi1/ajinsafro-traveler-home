@@ -14,10 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 ?>
 
 <div class="aj-home-wrap">
-    <div class="aj-bg-pattern" aria-hidden="true">
-        <div class="aj-bg-pattern__gradient"></div>
-    </div>
-
     <div id="aj-home" class="aj-home">
     <?php include AJTH_DIR . 'parts/header.php'; ?>
     <?php include AJTH_DIR . 'parts/hero.php'; ?>
