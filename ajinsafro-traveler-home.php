@@ -269,32 +269,48 @@ function ajth_get_settings() {
             'type' => 'image',
             'image_url' => '',
             'video_url' => '',
-            'title' => 'Découvrez le Maroc',
-            'subtitle' => 'Voyages, hébergements et activités au meilleur prix',
-            'cta_text' => 'Voir les offres',
+            'title' => 'Partir en vacances au meilleur prix !',
+            'subtitle' => '',
+            'cta_text' => '',
             'cta_url' => '',
-            'overlay' => 0.35,
+            'overlay' => 0.4,
         ),
         'sections' => array(
             'search' => true,
             'last_minute' => true,
+            'accommodations' => true,
             'regions' => true,
             'good_spots' => true,
+            'promotions' => true,
         ),
         'search' => array(
             'shortcode' => '[traveler_search]',
         ),
         'last_minute' => array(
-            'title' => 'Offres de dernière minute',
-            'count' => 6,
+            'title' => 'Cap sur les tendances du moment',
+            'count' => 4,
             'featured_only' => false,
+        ),
+        'accommodations' => array(
+            'title' => 'Découvrez des séjours uniques',
+            'count' => 4,
         ),
         'regions' => array(),
         'good_spots' => array(
-            array( 'title' => 'Restaurants', 'image_url' => '', 'link_url' => '#' ),
-            array( 'title' => 'Loisirs', 'image_url' => '', 'link_url' => '#' ),
-            array( 'title' => 'Que faire ?', 'image_url' => '', 'link_url' => '#' ),
-            array( 'title' => 'Shopping', 'image_url' => '', 'link_url' => '#' ),
+            array( 'title' => 'Restaurants', 'subtitle' => 'Où manger ?', 'icon' => 'fas fa-utensils', 'image_url' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80', 'link_url' => '#' ),
+            array( 'title' => 'Loisirs', 'subtitle' => 'Lorem ipsum dolor sit amet', 'icon' => 'fas fa-icons', 'image_url' => 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&w=800&q=80', 'link_url' => '#' ),
+            array( 'title' => 'Que faire ?', 'subtitle' => 'Lorem ipsum dolor sit amet', 'icon' => 'fas fa-map-marked-alt', 'image_url' => 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80', 'link_url' => '#' ),
+            array( 'title' => 'Shopping', 'subtitle' => 'Lorem ipsum dolor sit amet', 'icon' => 'fas fa-shopping-bag', 'image_url' => 'https://images.unsplash.com/photo-1481437156560-3205f6a55735?auto=format&fit=crop&w=800&q=80', 'link_url' => '#' ),
+        ),
+        'good_spots_title' => 'Les bons coins sur votre destination',
+        'promotions' => array(
+            'title' => 'Destinations de ce mois',
+            'items' => array(),
+        ),
+        'footer' => array(
+            'col1_heading' => 'En savoir plus',
+            'col2_heading' => 'Société',
+            'legal_text' => "Licence N° 489117 | RC: 18989\nPatente: 50411316 | I.C.E: 001585417000035\nAjinSafro Recreation SARL AU",
         ),
     );
 
@@ -315,8 +331,10 @@ function ajth_get_settings() {
     $settings['last_minute']['count'] = max( 1, intval( $settings['last_minute']['count'] ) );
     $settings['sections']['search'] = ! empty( $settings['sections']['search'] );
     $settings['sections']['last_minute'] = ! empty( $settings['sections']['last_minute'] );
+    $settings['sections']['accommodations'] = ! empty( $settings['sections']['accommodations'] );
     $settings['sections']['regions'] = ! empty( $settings['sections']['regions'] );
     $settings['sections']['good_spots'] = ! empty( $settings['sections']['good_spots'] );
+    $settings['sections']['promotions'] = ! empty( $settings['sections']['promotions'] );
 
     return $settings;
 }
@@ -328,7 +346,7 @@ function ajth_get_settings() {
 function ajth_get_destinations_by_region() {
     $defaults = array(
         'enabled' => true,
-        'title'   => 'Destinations par région',
+        'title'   => 'Nos destinations',
         'items'   => array(),
     );
 
