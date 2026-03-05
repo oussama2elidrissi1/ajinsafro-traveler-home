@@ -1843,38 +1843,22 @@ body.aj-has-bg-pattern::after {
    14. PROMOTIONAL BANNERS — "Destinations de ce mois"
    Force visible: section exists in DOM but can be hidden by theme/overflow.
    ========================================================================== */
-#aj-promos,
-.aj-promos,
-.aj-home .aj-promos,
-.aj-home #aj-promos,
-body .aj-home section.aj-promos {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: relative !important;
-    z-index: 2 !important;
-    padding: 50px 0 !important;
-    min-height: 320px !important;
-    overflow: visible !important;
-    clip: auto !important;
-    transform: none !important;
+.aj-promos {
+    position: relative;
+    z-index: 2;
+    padding: 50px 0;
+    background-color: transparent;
 }
 .aj-promos .aj-section-title { margin-bottom: 24px; }
 
 .aj-promos__grid {
-    display: grid !important;
+    display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
-    min-height: 220px;
-    visibility: visible !important;
-    opacity: 1 !important;
 }
 
-.aj-promos .aj-promo-card,
 .aj-promo-card {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+    display: block;
     position: relative;
     border-radius: 12px;
     padding: 24px;
@@ -1885,6 +1869,7 @@ body .aj-home section.aj-promos {
     box-shadow: 0 4px 20px rgba(0,0,0,.08);
     cursor: pointer;
     transition: transform .3s;
+    text-decoration: none;
 }
 .aj-promo-card:hover { transform: translateY(-4px); }
 
@@ -1927,6 +1912,69 @@ body .aj-home section.aj-promos {
     bottom: 0;
     right: 0;
     opacity: .9;
+}
+
+.aj-promo-card--rtl {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.aj-promo-card__deco--cards {
+    display: flex;
+    gap: 0;
+    transform: rotate(-10deg);
+    bottom: -16px;
+    right: -8px;
+}
+
+.aj-deco-card {
+    width: 96px;
+    height: 128px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    border: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+.aj-deco-card--green {
+    background: #22c55e;
+    transform: rotate(-15deg) translateY(16px);
+}
+.aj-deco-card--orange {
+    background: #f97316;
+    transform: rotate(-5deg);
+    z-index: 1;
+    margin-left: -48px;
+}
+.aj-deco-card--blue {
+    background: #60a5fa;
+    transform: rotate(5deg) translateY(-8px);
+    z-index: 2;
+    margin-left: -48px;
+}
+
+.aj-promo-card__deco--wallet {
+    top: 16px;
+    right: 16px;
+    bottom: auto;
+    font-size: 4rem;
+}
+.aj-promo-card__deco--wallet i {
+    color: rgba(0,0,0,.15);
+}
+
+.aj-promo-card__deco--box {
+    bottom: 16px;
+    left: 24px;
+    right: auto;
+    font-size: 3.5rem;
+    color: #ffb300;
 }
 
 /* ==========================================================================

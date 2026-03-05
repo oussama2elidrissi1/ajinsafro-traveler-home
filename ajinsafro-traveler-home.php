@@ -16,15 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-/* ══════════════════════════════════════════════
- * TEST DEBUG - AFFICHE SUR TOUTES LES PAGES
- * ══════════════════════════════════════════════ */
-add_action( 'wp_footer', function() {
-    echo '<div style="position:fixed;bottom:0;left:0;right:0;background:#ff0000;color:#fff;padding:20px;text-align:center;z-index:99999;font-size:20px;font-weight:bold;">
-        🔴 PLUGIN AJTH ACTIF - TEST ' . date('H:i:s') . ' 🔴
-    </div>';
-}, 99999 );
-
 /* ──────────────────────────────────────────────
  * Constants
  * ────────────────────────────────────────────── */
