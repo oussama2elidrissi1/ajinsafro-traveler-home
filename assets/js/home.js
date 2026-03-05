@@ -113,10 +113,37 @@
         });
     }
 
+    /* ── Clean Search Form URLs (remove empty params) ─────────────── */
+    function initCleanSearchForms() {
+        var forms = document.querySelectorAll('.aj-search-form form');
+        forms.forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                var inputs = form.querySelectorAll('input[type="text"], input[type="hidden"]');
+                var hasValue = false;
+                
+                inputs.forEach(function(input) {
+                    if (input.value && input.value.trim() !== '') {
+                        hasValue = true;
+                    } else {
+                        // Remove empty inputs to avoid empty params in URL
+                        input.removeAttribute('name');
+                    }
+                });
+
+                // If no search criteria, redirect to clean page URL
+                if (!hasValue && form.id === 'aj-voyage-search-form') {
+                    e.preventDefault();
+                    window.location.href = form.action;
+                }
+            });
+        });
+    }
+
     /* ── Init Everything ─────────────────────────────────────────── */
     function init() {
         initDrawer();
         initSearchTabs();
+        initCleanSearchForms();
 
         initSlider('aj-lm-track', '.aj-arrow--prev', '.aj-arrow--next');
         initSlider('aj-accom-track', '.aj-accom-prev', '.aj-accom-next');
