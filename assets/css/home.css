@@ -1190,24 +1190,37 @@ body.aj-custom-header #masthead {
 }
 
 /* ==========================================================================
-   7. BACKGROUND PATTERN — Islamic geometric pattern (real div approach)
+   7. BACKGROUND PATTERN — Islamic geometric pattern
+   Wrapper + absolute positioning so the image is never clipped by theme.
    ========================================================================== */
+.aj-home-wrap {
+    position: relative;
+    min-height: 100vh;
+    background-color: #fafbfc;
+}
+
 .aj-bg-pattern {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-height: 100%;
     pointer-events: none;
     z-index: 0;
 }
+
 .aj-bg-pattern__texture {
     position: absolute;
     inset: 0;
+    background-color: #fafbfc;
     background-image: url('https://i.ibb.co/4n5PwWsV/vecteezy-islamic-geometric-pattern-art-illustration-vector-14002298.jpg');
     background-repeat: repeat;
     background-position: center;
     background-size: 520px;
     opacity: 0.22;
 }
+
 .aj-bg-pattern__gradient {
     position: absolute;
     inset: 0;
