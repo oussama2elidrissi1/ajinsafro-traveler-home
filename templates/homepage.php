@@ -48,6 +48,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         </div>
     </section>
     <!-- FIN TEST SECTION -->
+     
 
     <?php include AJTH_DIR . 'parts/promotions.php'; ?>
 
