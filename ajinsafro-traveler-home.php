@@ -422,6 +422,99 @@ function ajth_legacy_settings_to_json() {
     );
 }
 
+/* ──────────────────────────────────────────────
+ * Custom Walker for WordPress menus with icon support
+ * Add FontAwesome icon class in menu item's CSS Classes field
+ * Example: fas fa-hotel (will be extracted and displayed as icon)
+ * ────────────────────────────────────────────── */
+class AJTH_Nav_Walker extends Walker_Nav_Menu {
+    
+    public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
+        if ( isset( $args->item_spacing ) && 'discard' === $args->item_spacing ) {
+            $t = '';
+            $n = '';
+        } else {
+            $t = "\t";
+            $n = "\n";
+        }
+        $indent = ( $depth ) ? str_repeat( $t, $depth ) : '';
+
+        $classes   = empty( $item->classes ) ? array() : (array) $item->classes;
+        $classes[] = 'menu-item-' . $item->ID;
+
+        // Extract FontAwesome icon from classes
+        $icon_class = '';
+        $filtered_classes = array();
+        foreach ( $classes as $class ) {
+            if ( preg_match( '/^(fas?|far|fab|fal|fad)\s/', $class ) || preg_match( '/^fa-/', $class ) ) {
+                $icon_class .= ' ' . $class;
+            } else {
+                $filtered_classes[] = $class;
+            }
+        }
+        $icon_class = trim( $icon_class );
+
+        // Check for has-children
+        if ( in_array( 'menu-item-has-children', $filtered_classes, true ) ) {
+            $filtered_classes[] = 'aj-has-sub';
+        }
+
+        $args = apply_filters( 'nav_menu_item_args', $args, $item, $depth );
+
+        $class_names = implode( ' ', apply_filters( 'nav_menu_css_class', array_filter( $filtered_classes ), $item, $args, $depth ) );
+        $class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
+
+        $id_attr = apply_filters( 'nav_menu_item_id', 'menu-item-' . $item->ID, $item, $args, $depth );
+        $id_attr = $id_attr ? ' id="' . esc_attr( $id_attr ) . '"' : '';
+
+        $output .= $indent . '<li' . $id_attr . $class_names . '>';
+
+        $atts           = array();
+        $atts['title']  = ! empty( $item->attr_title ) ? $item->attr_title : '';
+        $atts['target'] = ! empty( $item->target ) ? $item->target : '';
+        if ( '_blank' === $item->target && empty( $item->xfn ) ) {
+            $atts['rel'] = 'noopener';
+        } else {
+            $atts['rel'] = $item->xfn;
+        }
+        $atts['href']         = ! empty( $item->url ) ? $item->url : '';
+        $atts['aria-current'] = $item->current ? 'page' : '';
+
+        $atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args, $depth );
+
+        $attributes = '';
+        foreach ( $atts as $attr => $value ) {
+            if ( is_scalar( $value ) && '' !== $value && false !== $value ) {
+                $value       = ( 'href' === $attr ) ? esc_url( $value ) : esc_attr( $value );
+                $attributes .= ' ' . $attr . '="' . $value . '"';
+            }
+        }
+
+        $title = apply_filters( 'the_title', $item->title, $item->ID );
+        $title = apply_filters( 'nav_menu_item_title', $title, $item, $args, $depth );
+
+        $item_output  = $args->before ?? '';
+        $item_output .= '<a' . $attributes . '>';
+        
+        // Add icon before title if found
+        if ( $icon_class ) {
+            $item_output .= '<i class="' . esc_attr( $icon_class ) . '"></i> ';
+        }
+        
+        $item_output .= ( $args->link_before ?? '' ) . '<span>' . $title . '</span>' . ( $args->link_after ?? '' );
+        
+        // Add caret for items with children
+        if ( in_array( 'menu-item-has-children', $classes, true ) && $depth === 0 ) {
+            $item_output .= ' <i class="fas fa-chevron-down aj-caret"></i>';
+        }
+        
+        $item_output .= '</a>';
+        $item_output .= $args->after ?? '';
+
+        $output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
+    }
+}
+
 function ajth_debug_dump_home_settings_footer() {
     if ( ! current_user_can( 'manage_options' ) ) {
         return;

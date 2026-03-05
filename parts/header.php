@@ -25,12 +25,57 @@ $social_icons = array(
 );
 
 $menu_icons = array(
-    'packages'    => '<i class="fas fa-suitcase-rolling"></i>',
-    'hebergement' => '<i class="fas fa-hotel"></i>',
-    'activites'   => '<i class="fas fa-camera"></i>',
-    'transfert'   => '<i class="fas fa-car-side"></i>',
-    'hajj'        => '<i class="fas fa-kaaba"></i>',
-    'guide'       => '<i class="fas fa-map-signs"></i>',
+    'packages'    => 'fas fa-suitcase-rolling',
+    'hebergement' => 'fas fa-hotel',
+    'activites'   => 'fas fa-camera',
+    'transfert'   => 'fas fa-car-side',
+    'hajj'        => 'fas fa-kaaba',
+    'guide'       => 'fas fa-map-signs',
+);
+
+$default_menu_items = array(
+    array(
+        'label'    => 'Packages',
+        'url'      => '#packages',
+        'icon'     => 'fas fa-suitcase-rolling',
+        'active'   => true,
+        'children' => array(),
+    ),
+    array(
+        'label'    => 'Hébergement',
+        'url'      => '#hebergement',
+        'icon'     => 'fas fa-hotel',
+        'active'   => false,
+        'children' => array(),
+    ),
+    array(
+        'label'    => 'Activités',
+        'url'      => '#activites',
+        'icon'     => 'fas fa-camera',
+        'active'   => false,
+        'children' => array(),
+    ),
+    array(
+        'label'    => 'Transfert',
+        'url'      => '#transfert',
+        'icon'     => 'fas fa-car-side',
+        'active'   => false,
+        'children' => array(),
+    ),
+    array(
+        'label'    => 'Hajj & Omra',
+        'url'      => '#hajj-omra',
+        'icon'     => 'fas fa-kaaba',
+        'active'   => false,
+        'children' => array(),
+    ),
+    array(
+        'label'    => 'Votre guide',
+        'url'      => '#guide',
+        'icon'     => 'fas fa-map-signs',
+        'active'   => false,
+        'children' => array(),
+    ),
 );
 ?>
 
@@ -155,21 +200,46 @@ $menu_icons = array(
                             'menu_class'     => 'aj-nav-list',
                             'depth'          => 2,
                             'fallback_cb'    => false,
+                            'walker'         => new AJTH_Nav_Walker(),
                         ) );
                     } else {
-                        wp_nav_menu( array(
-                            'container'   => false,
-                            'menu_class'  => 'aj-nav-list',
-                            'depth'       => 2,
-                            'fallback_cb' => 'wp_page_menu',
-                        ) );
+                        // Fallback: show default menu with icons
+                        ?>
+                        <ul class="aj-nav-list">
+                            <?php foreach ( $default_menu_items as $item ) : ?>
+                            <li class="<?php echo ! empty( $item['active'] ) ? 'aj-active' : ''; ?>">
+                                <a href="<?php echo esc_url( $item['url'] ); ?>">
+                                    <?php if ( ! empty( $item['icon'] ) ) : ?>
+                                        <i class="<?php echo esc_attr( $item['icon'] ); ?>"></i>
+                                    <?php endif; ?>
+                                    <span><?php echo esc_html( $item['label'] ); ?></span>
+                                    <?php if ( ! empty( $item['children'] ) ) : ?>
+                                        <i class="fas fa-chevron-down aj-caret"></i>
+                                    <?php endif; ?>
+                                </a>
+                                <?php if ( ! empty( $item['children'] ) ) : ?>
+                                    <ul class="aj-sub-menu">
+                                        <?php foreach ( $item['children'] as $child ) : ?>
+                                            <li><a href="<?php echo esc_url( $child['url'] ); ?>"><?php echo esc_html( $child['label'] ); ?></a></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php endif; ?>
+                            </li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <?php
                     }
                     ?>
                 <?php else : ?>
+                    <?php
+                    // Use custom links from Laravel admin, or default menu if empty
+                    $nav_links = ! empty( $hdr['links'] ) && is_array( $hdr['links'] ) ? $hdr['links'] : array();
+                    if ( empty( $nav_links ) ) {
+                        $nav_links = $default_menu_items;
+                    }
+                    ?>
                     <ul class="aj-nav-list">
-                        <?php
-                        $nav_links = ! empty( $hdr['links'] ) && is_array( $hdr['links'] ) ? $hdr['links'] : array();
-                        foreach ( $nav_links as $link ) :
+                        <?php foreach ( $nav_links as $link ) :
                             $label    = ! empty( $link['label'] ) ? $link['label'] : '';
                             $url      = ! empty( $link['url'] ) ? $link['url'] : '#';
                             $icon     = ! empty( $link['icon'] ) ? $link['icon'] : '';
