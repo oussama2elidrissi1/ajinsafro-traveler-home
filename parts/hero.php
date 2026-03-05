@@ -62,9 +62,10 @@ if ( ! empty( $hero_video_url ) && ! $is_mp4_video ) {
             </p>
         <?php endif; ?>
     </div>
-    <?php if ( ! empty( $settings['sections']['search'] ) ) : ?>
-        <div class="aj-search-float">
-            <?php include AJTH_DIR . 'parts/search.php'; ?>
-        </div>
-    <?php endif; ?>
 </section>
+
+<?php if ( ! empty( $settings['sections']['search'] ) ) : ?>
+    <div class="aj-search-float">
+        <?php include AJTH_DIR . 'parts/search.php'; ?>
+    </div>
+<?php endif; ?>

@@ -60,7 +60,7 @@ function ajth_enqueue_front_assets() {
 
     if ( ! $load ) {
         $h = ajth_get_header_settings();
-        if ( ! empty( $h['enabled'] ) && ! empty( $h['show_header_sitewide'] ) ) {
+        if ( ( ! empty( $h['enabled'] ) && ! empty( $h['show_header_sitewide'] ) ) || ! empty( $h['show_footer_sitewide'] ) ) {
             $load = true;
         }
     }
@@ -108,15 +108,24 @@ add_action( 'wp_enqueue_scripts', 'ajth_enqueue_front_assets', 5 );
  * ────────────────────────────────────────────── */
 function ajth_critical_header_css() {
     $h = ajth_get_header_settings();
-    if ( empty( $h['enabled'] ) ) {
-        return;
-    }
     $on_home = is_front_page() || is_home();
-    if ( ! $on_home && empty( $h['show_header_sitewide'] ) ) {
+
+    $render_header = ! empty( $h['enabled'] ) && ( $on_home || ! empty( $h['show_header_sitewide'] ) );
+    $render_footer = ! empty( $h['show_footer_sitewide'] );
+
+    if ( ! $render_header && ! $render_footer ) {
         return;
     }
-    $css = 'body.aj-custom-header #header,body.aj-custom-header .site-header,body.aj-custom-header .topbar,body.aj-custom-header .header-main,body.aj-custom-header>header:not(.aj-header),body.aj-custom-header #masthead{display:none!important}.aj-header{width:100%;z-index:1000;position:relative}.aj-topbar{background:#0e3a5a;color:rgba(255,255,255,.9);font-size:11px;line-height:1}.aj-topbar__inner{display:flex;align-items:center;justify-content:space-between;padding:8px 0;gap:16px}.aj-topbar__left,.aj-topbar__right{display:flex;align-items:center;gap:16px}.aj-topbar__socials{display:flex;align-items:center;gap:12px;font-size:14px}.aj-topbar__social-link{color:rgba(255,255,255,.9);transition:color .2s}.aj-topbar__contact{display:flex;align-items:center;gap:16px;padding-left:16px;border-left:1px solid rgba(255,255,255,.2)}.aj-topbar__item{display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,.9)}.aj-topbar__selector{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;cursor:pointer}.aj-topbar__flag{width:16px;height:12px;object-fit:cover;border-radius:1px}.aj-topbar__auth{display:flex;align-items:center;gap:8px;padding-left:12px;margin-left:8px;border-left:1px solid rgba(255,255,255,.2)}.aj-topbar__auth-link{padding:6px 12px;color:rgba(255,255,255,.9);font-weight:500;border-radius:4px}.aj-topbar__auth-link--signup{background:#0083c4;color:#fff;border-radius:20px;padding:6px 16px}.aj-navbar{background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.06);position:sticky;top:0;z-index:999;border-bottom:1px solid rgba(0,0,0,.05)}.aj-navbar__inner{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:80px}.aj-container{max-width:1280px;margin:0 auto;padding:0 20px;width:100%}.aj-nav-list{list-style:none;margin:0;padding:0;display:flex;align-items:center;gap:4px}.aj-nav-list>li>a{display:flex;align-items:center;gap:6px;padding:8px 12px;font-size:13px;font-weight:600;color:#374151;text-decoration:none;text-transform:uppercase;letter-spacing:.3px;border-radius:8px;transition:color .2s,background .2s}.aj-nav-list>li>a:hover{color:#0083c4;background:rgba(0,131,196,.06)}.aj-navbar__brand{font-size:1.25rem;font-weight:800;color:#0083c4}.aj-lowcost-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(135deg,#f37a1f,#ef4444);color:#fff;font-size:13px;font-weight:700;text-transform:uppercase;border-radius:20px;box-shadow:0 4px 12px rgba(243,122,31,.3)}';
-    echo '<style id="ajth-critical-header">' . $css . '</style>' . "\n";
+
+    if ( $render_header ) {
+        $css = 'body.aj-custom-header #header,body.aj-custom-header .site-header,body.aj-custom-header .topbar,body.aj-custom-header .header-main,body.aj-custom-header>header:not(.aj-header),body.aj-custom-header #masthead{display:none!important}.aj-header{width:100%;z-index:1000;position:relative}.aj-topbar{background:#0e3a5a;color:rgba(255,255,255,.9);font-size:11px;line-height:1}.aj-topbar__inner{display:flex;align-items:center;justify-content:space-between;padding:8px 0;gap:16px}.aj-topbar__left,.aj-topbar__right{display:flex;align-items:center;gap:16px}.aj-topbar__socials{display:flex;align-items:center;gap:12px;font-size:14px}.aj-topbar__social-link{color:rgba(255,255,255,.9);transition:color .2s}.aj-topbar__contact{display:flex;align-items:center;gap:16px;padding-left:16px;border-left:1px solid rgba(255,255,255,.2)}.aj-topbar__item{display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,.9)}.aj-topbar__selector{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;cursor:pointer}.aj-topbar__flag{width:16px;height:12px;object-fit:cover;border-radius:1px}.aj-topbar__auth{display:flex;align-items:center;gap:8px;padding-left:12px;margin-left:8px;border-left:1px solid rgba(255,255,255,.2)}.aj-topbar__auth-link{padding:6px 12px;color:rgba(255,255,255,.9);font-weight:500;border-radius:4px}.aj-topbar__auth-link--signup{background:#0083c4;color:#fff;border-radius:20px;padding:6px 16px}.aj-navbar{background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.06);position:sticky;top:0;z-index:999;border-bottom:1px solid rgba(0,0,0,.05)}.aj-navbar__inner{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:80px}.aj-container{max-width:1280px;margin:0 auto;padding:0 20px;width:100%}.aj-nav-list{list-style:none;margin:0;padding:0;display:flex;align-items:center;gap:4px}.aj-nav-list>li>a{display:flex;align-items:center;gap:6px;padding:8px 12px;font-size:13px;font-weight:600;color:#374151;text-decoration:none;text-transform:uppercase;letter-spacing:.3px;border-radius:8px;transition:color .2s,background .2s}.aj-nav-list>li>a:hover{color:#0083c4;background:rgba(0,131,196,.06)}.aj-navbar__brand{font-size:1.25rem;font-weight:800;color:#0083c4}.aj-lowcost-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(135deg,#f37a1f,#ef4444);color:#fff;font-size:13px;font-weight:700;text-transform:uppercase;border-radius:20px;box-shadow:0 4px 12px rgba(243,122,31,.3)}';
+        echo '<style id="ajth-critical-header">' . $css . '</style>' . "\n";
+    }
+
+    if ( $render_footer ) {
+        $footer_css = 'body.aj-custom-footer #footer,body.aj-custom-footer footer:not(.aj-footer-v2):not(.aj-footer-sitewide footer),body.aj-custom-footer .site-footer,body.aj-custom-footer .footer-wrapper,body.aj-custom-footer .footer-widget-area,body.aj-custom-footer #colophon,body.aj-custom-footer .footer,body.aj-custom-footer .st-footer,body.aj-custom-footer .footer-top,body.aj-custom-footer .footer-bottom{display:none!important}';
+        echo '<style id="ajth-critical-footer">' . $footer_css . '</style>' . "\n";
+    }
 }
 add_action( 'wp_head', 'ajth_critical_header_css', 1 );
 
@@ -131,7 +140,7 @@ function ajth_preload_styles() {
     }
     if ( ! $load ) {
         $h = ajth_get_header_settings();
-        if ( ! empty( $h['enabled'] ) && ! empty( $h['show_header_sitewide'] ) ) {
+        if ( ( ! empty( $h['enabled'] ) && ! empty( $h['show_header_sitewide'] ) ) || ! empty( $h['show_footer_sitewide'] ) ) {
             $load = true;
         }
     }
@@ -202,6 +211,7 @@ function ajth_get_header_settings() {
         'menu_source'           => 'wp_menu',
         'wp_menu_location'      => 'primary',
         'show_header_sitewide'  => false,
+        'show_footer_sitewide'  => true,
         'links'                 => array(),
         'lowcost_enabled'       => true,
         'lowcost_text'          => 'Formule low cost',
@@ -231,12 +241,16 @@ function ajth_get_header_settings() {
  * ────────────────────────────────────────────── */
 function ajth_body_class_custom_header( $classes ) {
     $h = ajth_get_header_settings();
-    if ( empty( $h['enabled'] ) ) {
-        return $classes;
-    }
     $on_home = is_front_page() || is_home();
-    if ( $on_home || ! empty( $h['show_header_sitewide'] ) ) {
+
+    if ( ! empty( $h['enabled'] ) && ( $on_home || ! empty( $h['show_header_sitewide'] ) ) ) {
         $classes[] = 'aj-custom-header';
+    }
+    if ( ! empty( $h['show_footer_sitewide'] ) ) {
+        $classes[] = 'aj-custom-footer';
+    }
+    if ( $on_home ) {
+        $classes[] = 'aj-has-bg-pattern';
     }
     return $classes;
 }
@@ -259,6 +273,32 @@ function ajth_render_header_sitewide() {
     include AJTH_DIR . 'parts/header.php';
 }
 add_action( 'get_header', 'ajth_render_header_sitewide', 5 );
+
+/* ──────────────────────────────────────────────
+ * Output custom footer on ALL pages (replaces theme footer).
+ * On the homepage the template already includes the footer.
+ * ────────────────────────────────────────────── */
+function ajth_render_footer_sitewide() {
+    $on_home = is_front_page() || is_home();
+    if ( $on_home ) {
+        return;
+    }
+    if ( is_singular() ) {
+        global $post;
+        if ( $post && has_shortcode( $post->post_content, 'ajth_homepage' ) ) {
+            return;
+        }
+    }
+    $h = ajth_get_header_settings();
+    if ( empty( $h['show_footer_sitewide'] ) ) {
+        return;
+    }
+    $settings = ajth_get_settings();
+    echo '<div class="aj-footer-sitewide">';
+    include AJTH_DIR . 'parts/newsletter.php';
+    echo '</div>';
+}
+add_action( 'wp_footer', 'ajth_render_footer_sitewide', 1 );
 
 /* ──────────────────────────────────────────────
  * Helper: get plugin settings with defaults

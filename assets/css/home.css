@@ -34,7 +34,7 @@
     color: var(--aj-dark);
     line-height: 1.55;
     overflow-x: hidden;
-    background-color: #fafbfc;
+    background-color: transparent;
 }
 
 .aj-container {
@@ -542,7 +542,7 @@ body.aj-custom-header #masthead {
 .aj-hero {
     position: relative;
     width: 100%;
-    min-height: 480px;
+    min-height: 420px;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
@@ -550,7 +550,7 @@ body.aj-custom-header #masthead {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-bottom: 80px;          /* room for the floating search bar */
+    padding: 80px 16px 60px;
 }
 
 .aj-hero__media,
@@ -618,20 +618,20 @@ body.aj-custom-header #masthead {
 
 /* ── 2. FLOATING SEARCH BAR ───────────────────────────────────────────── */
 .aj-search-float {
-    position: absolute;
-    bottom: -42px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 1060px;
+    position: relative;
+    margin: -80px auto 0;
+    width: 91.67%;
+    max-width: 1024px;
     z-index: 20;
 }
 
 .aj-search-card {
     background: #fff;
     border-radius: var(--aj-radius);
-    box-shadow: 0 4px 24px rgba(0,0,0,.14);
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,.1);
     overflow: hidden;
+    border: 1px solid #f3f4f6;
+    transition: all .3s ease;
 }
 
 .aj-search-native {
@@ -738,8 +738,8 @@ body.aj-custom-header #masthead {
    3. OFFRES DE DERNIÈRE MINUTE
    ========================================================================== */
 .aj-lm {
-    padding: 80px 0 50px;     /* top padding compensates the floating bar overlap */
-    background: #fff;
+    padding: 40px 0 50px;
+    background: transparent;
 }
 
 .aj-lm__head {
@@ -1190,40 +1190,34 @@ body.aj-custom-header #masthead {
 }
 
 /* ==========================================================================
-   7. BACKGROUND PATTERN — Islamic geometric pattern overlay
+   7. BACKGROUND PATTERN — Islamic geometric pattern (real div approach)
    ========================================================================== */
-.aj-home::before {
-    content: '';
+.aj-bg-pattern {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+.aj-bg-pattern__texture {
+    position: absolute;
+    inset: 0;
     background-image: url('https://i.ibb.co/4n5PwWsV/vecteezy-islamic-geometric-pattern-art-illustration-vector-14002298.jpg');
     background-repeat: repeat;
     background-size: 600px;
     opacity: 0.1;
-    z-index: -2;
-    pointer-events: none;
 }
-.aj-home::after {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+.aj-bg-pattern__gradient {
+    position: absolute;
+    inset: 0;
     background: radial-gradient(circle at center, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 40%, rgba(255,255,255,0) 100%);
-    z-index: -1;
-    pointer-events: none;
 }
-.aj-home { position: relative; }
-.aj-home .aj-topbar,
-.aj-home .aj-navbar,
-.aj-home .aj-hero,
-.aj-home .aj-lm,
-.aj-home .aj-accom,
-.aj-home .aj-regions,
-.aj-home .aj-spots,
-.aj-home .aj-promos,
-.aj-home .aj-footer-nl,
-.aj-home .aj-payments {
+
+body.aj-has-bg-pattern {
+    background-color: #fafbfc;
+}
+
+.aj-home {
     position: relative;
     z-index: 1;
 }
@@ -1293,7 +1287,6 @@ body.aj-custom-header #masthead {
     font-size: .8rem;
     font-weight: 600;
     scrollbar-width: none;
-    border-radius: var(--aj-radius) var(--aj-radius) 0 0;
 }
 .aj-search-tabs::-webkit-scrollbar { display: none; }
 
@@ -2291,15 +2284,15 @@ body.aj-custom-header #masthead {
     .aj-navbar__inner { min-height: 64px; height: 64px; padding-left: 16px; padding-right: 16px; gap: 12px; }
     .aj-navbar__logo { flex-shrink: 0; }
     .aj-navbar__logo-img { max-height: 32px; }
-    .aj-hero { min-height: 400px; padding-bottom: 70px; padding-top: max(env(safe-area-inset-top, 0px), 6px); }
-    .aj-search-float { width: 94%; bottom: -36px; }
+    .aj-hero { min-height: 340px; padding: 60px 12px 50px; }
+    .aj-search-float { width: 94%; margin-top: -60px; }
     .aj-search__tabs { overflow-x: auto; }
     .aj-tab { padding: 10px 14px; font-size: .8rem; }
     .aj-search__form { flex-wrap: wrap; }
     .aj-sf { flex: 1 1 100%; border-bottom: 1px solid #eee; }
     .aj-sep { display: none; }
     .aj-search__btn { width: 100%; justify-content: center; border-radius: 0 0 var(--aj-radius) var(--aj-radius); min-height: 50px; }
-    .aj-lm { padding-top: 70px; }
+    .aj-lm { padding-top: 40px; }
     .aj-card { flex: 0 0 82%; min-width: 260px; }
     .aj-regions__grid { grid-template-columns: repeat(2, 1fr); }
     .aj-spots__grid { grid-template-columns: 1fr; }
@@ -2339,9 +2332,10 @@ body.aj-custom-header #masthead {
     .aj-topbar__item { max-width: 120px; }
 
     .aj-hero {
-        min-height: 340px;
-        padding-top: max(env(safe-area-inset-top, 0px), 8px);
+        min-height: 280px;
+        padding: 50px 10px 40px;
     }
+    .aj-search-float { margin-top: -40px; }
     .aj-hero__title { font-size: 1.6rem; }
     .aj-hero__sub   { font-size: .95rem; }
 
@@ -2350,3 +2344,33 @@ body.aj-custom-header #masthead {
     .aj-reg { height: 130px; }
     .aj-reg__label { font-size: .8rem; }
 }
+
+/* ==========================================================================
+   SITE-WIDE FOOTER — Hide WP theme footer, show custom footer everywhere
+   ========================================================================== */
+body.aj-custom-footer #footer,
+body.aj-custom-footer footer:not(.aj-footer-v2),
+body.aj-custom-footer .site-footer,
+body.aj-custom-footer .footer-wrapper,
+body.aj-custom-footer .footer-widget-area,
+body.aj-custom-footer #colophon,
+body.aj-custom-footer .footer,
+body.aj-custom-footer .st-footer,
+body.aj-custom-footer .footer-top,
+body.aj-custom-footer .footer-bottom,
+body.aj-custom-footer .footer__main,
+body.aj-custom-footer [class*="footer"]:not(.aj-footer-v2):not(.aj-footer-v2 *):not([class*="aj-"]) {
+    display: none !important;
+}
+
+.aj-footer-sitewide {
+    font-family: 'Poppins', "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1f2937;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+}
+.aj-footer-sitewide *,
+.aj-footer-sitewide *::before,
+.aj-footer-sitewide *::after { box-sizing: border-box; }
+.aj-footer-sitewide a { text-decoration: none; color: inherit; }
+.aj-footer-sitewide img { max-width: 100%; display: block; height: auto; }
