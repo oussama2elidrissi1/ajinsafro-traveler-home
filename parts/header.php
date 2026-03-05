@@ -24,13 +24,28 @@ $social_icons = array(
     'linkedin'  => '<i class="fab fa-linkedin-in"></i>',
 );
 
-$menu_icons = array(
-    'packages'    => 'fas fa-suitcase-rolling',
-    'hebergement' => 'fas fa-hotel',
-    'activites'   => 'fas fa-camera',
-    'transfert'   => 'fas fa-car-side',
-    'hajj'        => 'fas fa-kaaba',
-    'guide'       => 'fas fa-map-signs',
+$title_icon_map = array(
+    'packages'     => 'fas fa-suitcase-rolling',
+    'package'      => 'fas fa-suitcase-rolling',
+    'voyages'      => 'fas fa-suitcase-rolling',
+    'voyage'       => 'fas fa-suitcase-rolling',
+    'hébergement'  => 'fas fa-hotel',
+    'hebergement'  => 'fas fa-hotel',
+    'hôtel'        => 'fas fa-hotel',
+    'hotel'        => 'fas fa-hotel',
+    'activités'    => 'fas fa-camera',
+    'activites'    => 'fas fa-camera',
+    'activité'     => 'fas fa-camera',
+    'transfert'    => 'fas fa-car-side',
+    'transferts'   => 'fas fa-car-side',
+    'hajj & omra'  => 'fas fa-kaaba',
+    'hajj'         => 'fas fa-kaaba',
+    'omra'         => 'fas fa-kaaba',
+    'votre guide'  => 'fas fa-map-signs',
+    'guide'        => 'fas fa-map-signs',
+    'accueil'      => 'fas fa-home',
+    'contact'      => 'fas fa-envelope',
+    'blog'         => 'fas fa-blog',
 );
 
 $default_menu_items = array(
@@ -247,6 +262,14 @@ $default_menu_items = array(
                             $has_sub  = ! empty( $children );
                             $is_active = ! empty( $link['active'] );
                             $is_highlight = ! empty( $link['highlight'] );
+
+                            // Auto-resolve icon from title map
+                            if ( empty( $icon ) && $label ) {
+                                $label_lower = mb_strtolower( trim( $label ), 'UTF-8' );
+                                if ( isset( $title_icon_map[ $label_lower ] ) ) {
+                                    $icon = $title_icon_map[ $label_lower ];
+                                }
+                            }
                         ?>
                         <li class="<?php echo $has_sub ? 'aj-has-sub' : ''; ?><?php echo $is_active ? ' aj-active' : ''; ?><?php echo $is_highlight ? ' aj-highlight' : ''; ?>">
                             <a href="<?php echo esc_url( $url ); ?>" class="<?php echo $is_highlight ? 'aj-nav-highlight' : ''; ?>">

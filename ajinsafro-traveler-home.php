@@ -424,11 +424,41 @@ function ajth_legacy_settings_to_json() {
 
 /* ──────────────────────────────────────────────
  * Custom Walker for WordPress menus with icon support
- * Add FontAwesome icon class in menu item's CSS Classes field
- * Example: fas fa-hotel (will be extracted and displayed as icon)
+ *
+ * Icons are resolved in this priority order:
+ * 1. FontAwesome classes from the menu item's CSS Classes field
+ *    (WordPress splits them: e.g. "fas" and "fa-hotel" as separate entries)
+ * 2. Auto-mapping based on the menu item's title/label
+ *
+ * Menu items whose title contains "low cost" are skipped because
+ * the plugin renders the Formule Low Cost button separately.
  * ────────────────────────────────────────────── */
 class AJTH_Nav_Walker extends Walker_Nav_Menu {
-    
+
+    private static $title_icon_map = array(
+        'packages'     => 'fas fa-suitcase-rolling',
+        'package'      => 'fas fa-suitcase-rolling',
+        'voyages'      => 'fas fa-suitcase-rolling',
+        'voyage'       => 'fas fa-suitcase-rolling',
+        'hébergement'  => 'fas fa-hotel',
+        'hebergement'  => 'fas fa-hotel',
+        'hôtel'        => 'fas fa-hotel',
+        'hotel'        => 'fas fa-hotel',
+        'activités'    => 'fas fa-camera',
+        'activites'    => 'fas fa-camera',
+        'activité'     => 'fas fa-camera',
+        'transfert'    => 'fas fa-car-side',
+        'transferts'   => 'fas fa-car-side',
+        'hajj & omra'  => 'fas fa-kaaba',
+        'hajj'         => 'fas fa-kaaba',
+        'omra'         => 'fas fa-kaaba',
+        'votre guide'  => 'fas fa-map-signs',
+        'guide'        => 'fas fa-map-signs',
+        'accueil'      => 'fas fa-home',
+        'contact'      => 'fas fa-envelope',
+        'blog'         => 'fas fa-blog',
+    );
+
     public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
         if ( isset( $args->item_spacing ) && 'discard' === $args->item_spacing ) {
             $t = '';
@@ -439,20 +469,67 @@ class AJTH_Nav_Walker extends Walker_Nav_Menu {
         }
         $indent = ( $depth ) ? str_repeat( $t, $depth ) : '';
 
+        $title_raw = apply_filters( 'the_title', $item->title, $item->ID );
+
+        // Skip items whose title contains "low cost" (handled by plugin button)
+        if ( stripos( $title_raw, 'low cost' ) !== false ) {
+            return;
+        }
+
         $classes   = empty( $item->classes ) ? array() : (array) $item->classes;
         $classes[] = 'menu-item-' . $item->ID;
 
         // Extract FontAwesome icon from classes
-        $icon_class = '';
+        // WP stores each CSS class as a separate array element,
+        // so "fas" and "fa-hotel" come as two entries.
+        $fa_prefix   = '';
+        $fa_icon     = '';
         $filtered_classes = array();
         foreach ( $classes as $class ) {
-            if ( preg_match( '/^(fas?|far|fab|fal|fad)\s/', $class ) || preg_match( '/^fa-/', $class ) ) {
-                $icon_class .= ' ' . $class;
+            $class = trim( $class );
+            if ( $class === '' ) {
+                continue;
+            }
+            if ( preg_match( '/^(fas|fa|far|fab|fal|fad)$/', $class ) ) {
+                $fa_prefix = $class;
+            } elseif ( preg_match( '/^fa-/', $class ) ) {
+                $fa_icon = $class;
+            } elseif ( preg_match( '/^(fas?|far|fab|fal|fad)\s+fa-/', $class ) ) {
+                // Full class string in one entry (e.g. "fas fa-hotel")
+                $fa_prefix = '';
+                $fa_icon   = '';
+                $icon_class_full = $class;
+                $filtered_classes[] = $class; // will be removed below
             } else {
                 $filtered_classes[] = $class;
             }
         }
-        $icon_class = trim( $icon_class );
+
+        // Build icon class
+        if ( ! empty( $icon_class_full ) ) {
+            $icon_class = trim( $icon_class_full );
+        } elseif ( $fa_prefix && $fa_icon ) {
+            $icon_class = $fa_prefix . ' ' . $fa_icon;
+        } elseif ( $fa_icon ) {
+            $icon_class = 'fas ' . $fa_icon;
+        } else {
+            $icon_class = '';
+        }
+
+        // Remove the full FA class from filtered_classes if it was added
+        if ( ! empty( $icon_class_full ) ) {
+            $filtered_classes = array_filter( $filtered_classes, function( $c ) use ( $icon_class_full ) {
+                return $c !== $icon_class_full;
+            });
+        }
+
+        // Auto-map icon by title if none found from CSS classes
+        if ( empty( $icon_class ) && $depth === 0 ) {
+            $title_lower = mb_strtolower( trim( $title_raw ), 'UTF-8' );
+            if ( isset( self::$title_icon_map[ $title_lower ] ) ) {
+                $icon_class = self::$title_icon_map[ $title_lower ];
+            }
+        }
 
         // Check for has-children
         if ( in_array( 'menu-item-has-children', $filtered_classes, true ) ) {
@@ -490,24 +567,21 @@ class AJTH_Nav_Walker extends Walker_Nav_Menu {
             }
         }
 
-        $title = apply_filters( 'the_title', $item->title, $item->ID );
-        $title = apply_filters( 'nav_menu_item_title', $title, $item, $args, $depth );
+        $title = apply_filters( 'nav_menu_item_title', $title_raw, $item, $args, $depth );
 
         $item_output  = $args->before ?? '';
         $item_output .= '<a' . $attributes . '>';
-        
-        // Add icon before title if found
-        if ( $icon_class ) {
+
+        if ( $icon_class && $depth === 0 ) {
             $item_output .= '<i class="' . esc_attr( $icon_class ) . '"></i> ';
         }
-        
+
         $item_output .= ( $args->link_before ?? '' ) . '<span>' . $title . '</span>' . ( $args->link_after ?? '' );
-        
-        // Add caret for items with children
+
         if ( in_array( 'menu-item-has-children', $classes, true ) && $depth === 0 ) {
             $item_output .= ' <i class="fas fa-chevron-down aj-caret"></i>';
         }
-        
+
         $item_output .= '</a>';
         $item_output .= $args->after ?? '';
 
