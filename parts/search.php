@@ -35,7 +35,9 @@ $voyages_page_url = function_exists( 'ajth_get_voyages_page_url' )
     <div class="aj-search-forms">
         <!-- FORM: VOYAGE -->
         <div id="aj-form-voyage" class="aj-search-form aj-search-form--active">
-            <form method="get" action="<?php echo esc_url( $voyages_page_url ); ?>" id="aj-voyage-search-form">
+            <form method="get" action="<?php echo esc_url( $voyages_page_url ); ?>">
+                <input type="hidden" name="s" value="">
+                <input type="hidden" name="post_type" value="st_tours">
                 <div class="aj-search-form__row">
                     <div class="aj-search-field">
                         <div class="aj-search-field__icon aj-search-field__icon--orange"><i class="fas fa-map-marker-alt"></i></div>
