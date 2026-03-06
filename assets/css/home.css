@@ -2000,6 +2000,8 @@ body.aj-has-bg-pattern::after {
    15. WHATSAPP BANNER
    ========================================================================== */
 .aj-whatsapp-banner {
+    display: block;
+    visibility: visible;
     position: relative;
     padding: 48px 0;
     margin-top: 48px;
