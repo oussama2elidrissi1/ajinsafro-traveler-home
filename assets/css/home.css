@@ -1941,37 +1941,52 @@ body.aj-has-bg-pattern::after {
     opacity: .9;
 }
 
-/* RTL: Arabic promo cards — direction, alignment, font, spacing */
+/* RTL: Arabic promo cards — direction, unicode-bidi, alignment, font, padding/margin, icon */
 .aj-promo-card--rtl {
     direction: rtl;
+    unicode-bidi: isolate;
     text-align: right;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     font-family: 'Noto Sans Arabic', 'Segoe UI', Tahoma, Arial, sans-serif;
+    /* padding 24px from base; symmetric, works in RTL */
 }
 .aj-promo-card--rtl .aj-promo-card__badge {
+    direction: rtl;
+    unicode-bidi: isolate;
     text-align: right;
     align-self: flex-end;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    margin-block-end: 12px;
 }
 .aj-promo-card--rtl .aj-promo-card__title {
     direction: rtl;
+    unicode-bidi: isolate;
     text-align: right;
     line-height: 1.5;
     margin: 0 0 8px;
+    margin-block-end: 8px;
     width: 100%;
+    padding: 0;
 }
 .aj-promo-card--rtl .aj-promo-card__text {
     direction: rtl;
+    unicode-bidi: isolate;
     text-align: right;
     line-height: 1.6;
     width: 100%;
     max-width: 100%;
+    margin: 0;
+    padding: 0;
 }
-/* RTL: move box icon to the right side */
+/* RTL: position icon on the “start” side (right in RTL) */
 .aj-promo-card--rtl .aj-promo-card__deco--box {
     left: auto;
     right: 24px;
+    inset-inline-start: auto;
+    inset-inline-end: 24px;
     bottom: 16px;
 }
 
