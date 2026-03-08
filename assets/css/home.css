@@ -1941,11 +1941,38 @@ body.aj-has-bg-pattern::after {
     opacity: .9;
 }
 
+/* RTL: Arabic promo cards — direction, alignment, font, spacing */
 .aj-promo-card--rtl {
+    direction: rtl;
     text-align: right;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    font-family: 'Noto Sans Arabic', 'Segoe UI', Tahoma, Arial, sans-serif;
+}
+.aj-promo-card--rtl .aj-promo-card__badge {
+    text-align: right;
+    align-self: flex-end;
+}
+.aj-promo-card--rtl .aj-promo-card__title {
+    direction: rtl;
+    text-align: right;
+    line-height: 1.5;
+    margin: 0 0 8px;
+    width: 100%;
+}
+.aj-promo-card--rtl .aj-promo-card__text {
+    direction: rtl;
+    text-align: right;
+    line-height: 1.6;
+    width: 100%;
+    max-width: 100%;
+}
+/* RTL: move box icon to the right side */
+.aj-promo-card--rtl .aj-promo-card__deco--box {
+    left: auto;
+    right: 24px;
+    bottom: 16px;
 }
 
 .aj-promo-card__deco--cards {
