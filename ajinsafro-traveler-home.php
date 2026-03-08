@@ -113,7 +113,7 @@ function ajth_critical_header_css() {
     $render_header = ! empty( $h['enabled'] ) && ( $on_home || ! empty( $h['show_header_sitewide'] ) );
     $render_footer = ! empty( $h['show_footer_sitewide'] );
 
-    if ( ! $render_header && ! $render_footer ) {
+    if ( ! $render_header && ! $render_footer && ! $on_home ) {
         return;
     }
 
@@ -122,9 +122,14 @@ function ajth_critical_header_css() {
         echo '<style id="ajth-critical-header">' . $css . '</style>' . "\n";
     }
 
+    $footer_selectors = '#footer,#footer-outer,.site-footer,.footer-wrapper,.footer-widget-area,#colophon,.footer,.st-footer,.footer-top,.footer-bottom,#main-footer,.footer-area,.st-footer-wrap,.footer-wrap,.content-footer,.footer-outer';
     if ( $render_footer ) {
-        $footer_css = 'body.aj-custom-footer #footer,body.aj-custom-footer footer:not(.aj-footer-v2):not(.aj-footer-sitewide footer),body.aj-custom-footer .site-footer,body.aj-custom-footer .footer-wrapper,body.aj-custom-footer .footer-widget-area,body.aj-custom-footer #colophon,body.aj-custom-footer .footer,body.aj-custom-footer .st-footer,body.aj-custom-footer .footer-top,body.aj-custom-footer .footer-bottom{display:none!important}';
+        $footer_css = 'body.aj-custom-footer ' . implode( ',body.aj-custom-footer ', explode( ',', $footer_selectors ) ) . ',body.aj-custom-footer footer:not(.aj-footer-v2):not(.aj-footer-sitewide footer){display:none!important}';
         echo '<style id="ajth-critical-footer">' . $footer_css . '</style>' . "\n";
+    }
+    if ( $on_home ) {
+        $home_footer_css = 'body.ajth-home-template ' . implode( ',body.ajth-home-template ', explode( ',', $footer_selectors ) ) . ',body.ajth-home-template footer:not(.aj-footer-v2):not(.aj-footer-sitewide footer){display:none!important}';
+        echo '<style id="ajth-critical-home-footer">' . $home_footer_css . '</style>' . "\n";
     }
 }
 add_action( 'wp_head', 'ajth_critical_header_css', 1 );
@@ -252,6 +257,7 @@ function ajth_body_class_custom_header( $classes ) {
     }
     if ( $on_home ) {
         $classes[] = 'aj-has-bg-pattern';
+        $classes[] = 'ajth-home-template';
     }
     return $classes;
 }

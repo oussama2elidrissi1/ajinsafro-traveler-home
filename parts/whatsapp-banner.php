@@ -25,7 +25,7 @@ $button_text = ! empty( $whatsapp['button_text'] ) ? $whatsapp['button_text'] : 
 $button_url = ! empty( $whatsapp['button_url'] ) ? $whatsapp['button_url'] : '#';
 $qr_code_url = ! empty( $whatsapp['qr_code_url'] ) ? $whatsapp['qr_code_url'] : '';
 ?>
-<?php echo '<div style="background:red;color:#fff;padding:10px;">DEBUG WHATSAPP BANNER LOADED</div>'; ?>
+
 <section class="aj-whatsapp-banner">
     <div class="aj-container">
         <div class="aj-whatsapp-banner__wrap">
