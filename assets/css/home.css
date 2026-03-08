@@ -746,7 +746,7 @@ body.aj-custom-header #masthead {
    3. OFFRES DE DERNIÈRE MINUTE
    ========================================================================== */
 .aj-lm {
-    padding: 40px 0 50px;
+    padding: 24px 0 28px;
     background: transparent;
 }
 
@@ -754,7 +754,7 @@ body.aj-custom-header #masthead {
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
 }
 
@@ -918,11 +918,11 @@ body.aj-custom-header #masthead {
    4. DESTINATIONS PAR RÉGION
    ========================================================================== */
 .aj-regions {
-    padding: 50px 0;
+    padding: 28px 0;
     background: transparent;
 }
 
-.aj-regions .aj-section-title { margin-bottom: 24px; }
+.aj-regions .aj-section-title { margin-bottom: 16px; }
 
 .aj-regions__grid {
     display: grid;
@@ -977,11 +977,11 @@ body.aj-custom-header #masthead {
    5. LES BONS COINS
    ========================================================================== */
 .aj-spots {
-    padding: 50px 0 60px;
+    padding: 28px 0 32px;
     background: transparent;
 }
 
-.aj-spots .aj-section-title { margin-bottom: 24px; }
+.aj-spots .aj-section-title { margin-bottom: 16px; }
 
 .aj-spots__grid {
     display: grid;
@@ -1661,7 +1661,7 @@ body.aj-has-bg-pattern::after {
 /* ==========================================================================
    11. ACCOMMODATIONS SECTION — "Découvrez des séjours uniques"
    ========================================================================== */
-.aj-accom { padding: 50px 0; }
+.aj-accom { padding: 28px 0; }
 
 /* ==========================================================================
    12. DESTINATIONS NEW LAYOUT — Featured tile + 2-line carousel
@@ -1856,8 +1856,8 @@ body.aj-has-bg-pattern::after {
 .aj-promos {
     position: relative;
     z-index: 2;
-    padding: 64px 0 56px;
-    margin-top: 32px;
+    padding: 28px 0 32px;
+    margin-top: 0;
     background-color: transparent;
     overflow: visible;
     scroll-margin-top: 24px;
@@ -1868,8 +1868,8 @@ body.aj-has-bg-pattern::after {
 }
 
 .aj-promos .aj-section-title {
-    margin: 0 0 28px;
-    padding-top: 4px;
+    margin: 0 0 16px;
+    padding-top: 0;
     font-size: 1.75rem;
     font-weight: 700;
     color: var(--aj-blue, #0083c4);
@@ -2011,7 +2011,7 @@ body.aj-has-bg-pattern::after {
     display: block;
     visibility: visible;
     position: relative;
-    padding: 40px 0 50px;
+    padding: 24px 0 28px;
     margin: 0;
     background: transparent;
     overflow: visible;
@@ -2197,9 +2197,9 @@ body.aj-has-bg-pattern::after {
    ========================================================================== */
 .aj-cruises {
     position: relative;
-    padding: 48px 0;
-    margin-top: 48px;
-    margin-bottom: 24px;
+    padding: 28px 0 32px;
+    margin-top: 0;
+    margin-bottom: 0;
     background-color: transparent;
     overflow: visible;
 }
@@ -2427,7 +2427,7 @@ body.aj-has-bg-pattern::after {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 }
 .aj-section-head .aj-section-title {
     white-space: nowrap;
@@ -2732,7 +2732,7 @@ body.aj-has-bg-pattern::after {
     .aj-sf { flex: 1 1 100%; border-bottom: 1px solid #eee; }
     .aj-sep { display: none; }
     .aj-search__btn { width: 100%; justify-content: center; border-radius: 0 0 var(--aj-radius) var(--aj-radius); min-height: 50px; }
-    .aj-lm { padding-top: 40px; }
+    .aj-lm { padding-top: 24px; }
     .aj-card { flex: 0 0 82%; min-width: 260px; }
     .aj-regions__grid { grid-template-columns: repeat(2, 1fr); }
     .aj-spots__grid { grid-template-columns: 1fr; }
