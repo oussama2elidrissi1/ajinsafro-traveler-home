@@ -2011,7 +2011,7 @@ body.aj-has-bg-pattern::after {
     display: block;
     visibility: visible;
     position: relative;
-    padding: 16px 0 18px;
+    padding: 40px 0 50px;
     margin: 0;
     background: transparent;
     overflow: visible;
@@ -2022,7 +2022,8 @@ body.aj-has-bg-pattern::after {
     background: #1a6b3e;
     border-radius: var(--aj-radius);
     overflow: hidden;
-    padding: 0 22px;
+    padding: 36px 32px 40px;
+    box-shadow: var(--aj-shadow);
 }
 
 /* Decoration dots (top-right / bottom-left) — inside container so aligned with content */
@@ -2054,7 +2055,7 @@ body.aj-has-bg-pattern::after {
     align-items: center;
     justify-content: space-between;
     gap: 48px;
-    padding: 18px 0 20px;
+    padding: 0;
     position: relative;
     z-index: 2;
 }
@@ -2672,11 +2673,11 @@ body.aj-has-bg-pattern::after {
 /* Mobile: topbar compact, navbar 64px, hero spacing, WhatsApp banner, Cruises */
 @media (max-width: 768px) {
     .aj-whatsapp-banner__wrap {
-        padding: 0 14px;
+        padding: 24px 20px 28px;
     }
     .aj-whatsapp-banner__inner {
         flex-direction: column;
-        padding: 20px 0 24px;
+        padding: 0;
         text-align: center;
     }
     .aj-whatsapp-banner__title {
@@ -3215,11 +3216,11 @@ body.aj-custom-footer [class*="footer"]:not(.aj-footer-v2):not(.aj-footer-v2 *):
     }
 
     .aj-whatsapp-banner__wrap {
-        padding: 0 14px;
+        padding: 24px 20px 28px;
     }
     .aj-whatsapp-banner__inner {
         flex-direction: column;
-        padding: 20px 0 24px;
+        padding: 0;
         text-align: center;
     }
     .aj-whatsapp-banner__title {
