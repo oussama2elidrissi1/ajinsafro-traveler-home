@@ -113,7 +113,7 @@ function ajth_critical_header_css() {
     $render_header = ! empty( $h['enabled'] ) && ( $on_home || ! empty( $h['show_header_sitewide'] ) );
     $render_footer = ! empty( $h['show_footer_sitewide'] );
 
-    if ( ! $render_header && ! $render_footer && ! $on_home ) {
+    if ( ! $render_header && ! $render_footer ) {
         return;
     }
 
@@ -126,10 +126,6 @@ function ajth_critical_header_css() {
     if ( $render_footer ) {
         $footer_css = 'body.aj-custom-footer ' . implode( ',body.aj-custom-footer ', explode( ',', $footer_selectors ) ) . ',body.aj-custom-footer footer:not(.aj-footer-v2):not(.aj-footer-sitewide footer){display:none!important}';
         echo '<style id="ajth-critical-footer">' . $footer_css . '</style>' . "\n";
-    }
-    if ( $on_home ) {
-        $home_footer_css = 'body.ajth-home-template ' . implode( ',body.ajth-home-template ', explode( ',', $footer_selectors ) ) . ',body.ajth-home-template footer:not(.aj-footer-v2):not(.aj-footer-sitewide footer){display:none!important}';
-        echo '<style id="ajth-critical-home-footer">' . $home_footer_css . '</style>' . "\n";
     }
 }
 add_action( 'wp_head', 'ajth_critical_header_css', 1 );
@@ -257,7 +253,6 @@ function ajth_body_class_custom_header( $classes ) {
     }
     if ( $on_home ) {
         $classes[] = 'aj-has-bg-pattern';
-        $classes[] = 'ajth-home-template';
     }
     return $classes;
 }
@@ -282,14 +277,9 @@ function ajth_render_header_sitewide() {
 add_action( 'get_header', 'ajth_render_header_sitewide', 5 );
 
 /* ──────────────────────────────────────────────
- * Output custom footer on ALL pages (replaces theme footer).
- * On the homepage the template already includes the footer.
+ * Output custom footer on pages when site-wide footer is enabled.
  * ────────────────────────────────────────────── */
 function ajth_render_footer_sitewide() {
-    $on_home = is_front_page() || is_home();
-    if ( $on_home ) {
-        return;
-    }
     if ( is_singular() ) {
         global $post;
         if ( $post && has_shortcode( $post->post_content, 'ajth_homepage' ) ) {

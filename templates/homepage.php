@@ -11,16 +11,15 @@ if ( ! isset( $settings ) || ! is_array( $settings ) ) {
     $settings = ajth_get_settings();
 }
 
-$default_order = array( 'last_minute', 'accommodations', 'regions', 'good_spots', 'promotions', 'whatsapp_banner', 'cruises', 'newsletter' );
+$default_order = array( 'last_minute', 'accommodations', 'regions', 'good_spots', 'promotions', 'whatsapp_banner', 'cruises' );
 $section_order = ! empty( $settings['section_order'] ) && is_array( $settings['section_order'] )
     ? $settings['section_order']
     : $default_order;
-// Newsletter (footer) always last so nothing appears below the footer
+// Footer is rendered by wp_footer (ajth_render_footer_sitewide or theme footer), not as a section inside content.
 $newsletter_key = array_search( 'newsletter', $section_order );
 if ( $newsletter_key !== false ) {
     unset( $section_order[ $newsletter_key ] );
     $section_order = array_values( $section_order );
-    $section_order[] = 'newsletter';
 }
 $custom_sections = ! empty( $settings['custom_sections'] ) && is_array( $settings['custom_sections'] )
     ? $settings['custom_sections']
@@ -37,12 +36,7 @@ $dbr = ajth_get_destinations_by_region();
         <?php
         // Ensure whatsapp_banner is in section_order even if not saved yet
         if ( ! in_array( 'whatsapp_banner', $section_order ) ) {
-            $insert_at = array_search( 'newsletter', $section_order );
-            if ( $insert_at !== false ) {
-                array_splice( $section_order, $insert_at, 0, array( 'whatsapp_banner' ) );
-            } else {
-                $section_order[] = 'whatsapp_banner';
-            }
+            $section_order[] = 'whatsapp_banner';
         }
         foreach ( $section_order as $key ) {
             // WhatsApp banner: show by default when section key is missing; otherwise respect sections.whatsapp_banner or whatsapp_banner.enabled
@@ -94,9 +88,6 @@ $dbr = ajth_get_destinations_by_region();
                     break;
                 case 'cruises':
                     include AJTH_DIR . 'parts/cruises.php';
-                    break;
-                case 'newsletter':
-                    include AJTH_DIR . 'parts/newsletter.php';
                     break;
             }
         }
