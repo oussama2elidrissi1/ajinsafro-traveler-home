@@ -1997,20 +1997,23 @@ body.aj-has-bg-pattern::after {
 }
 
 /* ==========================================================================
-   15. WHATSAPP BANNER
+   15. WHATSAPP BANNER — same container (max-width 1280px) and vertical rhythm as other sections
    ========================================================================== */
 .aj-whatsapp-banner {
     display: block;
     visibility: visible;
     position: relative;
-    padding: 48px 0;
-    margin-top: 48px;
-    margin-bottom: 24px;
+    padding: 32px 0;
+    margin: 0;
     background: #1a6b3e;
     overflow: hidden;
 }
 
-/* Decoration dots (top-right / bottom-left) */
+.aj-whatsapp-banner__wrap {
+    position: relative;
+}
+
+/* Decoration dots (top-right / bottom-left) — inside container so aligned with content */
 .aj-whatsapp-banner__dots {
     position: absolute;
     display: flex;
@@ -2026,12 +2029,12 @@ body.aj-has-bg-pattern::after {
     background: transparent;
 }
 .aj-whatsapp-banner__dots--tr {
-    top: 18px;
-    right: 24px;
+    top: 8px;
+    right: 0;
 }
 .aj-whatsapp-banner__dots--bl {
-    bottom: 18px;
-    left: 24px;
+    bottom: 8px;
+    left: 0;
 }
 
 .aj-whatsapp-banner__inner {
@@ -2039,7 +2042,7 @@ body.aj-has-bg-pattern::after {
     align-items: center;
     justify-content: space-between;
     gap: 48px;
-    padding: 40px 48px;
+    padding: 24px 0 28px;
     position: relative;
     z-index: 2;
 }
@@ -2658,7 +2661,7 @@ body.aj-has-bg-pattern::after {
 @media (max-width: 768px) {
     .aj-whatsapp-banner__inner {
         flex-direction: column;
-        padding: 24px;
+        padding: 20px 0 24px;
         text-align: center;
     }
     .aj-whatsapp-banner__title {
@@ -3198,7 +3201,7 @@ body.aj-custom-footer [class*="footer"]:not(.aj-footer-v2):not(.aj-footer-v2 *):
 
     .aj-whatsapp-banner__inner {
         flex-direction: column;
-        padding: 24px;
+        padding: 20px 0 24px;
         text-align: center;
     }
     .aj-whatsapp-banner__title {
