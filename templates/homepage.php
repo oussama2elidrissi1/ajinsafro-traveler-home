@@ -35,8 +35,24 @@ $dbr = ajth_get_destinations_by_region();
         <?php include AJTH_DIR . 'parts/hero.php'; ?>
 
         <?php
+        // Ensure whatsapp_banner is in section_order even if not saved yet
+        if ( ! in_array( 'whatsapp_banner', $section_order ) ) {
+            $insert_at = array_search( 'newsletter', $section_order );
+            if ( $insert_at !== false ) {
+                array_splice( $section_order, $insert_at, 0, array( 'whatsapp_banner' ) );
+            } else {
+                $section_order[] = 'whatsapp_banner';
+            }
+        }
         foreach ( $section_order as $key ) {
-            $enabled = isset( $sections[ $key ] ) && $sections[ $key ];
+            // WhatsApp banner: show by default when section key is missing; otherwise respect sections.whatsapp_banner or whatsapp_banner.enabled
+            if ( $key === 'whatsapp_banner' ) {
+                $enabled = ! array_key_exists( 'whatsapp_banner', $sections )
+                    || ! empty( $sections['whatsapp_banner'] )
+                    || ! empty( $settings['whatsapp_banner']['enabled'] );
+            } else {
+                $enabled = isset( $sections[ $key ] ) && $sections[ $key ];
+            }
             if ( ! $enabled ) {
                 continue;
             }

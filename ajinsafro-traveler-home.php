@@ -351,6 +351,16 @@ function ajth_get_settings() {
             'title' => 'Destinations de ce mois',
             'items' => array(),
         ),
+        'whatsapp_banner' => array(
+            'enabled'   => true,
+            'title'    => 'JOIN OUR WHATSAPP CHANNEL FOR THE LATEST TRAVEL UPDATES',
+            'subtitle' => 'Stay informed with satguru travel',
+            'features' => array( 'Exclusive travel packages', 'Latest news and updates', 'Special offers and promotions' ),
+            'button_text' => 'JOIN NOW',
+            'button_url'  => '#',
+            'qr_code_url' => '',
+        ),
+        'section_order' => array( 'last_minute', 'accommodations', 'regions', 'good_spots', 'promotions', 'whatsapp_banner', 'cruises', 'newsletter' ),
         'footer' => array(
             'col1_heading' => 'En savoir plus',
             'col2_heading' => 'Société',
