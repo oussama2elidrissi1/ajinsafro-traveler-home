@@ -45,6 +45,31 @@ function ajth_init() {
 add_action( 'plugins_loaded', 'ajth_init' );
 
 /* ──────────────────────────────────────────────
+ * Public login UI bridge (ajinsafro.net/login)
+ * ──────────────────────────────────────────────
+ *
+ * Keeps the existing WordPress UI, but submits credentials to Laravel:
+ * POST https://booking.ajinsafro.net/auth/public-login
+ *
+ * This does NOT use WordPress authentication.
+ */
+function ajth_enqueue_public_login_bridge() {
+    if ( is_admin() ) {
+        return;
+    }
+    if ( function_exists( 'is_page' ) && is_page( 'login' ) ) {
+        wp_enqueue_script(
+            'ajth-public-login-bridge',
+            AJTH_URL . 'assets/js/public-login-bridge.js',
+            array(),
+            AJTH_VERSION,
+            true
+        );
+    }
+}
+add_action( 'wp_enqueue_scripts', 'ajth_enqueue_public_login_bridge', 6 );
+
+/* ──────────────────────────────────────────────
  * Enqueue front-end assets on home page, pages with [ajth_homepage],
  * or on all pages when header is enabled and "site-wide" is on.
  * ────────────────────────────────────────────── */
