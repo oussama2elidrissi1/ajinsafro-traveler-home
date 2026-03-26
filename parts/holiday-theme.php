@@ -71,7 +71,7 @@ $deco_img = ! empty( $theme['deco_image_url'] ) ? $theme['deco_image_url'] : '';
 
             <div class="aj-theme__right">
                 <div class="aj-section-head">
-                    <h3 class="aj-section-title"><?php echo esc_html__( 'Holidays by Theme', 'ajinsafro-traveler-home' ); ?></h3>
+                    <h3 class="aj-section-title"><?php echo esc_html__( 'Voyages par theme', 'ajinsafro-traveler-home' ); ?></h3>
                     <div class="aj-section-arrows">
                         <button type="button" class="aj-section-arrow aj-theme-prev" aria-label="<?php esc_attr_e( 'Precedent', 'ajinsafro-traveler-home' ); ?>"><i class="fas fa-angle-left"></i></button>
                         <button type="button" class="aj-section-arrow aj-theme-next" aria-label="<?php esc_attr_e( 'Suivant', 'ajinsafro-traveler-home' ); ?>"><i class="fas fa-angle-right"></i></button>

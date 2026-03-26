@@ -8,9 +8,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 $spots = ! empty( $settings['good_spots'] ) ? $settings['good_spots'] : array();
 $defs  = array(
     array( 'title' => 'Restaurants', 'subtitle' => 'Où manger ?', 'icon' => 'fas fa-utensils', 'image_url' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80', 'link_url' => '#' ),
-    array( 'title' => 'Loisirs', 'subtitle' => 'Lorem ipsum dolor sit amet', 'icon' => 'fas fa-icons', 'image_url' => 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&w=800&q=80', 'link_url' => '#' ),
-    array( 'title' => 'Que faire ?', 'subtitle' => 'Lorem ipsum dolor sit amet', 'icon' => 'fas fa-map-marked-alt', 'image_url' => 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80', 'link_url' => '#' ),
-    array( 'title' => 'Shopping', 'subtitle' => 'Lorem ipsum dolor sit amet', 'icon' => 'fas fa-shopping-bag', 'image_url' => 'https://images.unsplash.com/photo-1481437156560-3205f6a55735?auto=format&fit=crop&w=800&q=80', 'link_url' => '#' ),
+    array( 'title' => 'Loisirs', 'subtitle' => 'Activites et sorties a proximite', 'icon' => 'fas fa-icons', 'image_url' => 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&w=800&q=80', 'link_url' => '#' ),
+    array( 'title' => 'Que faire ?', 'subtitle' => 'Idees d experiences incontournables', 'icon' => 'fas fa-map-marked-alt', 'image_url' => 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80', 'link_url' => '#' ),
+    array( 'title' => 'Shopping', 'subtitle' => 'Adresses et bons plans a ne pas manquer', 'icon' => 'fas fa-shopping-bag', 'image_url' => 'https://images.unsplash.com/photo-1481437156560-3205f6a55735?auto=format&fit=crop&w=800&q=80', 'link_url' => '#' ),
 );
 while ( count( $spots ) < 4 ) {
     $spots[] = $defs[ count( $spots ) ];
@@ -25,7 +25,7 @@ $spot_icon_map = array(
 
 $section_title = ! empty( $settings['good_spots_title'] )
     ? $settings['good_spots_title']
-    : 'Les bons coins sur votre destination';
+    : 'Les bons plans de votre destination';
 ?>
 
 <section class="aj-spots" id="aj-spots">

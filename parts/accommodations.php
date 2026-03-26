@@ -88,7 +88,7 @@ if ( ! $q->have_posts() ) return;
                                 <span class="aj-card2__price-note">prix par personne par nuit</span>
                                 <?php endif; ?>
                             </div>
-                            <span class="aj-card2__cta">VOIR L'OFFRE</span>
+                            <span class="aj-card2__cta">Voir l'offre</span>
                         </div>
                     </div>
                 </a>
