@@ -56,7 +56,7 @@ if ( ! $q->have_posts() ) return;
             ?>
             <div class="aj-slider-v2__item">
                 <a href="<?php the_permalink(); ?>" class="aj-card2 aj-hover-glass" style="text-decoration:none;">
-                    <div class="aj-ribbon"><span>A la une</span></div>
+                    <div class="aj-ribbon"><span>Featured</span></div>
                     <div class="aj-card2__image">
                         <?php if ( has_post_thumbnail() ) : ?>
                             <?php the_post_thumbnail( 'medium_large', array( 'loading' => 'lazy' ) ); ?>
@@ -83,7 +83,7 @@ if ( ! $q->have_posts() ) return;
                                 <span class="aj-card2__price-note">prix par personne</span>
                                 <?php endif; ?>
                             </div>
-                            <span class="aj-card2__cta">Voir l'offre</span>
+                            <span class="aj-card2__cta">VOIR L'OFFRE</span>
                         </div>
                     </div>
                 </a>
