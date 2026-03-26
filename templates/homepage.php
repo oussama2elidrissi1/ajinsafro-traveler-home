@@ -10,7 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 if ( ! isset( $settings ) || ! is_array( $settings ) ) {
     $settings = ajth_get_settings();
 }
-ajth_debug_log( 'templates/homepage.php loaded' );
 
 $default_order = array( 'last_minute', 'accommodations', 'holiday_theme', 'regions', 'good_spots', 'promotions', 'whatsapp_banner', 'cruises' );
 $section_order = ! empty( $settings['section_order'] ) && is_array( $settings['section_order'] )
@@ -27,9 +26,6 @@ $custom_sections = ! empty( $settings['custom_sections'] ) && is_array( $setting
     : array();
 $sections = isset( $settings['sections'] ) && is_array( $settings['sections'] ) ? $settings['sections'] : array();
 $dbr = ajth_get_destinations_by_region();
-ajth_debug_log( 'templates/homepage.php section_order runtime', $section_order );
-ajth_debug_log( 'templates/homepage.php sections runtime', $sections );
-ajth_debug_log( 'templates/homepage.php holiday_theme runtime', $settings['holiday_theme'] ?? array() );
 ?>
 
 <div class="aj-home-wrap">
@@ -43,7 +39,6 @@ ajth_debug_log( 'templates/homepage.php holiday_theme runtime', $settings['holid
             $section_order[] = 'whatsapp_banner';
         }
         $section_order = array_values( array_unique( $section_order ) );
-        $holiday_theme_rendered = false;
         foreach ( $section_order as $key ) {
             // WhatsApp banner: show by default when section key is missing; otherwise respect sections.whatsapp_banner or whatsapp_banner.enabled
             if ( $key === 'whatsapp_banner' ) {
@@ -81,7 +76,6 @@ ajth_debug_log( 'templates/homepage.php holiday_theme runtime', $settings['holid
                     include AJTH_DIR . 'parts/accommodations.php';
                     break;
                 case 'holiday_theme':
-                    $holiday_theme_rendered = true;
                     include AJTH_DIR . 'parts/holiday-theme.php';
                     break;
                 case 'regions':
@@ -104,10 +98,6 @@ ajth_debug_log( 'templates/homepage.php holiday_theme runtime', $settings['holid
                     include AJTH_DIR . 'parts/cruises.php';
                     break;
             }
-        }
-        if ( ajth_debug_enabled() && ! $holiday_theme_rendered && ! empty( $settings['holiday_theme']['enabled'] ) ) {
-            ajth_debug_log( 'templates/homepage.php forcing holiday_theme include (debug guard)' );
-            include AJTH_DIR . 'parts/holiday-theme.php';
         }
         ?>
     </div>

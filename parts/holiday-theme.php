@@ -5,26 +5,21 @@
  * @package AjinsafroTravelerHome
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
-ajth_debug_log( 'parts/holiday-theme.php loaded' );
 
 $theme = isset( $settings['holiday_theme'] ) && is_array( $settings['holiday_theme'] )
     ? $settings['holiday_theme']
     : array();
 
 if ( empty( $theme['enabled'] ) ) {
-    ajth_debug_log( 'holiday_theme skipped: enabled empty', $theme );
     return;
 }
 
 $items = isset( $theme['items'] ) && is_array( $theme['items'] ) ? $theme['items'] : array();
-$raw_items_count = is_array( $items ) ? count( $items ) : 0;
 $items = array_values( array_filter( $items, function( $it ) {
     return ! empty( $it['active'] ) && ! empty( $it['title'] );
 } ) );
-ajth_debug_log( 'holiday_theme items counts raw/active', array( 'raw' => $raw_items_count, 'active' => count( $items ) ) );
 
 if ( empty( $items ) ) {
-    ajth_debug_log( 'holiday_theme skipped: no active items', $theme['items'] ?? array() );
     return;
 }
 

@@ -44,26 +44,6 @@ function ajth_init() {
 }
 add_action( 'plugins_loaded', 'ajth_init' );
 
-function ajth_debug_enabled() {
-    return isset( $_GET['ajth_debug_theme'] ) && $_GET['ajth_debug_theme'] === '1';
-}
-
-function ajth_debug_log( $message, $context = null ) {
-    if ( ! ajth_debug_enabled() ) {
-        return;
-    }
-    if ( $context !== null ) {
-        if ( is_array( $context ) || is_object( $context ) ) {
-            $context = print_r( $context, true );
-        } else {
-            $context = (string) $context;
-        }
-        error_log( 'AJTH DEBUG: ' . $message . ' | ' . $context );
-        return;
-    }
-    error_log( 'AJTH DEBUG: ' . $message );
-}
-
 /* ──────────────────────────────────────────────
  * Public login UI bridge (ajinsafro.net/login)
  * ──────────────────────────────────────────────
@@ -428,11 +408,13 @@ function ajth_get_settings() {
     }
 
     $raw = get_option( 'aj_home_settings', '{}' );
-    ajth_debug_log( 'aj_home_settings raw option type', gettype( $raw ) );
-    if ( ajth_debug_enabled() ) {
-        ajth_debug_log( 'aj_home_settings raw option', is_string( $raw ) ? $raw : $raw );
+    if ( is_array( $raw ) ) {
+        $saved = $raw;
+    } elseif ( is_string( $raw ) && $raw !== '' ) {
+        $saved = json_decode( $raw, true );
+    } else {
+        $saved = array();
     }
-    $saved = is_string( $raw ) ? json_decode( $raw, true ) : array();
 
     if ( ! is_array( $saved ) || empty( $saved ) ) {
         $saved = ajth_legacy_settings_to_json();
@@ -500,10 +482,6 @@ function ajth_get_settings() {
         $normalized_order[] = 'cruises';
     }
     $settings['section_order'] = $normalized_order;
-    ajth_debug_log( 'section_order normalized', $settings['section_order'] );
-    ajth_debug_log( 'sections normalized', $settings['sections'] ?? array() );
-    ajth_debug_log( 'holiday_theme normalized', $settings['holiday_theme'] ?? array() );
-
     return $settings;
 }
 
@@ -920,28 +898,6 @@ class AJTH_Nav_Walker extends Walker_Nav_Menu {
         $output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
     }
 }
-
-function ajth_debug_dump_home_settings_footer() {
-    if ( ! current_user_can( 'manage_options' ) ) {
-        return;
-    }
-
-    if ( ! isset( $_GET['ajdebug'] ) || '1' !== (string) $_GET['ajdebug'] ) {
-        return;
-    }
-
-    if ( function_exists( 'wp_cache_delete' ) ) {
-        wp_cache_delete( 'aj_home_settings', 'options' );
-    }
-
-    echo '<div style="margin:24px auto;max-width:1200px;padding:12px;border:1px dashed #b91c1c;background:#fff;">';
-    echo '<strong>AJ DEBUG — get_option(\'aj_home_settings\')</strong>';
-    echo '<pre style="white-space:pre-wrap;word-break:break-word;max-height:380px;overflow:auto;">';
-    var_dump( get_option( 'aj_home_settings' ) );
-    echo '</pre>';
-    echo '</div>';
-}
-add_action( 'wp_footer', 'ajth_debug_dump_home_settings_footer', 9999 );
 
 /* ──────────────────────────────────────────────
  * Activation: set default options if not present
