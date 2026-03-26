@@ -192,6 +192,8 @@ function ajth_get_header_settings() {
     $cached    = get_transient( $cache_key );
 
     if ( is_array( $cached ) && $cached_ts === $db_ts ) {
+        // Normalize even cached values to avoid legacy wp-login.php links.
+        $cached = ajth_normalize_auth_urls( $cached );
         return $cached;
     }
 
