@@ -29,28 +29,11 @@ $voyages_page_url = function_exists( 'ajth_get_voyages_page_url' )
     : home_url( '/?post_type=st_tours' );
 $maintenance_url = ! empty( $hdr['maintenance_url'] )
     ? (string) $hdr['maintenance_url']
-    : rtrim( (string) apply_filters( 'ajth_admin_base_url', 'https://booking.ajinsafro.net' ), '/' ) . '/maintenance';
+    : ( function_exists( 'ajth_get_maintenance_url' ) ? ajth_get_maintenance_url() : home_url( '/maintenance/' ) );
 
 $is_voyages_page = is_page( 'voyages' ) || is_post_type_archive( 'st_tours' );
 
-$maintenance_labels = array(
-    'voyages',
-    'hébergement',
-    'hebergement',
-    'activités',
-    'activites',
-    'votre guide',
-    'hajj & omra',
-    'hajj',
-    'omra',
-    'transfert',
-    'formule low cost',
-);
-
-$resolve_menu_url = static function ( $label, $url ) use ( $maintenance_url, $maintenance_labels ) {
-    $label_normalized = function_exists( 'mb_strtolower' )
-        ? mb_strtolower( trim( (string) $label ), 'UTF-8' )
-        : strtolower( trim( (string) $label ) );
+$resolve_menu_url = static function ( $label, $url ) use ( $maintenance_url ) {
     $url_value = trim( (string) $url );
 
     $is_placeholder = (
@@ -61,7 +44,7 @@ $resolve_menu_url = static function ( $label, $url ) use ( $maintenance_url, $ma
         $url_value === 'javascript:void(0);'
     );
 
-    if ( $is_placeholder && in_array( $label_normalized, $maintenance_labels, true ) ) {
+    if ( $is_placeholder && function_exists( 'ajth_is_under_construction_label' ) && ajth_is_under_construction_label( $label ) ) {
         return $maintenance_url;
     }
 

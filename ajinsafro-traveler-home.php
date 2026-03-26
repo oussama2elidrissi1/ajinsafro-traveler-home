@@ -631,6 +631,35 @@ function ajth_get_vols_page_url() {
 }
 
 /* ──────────────────────────────────────────────
+ * Maintenance page URL + menu label helper
+ * ────────────────────────────────────────────── */
+function ajth_get_maintenance_url() {
+    return home_url( '/maintenance/' );
+}
+
+function ajth_is_under_construction_label( $label ) {
+    $label = is_string( $label ) ? trim( $label ) : '';
+    if ( $label === '' ) {
+        return false;
+    }
+    $key = function_exists( 'mb_strtolower' ) ? mb_strtolower( $label, 'UTF-8' ) : strtolower( $label );
+    $targets = array(
+        'voyages',
+        'hébergement',
+        'hebergement',
+        'activités',
+        'activites',
+        'votre guide',
+        'hajj & omra',
+        'hajj',
+        'omra',
+        'transfert',
+        'formule low cost',
+    );
+    return in_array( $key, $targets, true );
+}
+
+/* ──────────────────────────────────────────────
  * Ensure "Voyages" page exists (slug: voyages)
  * ────────────────────────────────────────────── */
 function ajth_ensure_voyages_page() {
@@ -663,6 +692,25 @@ function ajth_ensure_vols_page() {
         'post_content' => '',
     ) );
 }
+
+/* ──────────────────────────────────────────────
+ * Ensure "Maintenance" page exists (slug: maintenance)
+ * ────────────────────────────────────────────── */
+function ajth_ensure_maintenance_page() {
+    if ( get_page_by_path( 'maintenance' ) ) {
+        return;
+    }
+
+    wp_insert_post( array(
+        'post_type'    => 'page',
+        'post_status'  => 'publish',
+        'post_title'   => 'Maintenance',
+        'post_name'    => 'maintenance',
+        'post_content' => '',
+    ) );
+}
+
+add_action( 'init', 'ajth_ensure_maintenance_page', 20 );
 
 /* ──────────────────────────────────────────────
  * Add Voyages item to WP menu if missing
@@ -891,7 +939,18 @@ class AJTH_Nav_Walker extends Walker_Nav_Menu {
         } else {
             $atts['rel'] = $item->xfn;
         }
-        $atts['href']         = ! empty( $item->url ) ? $item->url : '';
+        $href = ! empty( $item->url ) ? (string) $item->url : '';
+        $is_placeholder = (
+            $href === '' ||
+            $href === '#' ||
+            strpos( $href, '#' ) === 0 ||
+            $href === 'javascript:void(0)' ||
+            $href === 'javascript:void(0);'
+        );
+        if ( $is_placeholder && function_exists( 'ajth_is_under_construction_label' ) && ajth_is_under_construction_label( $title_raw ) ) {
+            $href = function_exists( 'ajth_get_maintenance_url' ) ? ajth_get_maintenance_url() : home_url( '/maintenance/' );
+        }
+        $atts['href']         = $href;
         $atts['aria-current'] = $item->current ? 'page' : '';
 
         $atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args, $depth );
@@ -936,5 +995,6 @@ function ajth_activate() {
 
     ajth_ensure_voyages_page();
     ajth_ensure_vols_page();
+    ajth_ensure_maintenance_page();
 }
 register_activation_hook( __FILE__, 'ajth_activate' );
