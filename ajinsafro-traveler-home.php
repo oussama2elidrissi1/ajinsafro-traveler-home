@@ -342,6 +342,7 @@ function ajth_get_settings() {
             'search' => true,
             'last_minute' => true,
             'accommodations' => true,
+            'holiday_theme' => true,
             'regions' => true,
             'good_spots' => true,
             'promotions' => true,
@@ -360,6 +361,19 @@ function ajth_get_settings() {
         'accommodations' => array(
             'title' => 'Découvrez des séjours uniques',
             'count' => 4,
+        ),
+        'holiday_theme' => array(
+            'enabled' => true,
+            'eyebrow' => 'Voyages par theme',
+            'title_line_1' => 'Explorez',
+            'title_line_2' => 'nos categories',
+            'title_line_3' => 'inspirantes',
+            'subtitle' => 'Des idees de voyages selon vos envies du moment.',
+            'left_image_url' => '',
+            'deco_image_url' => '',
+            'button_text' => 'Voir plus',
+            'button_url' => '',
+            'items' => array(),
         ),
         'regions' => array(),
         'good_spots' => array(
@@ -382,7 +396,7 @@ function ajth_get_settings() {
             'button_url'  => '#',
             'qr_code_url' => '',
         ),
-        'section_order' => array( 'last_minute', 'accommodations', 'regions', 'good_spots', 'promotions', 'whatsapp_banner', 'cruises', 'newsletter' ),
+        'section_order' => array( 'last_minute', 'accommodations', 'holiday_theme', 'regions', 'good_spots', 'promotions', 'whatsapp_banner', 'cruises', 'newsletter' ),
         'footer' => array(
             'col1_heading' => 'En savoir plus',
             'col2_heading' => 'Société',
@@ -408,6 +422,7 @@ function ajth_get_settings() {
     $settings['sections']['search'] = ! empty( $settings['sections']['search'] );
     $settings['sections']['last_minute'] = ! empty( $settings['sections']['last_minute'] );
     $settings['sections']['accommodations'] = ! empty( $settings['sections']['accommodations'] );
+    $settings['sections']['holiday_theme'] = ! empty( $settings['sections']['holiday_theme'] );
     $settings['sections']['regions'] = ! empty( $settings['sections']['regions'] );
     $settings['sections']['good_spots'] = ! empty( $settings['sections']['good_spots'] );
     $settings['sections']['promotions'] = ! empty( $settings['sections']['promotions'] );
