@@ -192,9 +192,8 @@ function ajth_preload_styles() {
     if ( ! $load ) {
         return;
     }
+    // Keep preload list minimal to avoid "preloaded but not used" warnings.
     echo '<link rel="preload" href="' . esc_url( AJTH_URL . 'assets/css/home.css' ) . '?ver=' . esc_attr( AJTH_VERSION ) . '" as="style">' . "\n";
-    echo '<link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" as="style">' . "\n";
-    echo '<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">' . "\n";
 }
 add_action( 'wp_head', 'ajth_preload_styles', 0 );
 
