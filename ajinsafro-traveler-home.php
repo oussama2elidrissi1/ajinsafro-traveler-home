@@ -430,6 +430,53 @@ function ajth_get_settings() {
     $settings['sections']['cruises'] = ! empty( $settings['sections']['cruises'] );
     $settings['sections']['newsletter'] = ! empty( $settings['sections']['newsletter'] );
 
+    // Normalize section order: keep unique valid keys and guarantee new sections once.
+    $allowed_sections = array(
+        'search',
+        'last_minute',
+        'accommodations',
+        'holiday_theme',
+        'regions',
+        'good_spots',
+        'promotions',
+        'whatsapp_banner',
+        'cruises',
+        'newsletter',
+    );
+    $normalized_order = array();
+    if ( ! empty( $settings['section_order'] ) && is_array( $settings['section_order'] ) ) {
+        foreach ( $settings['section_order'] as $key ) {
+            $key = is_string( $key ) ? trim( $key ) : '';
+            if ( $key === '' ) {
+                continue;
+            }
+            if ( strpos( $key, 'custom_' ) === 0 ) {
+                if ( ! in_array( $key, $normalized_order, true ) ) {
+                    $normalized_order[] = $key;
+                }
+                continue;
+            }
+            if ( in_array( $key, $allowed_sections, true ) && ! in_array( $key, $normalized_order, true ) ) {
+                $normalized_order[] = $key;
+            }
+        }
+    }
+    if ( ! in_array( 'holiday_theme', $normalized_order, true ) ) {
+        $insert_after = array_search( 'accommodations', $normalized_order, true );
+        if ( $insert_after === false ) {
+            $normalized_order[] = 'holiday_theme';
+        } else {
+            array_splice( $normalized_order, $insert_after + 1, 0, array( 'holiday_theme' ) );
+        }
+    }
+    if ( ! in_array( 'whatsapp_banner', $normalized_order, true ) ) {
+        $normalized_order[] = 'whatsapp_banner';
+    }
+    if ( ! in_array( 'cruises', $normalized_order, true ) ) {
+        $normalized_order[] = 'cruises';
+    }
+    $settings['section_order'] = $normalized_order;
+
     return $settings;
 }
 
