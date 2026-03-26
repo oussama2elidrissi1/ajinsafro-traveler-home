@@ -100,8 +100,8 @@
       // Safety net: if some old config still points to Laravel public-login,
       // force the native WordPress endpoint.
       const action = (form.getAttribute('action') || '').trim();
-      if (/\/auth\/public-login\/?$/i.test(action)) {
-        form.setAttribute('action', '/wp-login.php');
+      if (/\/wp-login\.php\/?$/i.test(action)) {
+        form.setAttribute('action', '/login');
       }
     });
   });

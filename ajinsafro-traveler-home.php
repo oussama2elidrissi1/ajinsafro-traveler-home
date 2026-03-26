@@ -210,8 +210,8 @@ function ajth_get_header_settings() {
         'navbar_enabled'   => true,
         'logo_url'         => '',
         'show_auth_links'  => true,
-        'login_url'        => '',
-        'signup_url'       => '',
+        'login_url'        => '/login',
+        'signup_url'       => '/register',
         'menu_source'           => 'wp_menu',
         'wp_menu_location'      => 'primary',
         'show_header_sitewide'  => false,
@@ -249,15 +249,19 @@ function ajth_normalize_auth_urls( array $settings ): array {
     $login_raw = isset( $settings['login_url'] ) ? trim( (string) $settings['login_url'] ) : '';
     $signup_raw = isset( $settings['signup_url'] ) ? trim( (string) $settings['signup_url'] ) : '';
 
-    if ( $login_raw === '' || $login_raw === '/login' || $login_raw === '/login/' ) {
-        $settings['login_url'] = wp_login_url();
+    if ( $login_raw === '' || str_contains( $login_raw, 'wp-login.php' ) ) {
+        $settings['login_url'] = home_url( '/login/' );
     }
 
-    if ( $signup_raw === '' || $signup_raw === '/register' || $signup_raw === '/register/' ) {
-        $settings['signup_url'] = wp_registration_url();
+    if ( $signup_raw === '' || str_contains( $signup_raw, 'wp-login.php' ) ) {
+        $settings['signup_url'] = home_url( '/register/' );
     }
 
     return $settings;
+}
+
+function ajth_public_login_endpoint(): string {
+    return apply_filters( 'ajth_public_login_endpoint', 'https://booking.ajinsafro.net/auth/public-login' );
 }
 
 /* ──────────────────────────────────────────────
@@ -509,6 +513,20 @@ function ajth_ensure_vols_page() {
         'post_status'  => 'publish',
         'post_title'   => 'Vols',
         'post_name'    => 'vols',
+        'post_content' => '',
+    ) );
+}
+
+function ajth_ensure_login_page() {
+    if ( get_page_by_path( 'login' ) ) {
+        return;
+    }
+
+    wp_insert_post( array(
+        'post_type'    => 'page',
+        'post_status'  => 'publish',
+        'post_title'   => 'Connexion',
+        'post_name'    => 'login',
         'post_content' => '',
     ) );
 }
@@ -807,5 +825,8 @@ function ajth_activate() {
 
     ajth_ensure_voyages_page();
     ajth_ensure_vols_page();
+    ajth_ensure_login_page();
 }
 register_activation_hook( __FILE__, 'ajth_activate' );
+
+add_action( 'init', 'ajth_ensure_login_page', 20 );
