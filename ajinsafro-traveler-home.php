@@ -210,8 +210,8 @@ function ajth_get_header_settings() {
         'navbar_enabled'   => true,
         'logo_url'         => '',
         'show_auth_links'  => true,
-        'login_url'        => '/login',
-        'signup_url'       => '/register',
+        'login_url'        => '',
+        'signup_url'       => '',
         'menu_source'           => 'wp_menu',
         'wp_menu_location'      => 'primary',
         'show_header_sitewide'  => false,
@@ -228,15 +228,36 @@ function ajth_get_header_settings() {
         $decoded = json_decode( $raw, true );
         if ( is_array( $decoded ) ) {
             $settings = array_replace_recursive( $defaults, $decoded );
+            $settings = ajth_normalize_auth_urls( $settings );
             set_transient( $cache_key, $settings, 10 * MINUTE_IN_SECONDS );
             set_transient( $cache_ts_key, $db_ts, 10 * MINUTE_IN_SECONDS );
             return $settings;
         }
     }
 
+    $defaults = ajth_normalize_auth_urls( $defaults );
     set_transient( $cache_key, $defaults, 2 * MINUTE_IN_SECONDS );
     set_transient( $cache_ts_key, $db_ts, 2 * MINUTE_IN_SECONDS );
     return $defaults;
+}
+
+/**
+ * Keep front auth links on native WP endpoints by default.
+ * Prevents accidental routing to custom /login flows that break username/email auth.
+ */
+function ajth_normalize_auth_urls( array $settings ): array {
+    $login_raw = isset( $settings['login_url'] ) ? trim( (string) $settings['login_url'] ) : '';
+    $signup_raw = isset( $settings['signup_url'] ) ? trim( (string) $settings['signup_url'] ) : '';
+
+    if ( $login_raw === '' || $login_raw === '/login' || $login_raw === '/login/' ) {
+        $settings['login_url'] = wp_login_url();
+    }
+
+    if ( $signup_raw === '' || $signup_raw === '/register' || $signup_raw === '/register/' ) {
+        $settings['signup_url'] = wp_registration_url();
+    }
+
+    return $settings;
 }
 
 /* ──────────────────────────────────────────────
