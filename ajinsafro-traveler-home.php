@@ -44,6 +44,26 @@ function ajth_init() {
 }
 add_action( 'plugins_loaded', 'ajth_init' );
 
+function ajth_debug_enabled() {
+    return isset( $_GET['ajth_debug_theme'] ) && $_GET['ajth_debug_theme'] === '1';
+}
+
+function ajth_debug_log( $message, $context = null ) {
+    if ( ! ajth_debug_enabled() ) {
+        return;
+    }
+    if ( $context !== null ) {
+        if ( is_array( $context ) || is_object( $context ) ) {
+            $context = print_r( $context, true );
+        } else {
+            $context = (string) $context;
+        }
+        error_log( 'AJTH DEBUG: ' . $message . ' | ' . $context );
+        return;
+    }
+    error_log( 'AJTH DEBUG: ' . $message );
+}
+
 /* ──────────────────────────────────────────────
  * Public login UI bridge (ajinsafro.net/login)
  * ──────────────────────────────────────────────
@@ -409,6 +429,10 @@ function ajth_get_settings() {
     }
 
     $raw = get_option( 'aj_home_settings', '{}' );
+    ajth_debug_log( 'aj_home_settings raw option type', gettype( $raw ) );
+    if ( ajth_debug_enabled() ) {
+        ajth_debug_log( 'aj_home_settings raw option', is_string( $raw ) ? $raw : $raw );
+    }
     $saved = is_string( $raw ) ? json_decode( $raw, true ) : array();
 
     if ( ! is_array( $saved ) || empty( $saved ) ) {
@@ -416,6 +440,7 @@ function ajth_get_settings() {
     }
 
     $settings = array_replace_recursive( $defaults, $saved );
+    $settings['holiday_theme'] = ajth_normalize_holiday_theme( $settings['holiday_theme'] ?? array(), $defaults['holiday_theme'] );
 
     $settings['hero']['overlay'] = max( 0, min( 1, floatval( $settings['hero']['overlay'] ) ) );
     $settings['last_minute']['count'] = max( 1, intval( $settings['last_minute']['count'] ) );
@@ -476,8 +501,66 @@ function ajth_get_settings() {
         $normalized_order[] = 'cruises';
     }
     $settings['section_order'] = $normalized_order;
+    ajth_debug_log( 'section_order normalized', $settings['section_order'] );
+    ajth_debug_log( 'sections normalized', $settings['sections'] ?? array() );
+    ajth_debug_log( 'holiday_theme normalized', $settings['holiday_theme'] ?? array() );
 
     return $settings;
+}
+
+function ajth_normalize_holiday_theme( $theme, $default_theme = array() ) {
+    if ( ! is_array( $theme ) ) {
+        if ( is_string( $theme ) && $theme !== '' ) {
+            $decoded = json_decode( $theme, true );
+            if ( is_array( $decoded ) ) {
+                $theme = $decoded;
+            } else {
+                $theme = array();
+            }
+        } else {
+            $theme = array();
+        }
+    }
+
+    $merged = array_replace_recursive( is_array( $default_theme ) ? $default_theme : array(), $theme );
+    $enabled_value = $merged['enabled'] ?? false;
+    $merged['enabled'] = in_array( $enabled_value, array( true, 1, '1', 'on', 'yes' ), true );
+
+    $items = $merged['items'] ?? array();
+    if ( is_string( $items ) && $items !== '' ) {
+        $decoded = json_decode( $items, true );
+        if ( is_array( $decoded ) ) {
+            $items = $decoded;
+        }
+    }
+    if ( ! is_array( $items ) ) {
+        $items = array();
+    }
+
+    $normalized_items = array();
+    foreach ( $items as $item ) {
+        if ( ! is_array( $item ) ) {
+            continue;
+        }
+        $title = isset( $item['title'] ) ? trim( (string) $item['title'] ) : '';
+        if ( $title === '' ) {
+            continue;
+        }
+        $active_value = $item['active'] ?? true;
+        $active = in_array( $active_value, array( true, 1, '1', 'on', 'yes' ), true );
+        $normalized_items[] = array(
+            'title' => $title,
+            'image_url' => isset( $item['image_url'] ) ? (string) $item['image_url'] : '',
+            'tags' => isset( $item['tags'] ) ? (string) $item['tags'] : '',
+            'button_text' => isset( $item['button_text'] ) ? (string) $item['button_text'] : '',
+            'button_url' => isset( $item['button_url'] ) ? (string) $item['button_url'] : '',
+            'order' => isset( $item['order'] ) ? intval( $item['order'] ) : 999,
+            'active' => $active,
+        );
+    }
+
+    $merged['items'] = $normalized_items;
+    return $merged;
 }
 
 /* ──────────────────────────────────────────────
