@@ -125,30 +125,24 @@ class AJTH_Admin_Settings {
             : array();
         $data['holiday_theme'] = $this->sanitize_holiday_theme( $theme_raw );
 
+        // Legacy option remains as fallback only.
         update_option( self::OPT, $data );
 
-        // Keep modern JSON settings in sync (used by current front templates)
-        $modern = ajth_get_settings();
-        if ( ! is_array( $modern ) ) {
-            $modern = array();
-        }
+        // Source of truth for front rendering.
+        $modern = $this->load_home_settings_option();
         if ( ! isset( $modern['sections'] ) || ! is_array( $modern['sections'] ) ) {
             $modern['sections'] = array();
         }
-        $modern['sections']['holiday_theme'] = ! empty( $data['holiday_theme']['enabled'] );
-        $modern['holiday_theme'] = $data['holiday_theme'];
         if ( ! isset( $modern['section_order'] ) || ! is_array( $modern['section_order'] ) ) {
             $modern['section_order'] = array();
         }
-        if ( ! in_array( 'holiday_theme', $modern['section_order'], true ) ) {
-            $insert_after = array_search( 'accommodations', $modern['section_order'], true );
-            if ( $insert_after === false ) {
-                $modern['section_order'][] = 'holiday_theme';
-            } else {
-                array_splice( $modern['section_order'], $insert_after + 1, 0, array( 'holiday_theme' ) );
-            }
-        }
-        update_option( 'aj_home_settings', wp_json_encode( $modern, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) );
+        $modern['holiday_theme'] = $data['holiday_theme'];
+        $modern['sections']['holiday_theme'] = ! empty( $data['holiday_theme']['enabled'] );
+        $modern['section_order'] = $this->normalize_section_order(
+            $modern['section_order'],
+            ! empty( $data['holiday_theme']['enabled'] )
+        );
+        update_option( 'aj_home_settings', $modern );
 
         // Redirect with success notice
         add_settings_error( 'ajth_messages', 'ajth_saved', __( 'Paramètres enregistrés.', 'ajinsafro-traveler-home' ), 'updated' );
@@ -165,14 +159,26 @@ class AJTH_Admin_Settings {
                 if ( $title === '' ) {
                     continue;
                 }
+                $tags_raw = $item['tags'] ?? array();
+                if ( is_string( $tags_raw ) ) {
+                    $parts = preg_split( '/[\r\n,]+/', $tags_raw );
+                    $parts = is_array( $parts ) ? $parts : array();
+                    $tags = array_values( array_filter( array_map( 'sanitize_text_field', array_map( 'trim', $parts ) ) ) );
+                } elseif ( is_array( $tags_raw ) ) {
+                    $tags = array_values( array_filter( array_map( function( $t ) {
+                        return sanitize_text_field( trim( (string) $t ) );
+                    }, $tags_raw ) ) );
+                } else {
+                    $tags = array();
+                }
                 $items[] = array(
                     'title' => $title,
                     'image_url' => esc_url_raw( $item['image_url'] ?? '' ),
-                    'tags' => sanitize_text_field( $item['tags'] ?? '' ),
+                    'tags' => $tags,
                     'button_text' => sanitize_text_field( $item['button_text'] ?? '' ),
                     'button_url' => esc_url_raw( $item['button_url'] ?? '' ),
                     'order' => intval( $item['order'] ?? 0 ),
-                    'active' => ! empty( $item['active'] ) ? 1 : 0,
+                    'active' => ajth_truthy( $item['active'] ?? false ),
                 );
             }
         }
@@ -190,6 +196,69 @@ class AJTH_Admin_Settings {
             'button_url' => esc_url_raw( $raw['button_url'] ?? '' ),
             'items' => $items,
         );
+    }
+
+    private function load_home_settings_option() {
+        $raw = get_option( 'aj_home_settings', array() );
+        if ( is_array( $raw ) ) {
+            return $raw;
+        }
+        if ( is_string( $raw ) && $raw !== '' ) {
+            $decoded = json_decode( $raw, true );
+            if ( is_array( $decoded ) ) {
+                return $decoded;
+            }
+        }
+        return array();
+    }
+
+    private function normalize_section_order( array $order, bool $holidayEnabled ) {
+        $allowed = array(
+            'search',
+            'last_minute',
+            'accommodations',
+            'holiday_theme',
+            'regions',
+            'good_spots',
+            'promotions',
+            'whatsapp_banner',
+            'cruises',
+            'newsletter',
+        );
+
+        $normalized = array();
+        foreach ( $order as $key ) {
+            $key = is_string( $key ) ? trim( $key ) : '';
+            if ( $key === '' ) {
+                continue;
+            }
+            if ( strpos( $key, 'custom_' ) === 0 ) {
+                if ( ! in_array( $key, $normalized, true ) ) {
+                    $normalized[] = $key;
+                }
+                continue;
+            }
+            if ( in_array( $key, $allowed, true ) && ! in_array( $key, $normalized, true ) ) {
+                $normalized[] = $key;
+            }
+        }
+
+        if ( $holidayEnabled ) {
+            if ( ! in_array( 'holiday_theme', $normalized, true ) ) {
+                $after = array_search( 'accommodations', $normalized, true );
+                if ( $after === false ) {
+                    $normalized[] = 'holiday_theme';
+                } else {
+                    array_splice( $normalized, $after + 1, 0, array( 'holiday_theme' ) );
+                }
+            }
+        } else {
+            $normalized = array_values( array_filter( $normalized, function ( $k ) {
+                return $k !== 'holiday_theme';
+            } ) );
+        }
+
+        return $normalized;
     }
 
     private function parse_holiday_theme( $s ) {
@@ -468,7 +537,8 @@ class AJTH_Admin_Settings {
             </h4>
             <p><label><?php esc_html_e( 'Titre', 'ajinsafro-traveler-home' ); ?></label><br><input type="text" class="regular-text" name="ajth[holiday_theme][items][<?php echo esc_attr( $index ); ?>][title]" value="<?php echo esc_attr( $item['title'] ?? '' ); ?>"></p>
             <p><label><?php esc_html_e( 'Image URL', 'ajinsafro-traveler-home' ); ?></label><br><input type="url" class="regular-text" placeholder="https://..." name="ajth[holiday_theme][items][<?php echo esc_attr( $index ); ?>][image_url]" value="<?php echo esc_url( $item['image_url'] ?? '' ); ?>"></p>
-            <p><label><?php esc_html_e( 'Tags (séparés par virgule)', 'ajinsafro-traveler-home' ); ?></label><br><input type="text" class="regular-text" name="ajth[holiday_theme][items][<?php echo esc_attr( $index ); ?>][tags]" value="<?php echo esc_attr( $item['tags'] ?? '' ); ?>"></p>
+            <?php $tags_value = isset( $item['tags'] ) && is_array( $item['tags'] ) ? implode( ', ', $item['tags'] ) : (string) ( $item['tags'] ?? '' ); ?>
+            <p><label><?php esc_html_e( 'Tags (séparés par virgule)', 'ajinsafro-traveler-home' ); ?></label><br><input type="text" class="regular-text" name="ajth[holiday_theme][items][<?php echo esc_attr( $index ); ?>][tags]" value="<?php echo esc_attr( $tags_value ); ?>"></p>
             <p><label><?php esc_html_e( 'Texte bouton', 'ajinsafro-traveler-home' ); ?></label><br><input type="text" class="regular-text" name="ajth[holiday_theme][items][<?php echo esc_attr( $index ); ?>][button_text]" value="<?php echo esc_attr( $item['button_text'] ?? '' ); ?>"></p>
             <p><label><?php esc_html_e( 'Lien bouton', 'ajinsafro-traveler-home' ); ?></label><br><input type="url" class="regular-text" placeholder="https://..." name="ajth[holiday_theme][items][<?php echo esc_attr( $index ); ?>][button_url]" value="<?php echo esc_url( $item['button_url'] ?? '' ); ?>"></p>
             <p><label><?php esc_html_e( 'Ordre', 'ajinsafro-traveler-home' ); ?></label><br><input type="number" name="ajth[holiday_theme][items][<?php echo esc_attr( $index ); ?>][order]" value="<?php echo esc_attr( intval( $item['order'] ?? $index ) ); ?>"></p>

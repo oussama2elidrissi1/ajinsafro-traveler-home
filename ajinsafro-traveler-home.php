@@ -435,6 +435,7 @@ function ajth_get_settings() {
     $settings['sections']['whatsapp_banner'] = ! empty( $settings['sections']['whatsapp_banner'] );
     $settings['sections']['cruises'] = ! empty( $settings['sections']['cruises'] );
     $settings['sections']['newsletter'] = ! empty( $settings['sections']['newsletter'] );
+    $settings['sections']['holiday_theme'] = ! empty( $settings['holiday_theme']['enabled'] );
 
     // Normalize section order: keep unique valid keys and guarantee new sections once.
     $allowed_sections = array(
@@ -467,7 +468,7 @@ function ajth_get_settings() {
             }
         }
     }
-    if ( ! in_array( 'holiday_theme', $normalized_order, true ) ) {
+    if ( ! empty( $settings['holiday_theme']['enabled'] ) && ! in_array( 'holiday_theme', $normalized_order, true ) ) {
         $insert_after = array_search( 'accommodations', $normalized_order, true );
         if ( $insert_after === false ) {
             $normalized_order[] = 'holiday_theme';
@@ -501,7 +502,7 @@ function ajth_normalize_holiday_theme( $theme, $default_theme = array() ) {
 
     $merged = array_replace_recursive( is_array( $default_theme ) ? $default_theme : array(), $theme );
     $enabled_value = $merged['enabled'] ?? false;
-    $merged['enabled'] = in_array( $enabled_value, array( true, 1, '1', 'on', 'yes' ), true );
+    $merged['enabled'] = ajth_truthy( $enabled_value );
 
     $items = $merged['items'] ?? array();
     if ( is_string( $items ) && $items !== '' ) {
@@ -524,11 +525,23 @@ function ajth_normalize_holiday_theme( $theme, $default_theme = array() ) {
             continue;
         }
         $active_value = $item['active'] ?? true;
-        $active = in_array( $active_value, array( true, 1, '1', 'on', 'yes' ), true );
+        $active = ajth_truthy( $active_value );
+        $tags = $item['tags'] ?? array();
+        if ( is_string( $tags ) ) {
+            $parts = preg_split( '/[\r\n,]+/', $tags );
+            $parts = is_array( $parts ) ? $parts : array();
+            $tags = array_values( array_filter( array_map( 'trim', $parts ) ) );
+        } elseif ( is_array( $tags ) ) {
+            $tags = array_values( array_filter( array_map( function( $t ) {
+                return trim( (string) $t );
+            }, $tags ) ) );
+        } else {
+            $tags = array();
+        }
         $normalized_items[] = array(
             'title' => $title,
             'image_url' => isset( $item['image_url'] ) ? (string) $item['image_url'] : '',
-            'tags' => isset( $item['tags'] ) ? (string) $item['tags'] : '',
+            'tags' => $tags,
             'button_text' => isset( $item['button_text'] ) ? (string) $item['button_text'] : '',
             'button_url' => isset( $item['button_url'] ) ? (string) $item['button_url'] : '',
             'order' => isset( $item['order'] ) ? intval( $item['order'] ) : 999,
@@ -538,6 +551,20 @@ function ajth_normalize_holiday_theme( $theme, $default_theme = array() ) {
 
     $merged['items'] = $normalized_items;
     return $merged;
+}
+
+function ajth_truthy( $value ) {
+    if ( is_bool( $value ) ) {
+        return $value;
+    }
+    if ( is_int( $value ) || is_float( $value ) ) {
+        return (int) $value === 1;
+    }
+    if ( is_string( $value ) ) {
+        $v = strtolower( trim( $value ) );
+        return in_array( $v, array( '1', 'true', 'on', 'yes' ), true );
+    }
+    return ! empty( $value );
 }
 
 /* ──────────────────────────────────────────────

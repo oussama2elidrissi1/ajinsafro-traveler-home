@@ -82,9 +82,16 @@ $deco_img = ! empty( $theme['deco_image_url'] ) ? $theme['deco_image_url'] : '';
                         $title = ! empty( $item['title'] ) ? $item['title'] : '';
                         $btn_text = ! empty( $item['button_text'] ) ? $item['button_text'] : esc_html__( 'Voir plus', 'ajinsafro-traveler-home' );
                         $btn_url = ! empty( $item['button_url'] ) ? $item['button_url'] : '#';
-                        $raw_tags = ! empty( $item['tags'] ) ? (string) $item['tags'] : '';
-                        $tags = preg_split( '/[\r\n,]+/', $raw_tags );
-                        $tags = array_values( array_filter( array_map( 'trim', (array) $tags ) ) );
+                        $raw_tags = $item['tags'] ?? array();
+                        if ( is_array( $raw_tags ) ) {
+                            $tags = array_values( array_filter( array_map( function ( $tag ) {
+                                return trim( (string) $tag );
+                            }, $raw_tags ) ) );
+                        } else {
+                            $raw_tags = ! empty( $raw_tags ) ? (string) $raw_tags : '';
+                            $tags = preg_split( '/[\r\n,]+/', $raw_tags );
+                            $tags = array_values( array_filter( array_map( 'trim', (array) $tags ) ) );
+                        }
                     ?>
                     <article class="aj-slider-v2__item aj-theme-card">
                         <div class="aj-theme-card__media">
