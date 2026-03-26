@@ -27,8 +27,46 @@ $social_icons = array(
 $voyages_page_url = function_exists( 'ajth_get_voyages_page_url' )
     ? ajth_get_voyages_page_url()
     : home_url( '/?post_type=st_tours' );
+$maintenance_url = ! empty( $hdr['maintenance_url'] )
+    ? (string) $hdr['maintenance_url']
+    : rtrim( (string) apply_filters( 'ajth_admin_base_url', 'https://booking.ajinsafro.net' ), '/' ) . '/maintenance';
 
 $is_voyages_page = is_page( 'voyages' ) || is_post_type_archive( 'st_tours' );
+
+$maintenance_labels = array(
+    'voyages',
+    'hébergement',
+    'hebergement',
+    'activités',
+    'activites',
+    'votre guide',
+    'hajj & omra',
+    'hajj',
+    'omra',
+    'transfert',
+    'formule low cost',
+);
+
+$resolve_menu_url = static function ( $label, $url ) use ( $maintenance_url, $maintenance_labels ) {
+    $label_normalized = function_exists( 'mb_strtolower' )
+        ? mb_strtolower( trim( (string) $label ), 'UTF-8' )
+        : strtolower( trim( (string) $label ) );
+    $url_value = trim( (string) $url );
+
+    $is_placeholder = (
+        $url_value === '' ||
+        $url_value === '#' ||
+        strpos( $url_value, '#') === 0 ||
+        $url_value === 'javascript:void(0)' ||
+        $url_value === 'javascript:void(0);'
+    );
+
+    if ( $is_placeholder && in_array( $label_normalized, $maintenance_labels, true ) ) {
+        return $maintenance_url;
+    }
+
+    return $url_value !== '' ? $url_value : '#';
+};
 
 $title_icon_map = array(
     'packages'     => 'fas fa-suitcase-rolling',
@@ -64,35 +102,35 @@ $default_menu_items = array(
     ),
     array(
         'label'    => 'Hébergement',
-        'url'      => '#hebergement',
+        'url'      => $maintenance_url,
         'icon'     => 'fas fa-hotel',
         'active'   => false,
         'children' => array(),
     ),
     array(
         'label'    => 'Activités',
-        'url'      => '#activites',
+        'url'      => $maintenance_url,
         'icon'     => 'fas fa-camera',
         'active'   => false,
         'children' => array(),
     ),
     array(
         'label'    => 'Transfert',
-        'url'      => '#transfert',
+        'url'      => $maintenance_url,
         'icon'     => 'fas fa-car-side',
         'active'   => false,
         'children' => array(),
     ),
     array(
         'label'    => 'Hajj & Omra',
-        'url'      => '#hajj-omra',
+        'url'      => $maintenance_url,
         'icon'     => 'fas fa-kaaba',
         'active'   => false,
         'children' => array(),
     ),
     array(
         'label'    => 'Votre guide',
-        'url'      => '#guide',
+        'url'      => $maintenance_url,
         'icon'     => 'fas fa-map-signs',
         'active'   => false,
         'children' => array(),
@@ -262,7 +300,10 @@ $default_menu_items = array(
                     <ul class="aj-nav-list">
                         <?php foreach ( $nav_links as $link ) :
                             $label    = ! empty( $link['label'] ) ? $link['label'] : '';
-                            $url      = ! empty( $link['url'] ) ? $link['url'] : '#';
+                            $url      = $resolve_menu_url(
+                                ! empty( $link['label'] ) ? $link['label'] : '',
+                                ! empty( $link['url'] ) ? $link['url'] : ''
+                            );
                             $icon     = ! empty( $link['icon'] ) ? $link['icon'] : '';
                             $children = ! empty( $link['children'] ) && is_array( $link['children'] ) ? $link['children'] : array();
                             $has_sub  = ! empty( $children );
@@ -312,7 +353,7 @@ $default_menu_items = array(
                 <!-- Low Cost Button (inside drawer for mobile) -->
                 <?php if ( ! empty( $hdr['lowcost_enabled'] ) ) : ?>
                 <div class="aj-drawer__lowcost">
-                    <a href="<?php echo esc_url( ! empty( $hdr['lowcost_url'] ) ? $hdr['lowcost_url'] : '#' ); ?>" class="aj-lowcost-btn">
+                    <a href="<?php echo esc_url( $resolve_menu_url( 'Formule low cost', ! empty( $hdr['lowcost_url'] ) ? $hdr['lowcost_url'] : '' ) ); ?>" class="aj-lowcost-btn">
                         <i class="fas fa-fire"></i>
                         <span><?php echo esc_html( ! empty( $hdr['lowcost_text'] ) ? $hdr['lowcost_text'] : 'Formule low cost' ); ?></span>
                     </a>
@@ -323,7 +364,7 @@ $default_menu_items = array(
             <!-- Low Cost Button (Desktop) -->
             <?php if ( ! empty( $hdr['lowcost_enabled'] ) ) : ?>
             <div class="aj-navbar__lowcost aj-header__lowcost--desktop">
-                <a href="<?php echo esc_url( ! empty( $hdr['lowcost_url'] ) ? $hdr['lowcost_url'] : '#' ); ?>" class="aj-lowcost-btn aj-lowcost-btn--animate">
+                <a href="<?php echo esc_url( $resolve_menu_url( 'Formule low cost', ! empty( $hdr['lowcost_url'] ) ? $hdr['lowcost_url'] : '' ) ); ?>" class="aj-lowcost-btn aj-lowcost-btn--animate">
                     <i class="fas fa-fire aj-lowcost-btn__icon"></i>
                     <span><?php echo esc_html( ! empty( $hdr['lowcost_text'] ) ? $hdr['lowcost_text'] : 'Formule low cost' ); ?></span>
                 </a>
