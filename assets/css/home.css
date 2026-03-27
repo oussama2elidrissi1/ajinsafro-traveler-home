@@ -2112,7 +2112,7 @@ body.aj-has-bg-pattern::after {
     background: #1a6b3e;
     border-radius: var(--aj-radius);
     overflow: hidden;
-    padding: 36px 32px 40px;
+    padding: 34px 40px;
     box-shadow: var(--aj-shadow);
 }
 
@@ -2144,16 +2144,16 @@ body.aj-has-bg-pattern::after {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 32px 40px;
+    gap: 40px 72px;
     padding: 0;
     position: relative;
     z-index: 2;
 }
 
-/* Colonne gauche : largeur limitée (~55 % max) pour éviter le texte étiré ; le vide reste au centre */
+/* Colonne gauche : plus compacte (~46 % / 31rem max) ; espace libre au centre avant le QR */
 .aj-whatsapp-banner__text-col {
-    flex: 0 1 min(55%, 38rem);
-    max-width: min(55%, 38rem);
+    flex: 0 1 min(46%, 31rem);
+    max-width: min(46%, 31rem);
     min-width: 0;
 }
 
@@ -2164,14 +2164,14 @@ body.aj-has-bg-pattern::after {
 }
 
 .aj-whatsapp-banner__title {
-    font-size: 1.65rem;
+    font-size: 1.5rem;
     font-weight: 800;
     color: #fff;
-    margin: 0 0 20px;
+    margin: 0 0 16px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    line-height: 1.25;
-    max-width: 100%;
+    letter-spacing: 0.45px;
+    line-height: 1.12;
+    max-width: 26rem;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -2183,53 +2183,54 @@ body.aj-has-bg-pattern::after {
 .aj-whatsapp-banner__subtitle-wrap {
     display: inline-flex;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
     position: relative;
 }
 .aj-whatsapp-banner__subtitle {
     display: inline-block;
     background: #ffa500;
     color: #fff;
-    font-size: 0.95rem;
+    font-size: 0.88rem;
     font-weight: 700;
-    padding: 6px 20px 6px 16px;
+    padding: 5px 16px 5px 12px;
     clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%);
-    letter-spacing: 0.3px;
+    letter-spacing: 0.25px;
 }
 
 .aj-whatsapp-banner__features {
     list-style: none;
     padding: 0;
-    margin: 0 0 28px;
+    margin: 0 0 20px;
 }
 
 .aj-whatsapp-banner__features li {
     color: #fff;
-    font-size: 1rem;
-    margin-bottom: 8px;
+    font-size: 0.92rem;
+    margin-bottom: 6px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    line-height: 1.35;
 }
 
 .aj-whatsapp-banner__features li i {
     color: #ffa500;
-    font-size: 0.9rem;
+    font-size: 0.82rem;
 }
 
 .aj-whatsapp-banner__button {
     display: inline-block;
-    padding: 13px 36px;
+    padding: 10px 28px;
     background: #ffa500;
     color: #fff;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.92rem;
     border-radius: 30px;
     text-decoration: none;
     transition: all 0.3s;
-    box-shadow: 0 4px 16px rgba(255, 165, 0, 0.4);
+    box-shadow: 0 4px 14px rgba(255, 165, 0, 0.35);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.45px;
 }
 
 .aj-whatsapp-banner__button:hover {
@@ -3012,6 +3013,7 @@ body.aj-has-bg-pattern::after {
     }
     .aj-whatsapp-banner__title {
         font-size: 1.2rem;
+        max-width: 100%;
         display: block;
         -webkit-line-clamp: unset;
         overflow: visible;
@@ -3574,6 +3576,7 @@ body.aj-custom-footer [class*="footer"]:not(.aj-footer-v2):not(.aj-footer-v2 *):
     }
     .aj-whatsapp-banner__title {
         font-size: 1.2rem;
+        max-width: 100%;
         display: block;
         -webkit-line-clamp: unset;
         overflow: visible;
