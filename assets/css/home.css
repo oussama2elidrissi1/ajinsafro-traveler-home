@@ -2107,18 +2107,18 @@ body.aj-has-bg-pattern::after {
 
 .aj-whatsapp-banner__wrap {
     position: relative;
-    background: #1a6b3e;
+    background: linear-gradient(135deg, #166534 0%, #14532d 100%);
     border-radius: 12px;
     overflow: hidden;
     padding: 14px 18px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 20px rgba(20, 83, 45, 0.22);
 }
 
 .aj-whatsapp-banner__inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px 28px;
+    gap: 14px 24px;
     min-width: 0;
 }
 
@@ -2132,44 +2132,55 @@ body.aj-has-bg-pattern::after {
     width: 100%;
     min-width: 0;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
 }
 
 .aj-whatsapp-banner__badge {
     display: inline-block;
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 3px 8px;
-    border-radius: 6px;
-    margin-bottom: 6px;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin: 0;
+    border: none;
 }
 
+/* Hiérarchie 1 — titre fort */
 .aj-whatsapp-banner__title {
-    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    font-size: clamp(1.25rem, 1.5vw, 1.375rem);
     font-weight: 700;
-    color: #fff;
-    margin: 0 0 6px;
-    line-height: 1.25;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.2;
     letter-spacing: -0.02em;
+    max-width: 22rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
+/* Hiérarchie 2 — sous-texte (description courte) */
 .aj-whatsapp-banner__desc {
-    font-size: 0.8125rem;
+    font-size: 14px;
     line-height: 1.45;
-    color: rgba(255, 255, 255, 0.88);
-    margin: 0 0 6px;
-    max-width: 26rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 4px 0 0;
+    max-width: 24rem;
 }
 
+/* Hiérarchie 3 — ligne meta (points) */
 .aj-whatsapp-banner__meta {
-    font-size: 0.7rem;
-    line-height: 1.35;
-    color: rgba(255, 255, 255, 0.55);
-    margin: 0 0 10px;
+    font-size: 13px;
+    line-height: 1.4;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.65);
+    margin: 0;
     letter-spacing: 0.02em;
 }
 
@@ -2177,24 +2188,26 @@ body.aj-has-bg-pattern::after {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 7px 16px;
-    background: #fff;
-    color: #14532d;
+    margin-top: 4px;
+    padding: 10px 20px;
+    background: #f59e0b;
+    color: #ffffff;
     font-weight: 600;
-    font-size: 0.8125rem;
-    border-radius: 8px;
+    font-size: 14px;
+    border-radius: 999px;
     text-decoration: none;
-    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-    box-shadow: none;
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35);
 }
 
 .aj-whatsapp-banner__cta:hover {
-    background: #f0fdf4;
-    color: #0f3d1f;
+    background: #d97706;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);
     transform: translateY(-1px);
 }
 
-/* QR : petit bloc à droite */
+/* QR : carte blanche + hint */
 .aj-whatsapp-banner__qr-aside {
     flex: 0 0 auto;
     display: flex;
@@ -2202,13 +2215,14 @@ body.aj-has-bg-pattern::after {
     align-items: center;
     margin-left: auto;
     min-width: 0;
+    gap: 6px;
 }
 
 .aj-whatsapp-banner__qr-card {
-    padding: 6px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+    padding: 8px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
     line-height: 0;
 }
 
@@ -2216,18 +2230,19 @@ body.aj-has-bg-pattern::after {
     width: 88px;
     height: 88px;
     display: block;
-    border-radius: 4px;
+    border-radius: 6px;
     object-fit: contain;
 }
 
 .aj-whatsapp-banner__qr-hint {
     margin: 0;
-    padding-top: 4px;
-    font-size: 0.625rem;
-    line-height: 1.2;
-    color: rgba(255, 255, 255, 0.55);
+    padding: 0;
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
     text-align: center;
-    max-width: 100px;
+    max-width: 112px;
 }
 
 /* ==========================================================================
@@ -2943,21 +2958,26 @@ body.aj-has-bg-pattern::after {
     .aj-whatsapp-banner__text-col {
         max-width: 100%;
     }
-    .aj-whatsapp-banner__title {
-        font-size: 1.05rem;
+    .aj-whatsapp-banner__content {
+        align-items: center;
     }
-    .aj-whatsapp-banner__desc {
-        font-size: 0.8rem;
+    .aj-whatsapp-banner__title {
+        font-size: 1.125rem;
         max-width: 100%;
     }
+    .aj-whatsapp-banner__desc {
+        font-size: 0.875rem;
+        max-width: 100%;
+        margin-top: 2px;
+    }
     .aj-whatsapp-banner__meta {
-        font-size: 0.65rem;
-        margin-bottom: 8px;
+        font-size: 0.8125rem;
     }
     .aj-whatsapp-banner__cta {
         width: 100%;
-        max-width: 200px;
+        max-width: 220px;
         margin: 0 auto;
+        margin-top: 2px;
     }
     .aj-whatsapp-banner__qr-aside {
         margin-left: 0;
@@ -2968,8 +2988,8 @@ body.aj-has-bg-pattern::after {
         height: 76px;
     }
     .aj-whatsapp-banner__qr-hint {
-        font-size: 0.6rem;
-        max-width: 120px;
+        font-size: 0.75rem;
+        max-width: 130px;
     }
     .aj-cruises__content {
         padding: 40px 24px;
@@ -3079,6 +3099,7 @@ body.aj-has-bg-pattern::after {
     }
     .aj-whatsapp-banner__content {
         text-align: left;
+        align-items: flex-start;
     }
     .aj-whatsapp-banner__cta {
         margin-left: 0;
@@ -3531,21 +3552,26 @@ body.aj-custom-footer [class*="footer"]:not(.aj-footer-v2):not(.aj-footer-v2 *):
     .aj-whatsapp-banner__text-col {
         max-width: 100%;
     }
-    .aj-whatsapp-banner__title {
-        font-size: 1.05rem;
+    .aj-whatsapp-banner__content {
+        align-items: center;
     }
-    .aj-whatsapp-banner__desc {
-        font-size: 0.8rem;
+    .aj-whatsapp-banner__title {
+        font-size: 1.125rem;
         max-width: 100%;
     }
+    .aj-whatsapp-banner__desc {
+        font-size: 0.875rem;
+        max-width: 100%;
+        margin-top: 2px;
+    }
     .aj-whatsapp-banner__meta {
-        font-size: 0.65rem;
-        margin-bottom: 8px;
+        font-size: 0.8125rem;
     }
     .aj-whatsapp-banner__cta {
         width: 100%;
-        max-width: 200px;
+        max-width: 220px;
         margin: 0 auto;
+        margin-top: 2px;
     }
     .aj-whatsapp-banner__qr-aside {
         margin-left: 0;
@@ -3556,8 +3582,8 @@ body.aj-custom-footer [class*="footer"]:not(.aj-footer-v2):not(.aj-footer-v2 *):
         height: 76px;
     }
     .aj-whatsapp-banner__qr-hint {
-        font-size: 0.6rem;
-        max-width: 120px;
+        font-size: 0.75rem;
+        max-width: 130px;
     }
     .aj-cruises__content {
         padding: 40px 24px;
