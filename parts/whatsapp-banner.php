@@ -36,6 +36,7 @@ if ( function_exists( 'ajth_normalize_storage_url' ) ) {
                 <span></span><span></span><span></span>
             </div>
             <div class="aj-whatsapp-banner__inner">
+                <div class="aj-whatsapp-banner__text-col">
                 <div class="aj-whatsapp-banner__content">
                     <h2 class="aj-whatsapp-banner__title"><?php echo esc_html( $title ); ?></h2>
                     <div class="aj-whatsapp-banner__subtitle-wrap">
@@ -51,6 +52,7 @@ if ( function_exists( 'ajth_normalize_storage_url' ) ) {
                     <a href="<?php echo esc_url( $button_url ); ?>" class="aj-whatsapp-banner__button" target="_blank" rel="noopener">
                         <?php echo esc_html( $button_text ); ?>
                     </a>
+                </div>
                 </div>
 
                 <?php if ( $qr_code_url ) : ?>
