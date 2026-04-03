@@ -1,6 +1,6 @@
 <?php
 /**
- * Part: Explorez plus — accordion slider (settings-driven)
+ * Part: Explorez plus — featured + colonne de prévisualisations (pas d’accordéon flex)
  *
  * @package AjinsafroTravelerHome
  */
@@ -54,19 +54,133 @@ if ( count( $items ) > 0 ) {
 }
 $arrows = ! isset( $promo['arrows_enabled'] ) || ( function_exists( 'ajth_truthy' ) ? ajth_truthy( $promo['arrows_enabled'] ) : ! empty( $promo['arrows_enabled'] ) );
 
-$uid = 'aj-promo-acc-' . ( function_exists( 'wp_unique_id' ) ? wp_unique_id() : uniqid( '', false ) );
+$uid = 'aj-promo-split-' . ( function_exists( 'wp_unique_id' ) ? wp_unique_id() : uniqid( '', false ) );
+
+/** @var array<int, array<string, mixed>> $slides_payload */
+$slides_payload = array();
+foreach ( $items as $i => $item ) {
+	if ( ! is_array( $item ) ) {
+		continue;
+	}
+	$image_url = trim( (string) ( $item['image_url'] ?? $item['image'] ?? '' ) );
+	if ( function_exists( 'ajth_normalize_storage_url' ) ) {
+		$image_url = ajth_normalize_storage_url( $image_url );
+	}
+	$title = trim( (string) ( $item['title'] ?? '' ) );
+	$subtitle = trim( (string) ( $item['subtitle'] ?? $item['description'] ?? '' ) );
+	$link_url = trim( (string) ( $item['link_url'] ?? '' ) );
+	$link_target = ( isset( $item['link_target'] ) && (string) $item['link_target'] === '_blank' ) ? '_blank' : '_self';
+	$button_text = trim( (string) ( $item['button_text'] ?? '' ) );
+	$button_url = trim( (string) ( $item['button_url'] ?? '' ) );
+	$btn_on = ! isset( $item['button_enabled'] ) || ( function_exists( 'ajth_truthy' ) ? ajth_truthy( $item['button_enabled'] ) : ! empty( $item['button_enabled'] ) );
+	$accent = trim( (string) ( $item['accent_color'] ?? '' ) );
+	if ( $accent !== '' && ! preg_match( '/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $accent ) ) {
+		$accent = '';
+	}
+	$show_btn = $btn_on && $button_text !== '' && $button_url !== '';
+	$conflict = ( $link_url !== '' && $show_btn && $button_url !== $link_url );
+
+	$slides_payload[] = array(
+		'index'         => (int) $i,
+		'image_url'     => $image_url,
+		'title'         => $title,
+		'subtitle'      => $subtitle,
+		'link_url'      => $link_url,
+		'link_target'   => $link_target,
+		'button_text'   => $button_text,
+		'button_url'    => $button_url,
+		'button_enabled'=> (bool) $btn_on,
+		'accent_color'  => $accent,
+		'conflict_links'=> $conflict,
+		'wrap_link'     => ( $link_url !== '' && ! $conflict ),
+	);
+}
+
+$slides_json = wp_json_encode(
+	$slides_payload,
+	JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE
+);
+if ( ! is_string( $slides_json ) ) {
+	$slides_json = '[]';
+}
+
+/**
+ * Rendu carte principale (featured) — même structure que le JS.
+ *
+ * @param array<string, mixed> $slide Données slide (payload).
+ */
+$render_featured = static function ( array $slide ) : string {
+	$image_url = (string) ( $slide['image_url'] ?? '' );
+	$title = (string) ( $slide['title'] ?? '' );
+	$subtitle = (string) ( $slide['subtitle'] ?? '' );
+	$link_url = (string) ( $slide['link_url'] ?? '' );
+	$link_target = (string) ( $slide['link_target'] ?? '_self' );
+	$rel = ( $link_target === '_blank' ) ? 'noopener noreferrer' : '';
+	$button_text = (string) ( $slide['button_text'] ?? '' );
+	$button_url = (string) ( $slide['button_url'] ?? '' );
+	$btn_on = ! empty( $slide['button_enabled'] );
+	$accent = (string) ( $slide['accent_color'] ?? '' );
+	$conflict = ! empty( $slide['conflict_links'] );
+	$wrap_link = ! empty( $slide['wrap_link'] );
+	$show_btn = $btn_on && $button_text !== '' && $button_url !== '';
+
+	$style = '';
+	if ( $accent !== '' && preg_match( '/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $accent ) ) {
+		$style = '--aj-promo-accent:' . esc_attr( $accent ) . ';';
+	}
+
+	$rail = '';
+	if ( $title !== '' ) {
+		$rail = '<span class="aj-promo-split__rail" aria-hidden="true"><span class="aj-promo-split__rail-text">' . esc_html( $title ) . '</span></span>';
+	}
+
+	$media = '';
+	if ( $image_url !== '' ) {
+		$media = '<div class="aj-promo-split__media"><img src="' . esc_url( $image_url ) . '" alt="" loading="lazy" decoding="async" width="800" height="520"></div>';
+	} else {
+		$media = '<div class="aj-promo-split__media"><span class="aj-promo-split__fallback" aria-hidden="true"></span></div>';
+	}
+
+	$title_inner = '';
+	if ( $title !== '' ) {
+		if ( $conflict && $link_url !== '' ) {
+			$title_inner = '<a class="aj-promo-split__title aj-promo-split__title--link" href="' . esc_url( $link_url ) . '"' . ( $link_target === '_blank' ? ' target="_blank" rel="' . esc_attr( $rel ) . '"' : '' ) . '>' . esc_html( $title ) . '</a>';
+		} else {
+			$title_inner = '<span class="aj-promo-split__title">' . esc_html( $title ) . '</span>';
+		}
+	}
+
+	$desc = $subtitle !== '' ? '<p class="aj-promo-split__desc">' . esc_html( $subtitle ) . '</p>' : '';
+
+	$btn = '';
+	if ( $show_btn ) {
+		$btn = '<span class="aj-promo-split__btn-wrap"><a class="aj-promo-split__btn" href="' . esc_url( $button_url ) . '"' . ( $link_target === '_blank' ? ' target="_blank" rel="' . esc_attr( $rel ) . '"' : '' ) . '>' . esc_html( $button_text ) . '</a></span>';
+	} elseif ( $btn_on && $button_text !== '' ) {
+		$btn = '<span class="aj-promo-split__btn-wrap"><span class="aj-promo-split__btn aj-promo-split__btn--text">' . esc_html( $button_text ) . '</span></span>';
+	}
+
+	$body = '<div class="aj-promo-split__body">' . $media . '<div class="aj-promo-split__scrim" aria-hidden="true"></div><div class="aj-promo-split__content">' . $title_inner . $desc . $btn . '</div></div>';
+
+	if ( $wrap_link ) {
+		return '<a class="aj-promo-split__featured-surface aj-promo-split__featured-surface--link" style="' . esc_attr( $style ) . '" href="' . esc_url( $link_url ) . '"' . ( $link_target === '_blank' ? ' target="_blank" rel="' . esc_attr( $rel ) . '"' : '' ) . '>' . $rail . $body . '</a>';
+	}
+
+	return '<div class="aj-promo-split__featured-surface" style="' . esc_attr( $style ) . '" role="region">' . $rail . $body . '</div>';
+};
+
+$featured_slide = isset( $slides_payload[ $def_idx ] ) ? $slides_payload[ $def_idx ] : $slides_payload[0];
 ?>
-<section class="aj-promos aj-promos--accordion" id="aj-promos" aria-labelledby="<?php echo esc_attr( $uid ); ?>-heading">
+<section class="aj-promos aj-promos--split" id="aj-promos" aria-labelledby="<?php echo esc_attr( $uid ); ?>-heading">
 	<div class="aj-container">
-		<div class="aj-promos__frame aj-promos__frame--accordion">
-			<div class="aj-section-head aj-section-head--accordion">
+		<div class="aj-promos__frame aj-promos__frame--split">
+			<div class="aj-section-head aj-section-head--split">
 				<h2 class="aj-section-title" id="<?php echo esc_attr( $uid ); ?>-heading"><?php echo esc_html( $section_title ); ?></h2>
 				<?php if ( $arrows && count( $items ) > 1 ) : ?>
-					<div class="aj-promo-acc__arrows" role="group" aria-label="<?php esc_attr_e( 'Navigation du carrousel', 'ajinsafro-traveler-home' ); ?>">
-						<button type="button" class="aj-section-arrow aj-promo-acc__prev" aria-controls="<?php echo esc_attr( $uid ); ?>-strip" aria-label="<?php esc_attr_e( 'Précédent', 'ajinsafro-traveler-home' ); ?>">
+					<div class="aj-promo-split__arrows" role="group" aria-label="<?php esc_attr_e( 'Navigation', 'ajinsafro-traveler-home' ); ?>">
+						<button type="button" class="aj-section-arrow aj-promo-split__prev" aria-controls="<?php echo esc_attr( $uid ); ?>-root" aria-label="<?php esc_attr_e( 'Précédent', 'ajinsafro-traveler-home' ); ?>">
 							<i class="fas fa-angle-left" aria-hidden="true"></i>
 						</button>
-						<button type="button" class="aj-section-arrow aj-promo-acc__next" aria-controls="<?php echo esc_attr( $uid ); ?>-strip" aria-label="<?php esc_attr_e( 'Suivant', 'ajinsafro-traveler-home' ); ?>">
+						<button type="button" class="aj-section-arrow aj-promo-split__next" aria-controls="<?php echo esc_attr( $uid ); ?>-root" aria-label="<?php esc_attr_e( 'Suivant', 'ajinsafro-traveler-home' ); ?>">
 							<i class="fas fa-angle-right" aria-hidden="true"></i>
 						</button>
 					</div>
@@ -74,104 +188,49 @@ $uid = 'aj-promo-acc-' . ( function_exists( 'wp_unique_id' ) ? wp_unique_id() : 
 			</div>
 
 			<div
-				class="aj-promo-acc"
-				id="<?php echo esc_attr( $uid ); ?>"
-				data-root="<?php echo esc_attr( $uid ); ?>"
+				class="aj-promo-split<?php echo count( $items ) < 2 ? ' aj-promo-split--single' : ''; ?>"
+				id="<?php echo esc_attr( $uid ); ?>-root"
+				data-slides="<?php echo esc_attr( $slides_json ); ?>"
+				data-active="<?php echo esc_attr( (string) $def_idx ); ?>"
 				data-autoplay="<?php echo $autoplay ? '1' : '0'; ?>"
 				data-delay="<?php echo esc_attr( (string) $delay_ms ); ?>"
-				data-default-index="<?php echo esc_attr( (string) $def_idx ); ?>"
-				data-pause-hover="1"
 			>
-				<div class="aj-promo-acc__strip" id="<?php echo esc_attr( $uid ); ?>-strip" role="list">
-					<?php foreach ( $items as $i => $item ) : ?>
-						<?php
-						if ( ! is_array( $item ) ) {
-							continue;
-						}
-						$image_url = trim( (string) ( $item['image_url'] ?? $item['image'] ?? '' ) );
-						if ( function_exists( 'ajth_normalize_storage_url' ) ) {
-							$image_url = ajth_normalize_storage_url( $image_url );
-						}
-						$title = trim( (string) ( $item['title'] ?? '' ) );
-						$subtitle = trim( (string) ( $item['subtitle'] ?? $item['description'] ?? '' ) );
-						$link_url = trim( (string) ( $item['link_url'] ?? '' ) );
-						$link_target = ( isset( $item['link_target'] ) && (string) $item['link_target'] === '_blank' ) ? '_blank' : '_self';
-						$rel = ( $link_target === '_blank' ) ? 'noopener noreferrer' : '';
-						$button_text = trim( (string) ( $item['button_text'] ?? '' ) );
-						$button_url = trim( (string) ( $item['button_url'] ?? '' ) );
-						$btn_on = ! isset( $item['button_enabled'] ) || ( function_exists( 'ajth_truthy' ) ? ajth_truthy( $item['button_enabled'] ) : ! empty( $item['button_enabled'] ) );
-						$accent = trim( (string) ( $item['accent_color'] ?? '' ) );
-						$panel_id = $uid . '-panel-' . (int) $i;
-						$is_active_class = ( (int) $i === (int) $def_idx ) ? ' is-active' : '';
-						// Flex order: active always first (left); others follow by index (ref. image 2).
-						$flex_order = (int) $i === (int) $def_idx ? 0 : ( (int) $i < (int) $def_idx ? (int) $i + 1 : (int) $i );
-						$style_vars = 'order:' . (int) $flex_order . ';';
-						if ( $accent !== '' && preg_match( '/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $accent ) ) {
-							$style_vars .= '--aj-promo-accent:' . esc_attr( $accent ) . ';';
-						}
-						$show_btn_link = $btn_on && $button_text !== '' && $button_url !== '';
-						$conflict_links = ( $link_url !== '' && $show_btn_link && $button_url !== $link_url );
-						$wrap_surface_a = ( $link_url !== '' && ! $conflict_links );
-						?>
-						<div
-							class="aj-promo-acc__panel<?php echo esc_attr( $is_active_class ); ?>"
-							id="<?php echo esc_attr( $panel_id ); ?>"
-							role="listitem"
-							data-index="<?php echo esc_attr( (string) $i ); ?>"
-							aria-expanded="<?php echo (int) $i === (int) $def_idx ? 'true' : 'false'; ?>"
-							style="<?php echo esc_attr( $style_vars ); ?>"
-						>
-							<?php if ( $wrap_surface_a ) : ?>
-								<a class="aj-promo-acc__surface aj-promo-acc__surface--link" href="<?php echo esc_url( $link_url ); ?>"<?php echo $link_target === '_blank' ? ' target="_blank" rel="' . esc_attr( $rel ) . '"' : ''; ?>>
-							<?php else : ?>
-								<div class="aj-promo-acc__surface aj-promo-acc__surface--static" role="button" tabindex="0" aria-label="<?php echo esc_attr( $title !== '' ? $title : __( 'Panneau', 'ajinsafro-traveler-home' ) ); ?>">
-							<?php endif; ?>
-
-								<?php if ( $title !== '' ) : ?>
-									<span class="aj-promo-acc__rail" aria-hidden="true">
-										<span class="aj-promo-acc__rail-text"><?php echo esc_html( $title ); ?></span>
-									</span>
-								<?php endif; ?>
-
-								<span class="aj-promo-acc__main">
-									<span class="aj-promo-acc__media" aria-hidden="true">
-										<?php if ( $image_url !== '' ) : ?>
-											<img src="<?php echo esc_url( $image_url ); ?>" alt="" loading="<?php echo (int) $i === 0 ? 'eager' : 'lazy'; ?>" decoding="async" width="800" height="560">
-										<?php else : ?>
-											<span class="aj-promo-acc__fallback" aria-hidden="true"></span>
-										<?php endif; ?>
-									</span>
-									<span class="aj-promo-acc__scrim" aria-hidden="true"></span>
-									<span class="aj-promo-acc__content">
-										<?php if ( $title !== '' ) : ?>
-											<?php if ( $conflict_links && $link_url !== '' ) : ?>
-												<a class="aj-promo-acc__title aj-promo-acc__title--link" href="<?php echo esc_url( $link_url ); ?>"<?php echo $link_target === '_blank' ? ' target="_blank" rel="' . esc_attr( $rel ) . '"' : ''; ?>><?php echo esc_html( $title ); ?></a>
-											<?php else : ?>
-												<span class="aj-promo-acc__title"><?php echo esc_html( $title ); ?></span>
-											<?php endif; ?>
-										<?php endif; ?>
-										<?php if ( $subtitle !== '' ) : ?>
-											<span class="aj-promo-acc__desc"><?php echo esc_html( $subtitle ); ?></span>
-										<?php endif; ?>
-										<?php if ( $show_btn_link ) : ?>
-											<span class="aj-promo-acc__btn-wrap">
-												<a class="aj-promo-acc__btn" href="<?php echo esc_url( $button_url ); ?>"<?php echo $link_target === '_blank' ? ' target="_blank" rel="' . esc_attr( $rel ) . '"' : ''; ?>><?php echo esc_html( $button_text ); ?></a>
-											</span>
-										<?php elseif ( $btn_on && $button_text !== '' && ! $show_btn_link ) : ?>
-											<span class="aj-promo-acc__btn-wrap">
-												<span class="aj-promo-acc__btn aj-promo-acc__btn--text"><?php echo esc_html( $button_text ); ?></span>
-											</span>
-										<?php endif; ?>
-									</span>
-								</span>
-
-							<?php if ( $wrap_surface_a ) : ?>
-								</a>
-							<?php else : ?>
-								</div>
-							<?php endif; ?>
+				<div class="aj-promo-split__inner">
+					<div class="aj-promo-split__featured" data-featured>
+						<div class="aj-promo-split__featured-inner">
+							<?php echo $render_featured( $featured_slide ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built with esc_* inside closure ?>
 						</div>
-					<?php endforeach; ?>
+					</div>
+
+					<?php if ( count( $items ) > 1 ) : ?>
+					<div class="aj-promo-split__previews" data-previews role="list">
+						<?php foreach ( $slides_payload as $sp ) : ?>
+							<?php
+							$pi = (int) ( $sp['index'] ?? 0 );
+							if ( $pi === (int) $def_idx ) {
+								continue;
+							}
+							$pimg = (string) ( $sp['image_url'] ?? '' );
+							$ptitle = (string) ( $sp['title'] ?? '' );
+							$paccent = (string) ( $sp['accent_color'] ?? '' );
+							$pv_style = '';
+							if ( $paccent !== '' && preg_match( '/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $paccent ) ) {
+								$pv_style = '--preview-accent:' . esc_attr( $paccent ) . ';';
+							}
+							?>
+							<button type="button" class="aj-promo-split__preview" style="<?php echo esc_attr( $pv_style ); ?>" data-go-index="<?php echo esc_attr( (string) $pi ); ?>" role="listitem" aria-label="<?php echo esc_attr( $ptitle !== '' ? $ptitle : __( 'Voir cette offre', 'ajinsafro-traveler-home' ) ); ?>">
+								<span class="aj-promo-split__preview-thumb" aria-hidden="true">
+									<?php if ( $pimg !== '' ) : ?>
+										<img src="<?php echo esc_url( $pimg ); ?>" alt="" loading="lazy" decoding="async" width="120" height="400">
+									<?php else : ?>
+										<span class="aj-promo-split__preview-fallback"></span>
+									<?php endif; ?>
+								</span>
+								<span class="aj-promo-split__preview-label"><?php echo esc_html( $ptitle ); ?></span>
+							</button>
+						<?php endforeach; ?>
+					</div>
+					<?php endif; ?>
 				</div>
 			</div>
 		</div>
