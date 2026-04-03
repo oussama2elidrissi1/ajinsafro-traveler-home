@@ -24,6 +24,13 @@ define( 'AJTH_FILE',    __FILE__ );
 define( 'AJTH_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'AJTH_URL',     plugin_dir_url( __FILE__ ) );
 
+if ( ! defined( 'AJINSAFRO_HOME_DIR' ) ) {
+    define( 'AJINSAFRO_HOME_DIR', AJTH_DIR );
+}
+if ( ! defined( 'AJINSAFRO_HOME_URL' ) ) {
+    define( 'AJINSAFRO_HOME_URL', AJTH_URL );
+}
+
 /* ──────────────────────────────────────────────
  * Autoload includes
  * ────────────────────────────────────────────── */
@@ -166,6 +173,32 @@ function ajth_homepage_shortcode( $atts ) {
     return ob_get_clean();
 }
 add_shortcode( 'ajth_homepage', 'ajth_homepage_shortcode' );
+
+/**
+ * Shortcode: [ajinsafro_slider]
+ * Renders the standalone accordion slider template.
+ */
+function ajinsafro_slider_shortcode( $atts ) {
+    wp_enqueue_style(
+        'ajinsafro-accordion-slider-css',
+        AJTH_URL . 'assets/css/accordion-slider.css',
+        array(),
+        AJTH_VERSION
+    );
+
+    wp_enqueue_script(
+        'ajinsafro-accordion-slider-js',
+        AJTH_URL . 'assets/js/accordion-slider.js',
+        array(),
+        AJTH_VERSION,
+        true
+    );
+
+    ob_start();
+    include AJTH_DIR . 'templates/accordion-slider.php';
+    return ob_get_clean();
+}
+add_shortcode( 'ajinsafro_slider', 'ajinsafro_slider_shortcode' );
 
 /* ──────────────────────────────────────────────
  * Header settings managed from Laravel admin
