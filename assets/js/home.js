@@ -100,6 +100,8 @@
         if (!root) return;
 
         var slides = root.querySelectorAll('.aj-accordion-slide');
+        var prevBtn = root.querySelector('[data-accordion-prev="1"]');
+        var nextBtn = root.querySelector('[data-accordion-next="1"]');
         if (!slides.length) return;
 
         var autoplay = root.getAttribute('data-autoplay') === '1';
@@ -113,6 +115,20 @@
         var timer = null;
         var currentIndex = defIdx;
         var direction = 1;
+
+        function openSlideLink(slide) {
+            if (!slide) return false;
+            var url = (slide.getAttribute('data-link-url') || '').trim();
+            if (!url || url === '#') return false;
+            var target = (slide.getAttribute('data-link-target') || '_self') === '_blank' ? '_blank' : '_self';
+
+            if (target === '_blank') {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            } else {
+                window.location.href = url;
+            }
+            return true;
+        }
 
         function setActive(rawIndex) {
             var n = ((rawIndex % slides.length) + slides.length) % slides.length;
@@ -164,6 +180,9 @@
             slide.addEventListener('click', function () {
                 var idx = parseInt(slide.getAttribute('data-index') || '0', 10);
                 if (isNaN(idx)) return;
+                if (idx === currentIndex && openSlideLink(slide)) {
+                    return;
+                }
                 setActive(idx);
                 clearTimer();
                 startTimer();
@@ -174,11 +193,34 @@
                 e.preventDefault();
                 var idx = parseInt(slide.getAttribute('data-index') || '0', 10);
                 if (isNaN(idx)) return;
+                if (idx === currentIndex && e.key === 'Enter' && openSlideLink(slide)) {
+                    return;
+                }
                 setActive(idx);
                 clearTimer();
                 startTimer();
             });
         });
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                setActive(currentIndex - 1);
+                clearTimer();
+                startTimer();
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                setActive(currentIndex + 1);
+                clearTimer();
+                startTimer();
+            });
+        }
 
         root.addEventListener('mouseenter', clearTimer);
         root.addEventListener('mouseleave', startTimer);

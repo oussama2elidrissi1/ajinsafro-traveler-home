@@ -46,6 +46,7 @@ if ( empty( $items ) ) {
 
 $autoplay = ! isset( $promo['autoplay'] ) || ( function_exists( 'ajth_truthy' ) ? ajth_truthy( $promo['autoplay'] ) : ! empty( $promo['autoplay'] ) );
 $delay_ms = isset( $promo['autoplay_delay_ms'] ) ? max( 2000, min( 60000, (int) $promo['autoplay_delay_ms'] ) ) : 5000;
+$arrows_enabled = ! isset( $promo['arrows_enabled'] ) || ( function_exists( 'ajth_truthy' ) ? ajth_truthy( $promo['arrows_enabled'] ) : ! empty( $promo['arrows_enabled'] ) );
 $def_idx = isset( $promo['default_active_index'] ) ? max( 0, (int) $promo['default_active_index'] ) : 0;
 if ( count( $items ) > 0 ) {
 	$def_idx = min( $def_idx, count( $items ) - 1 );
@@ -64,6 +65,7 @@ $uid = 'aj-accordion-slider';
 			data-autoplay="<?php echo $autoplay ? '1' : '0'; ?>"
 			data-delay="<?php echo esc_attr( (string) $delay_ms ); ?>"
 			data-default-index="<?php echo esc_attr( (string) $def_idx ); ?>"
+			data-arrows-enabled="<?php echo $arrows_enabled ? '1' : '0'; ?>"
 		>
 			<?php
 			foreach ( $items as $i => $item ) :
@@ -80,6 +82,7 @@ $uid = 'aj-accordion-slider';
 				$theme = min( 4, max( 0, $theme ) );
 
 				$link_target = ( isset( $item['link_target'] ) && (string) $item['link_target'] === '_blank' ) ? '_blank' : '_self';
+				$link_url = function_exists( 'ajth_sanitize_promo_url' ) ? ajth_sanitize_promo_url( (string) ( $item['link_url'] ?? '' ) ) : trim( (string) ( $item['link_url'] ?? '' ) );
 				$button_text = trim( (string) ( $item['button_text'] ?? '' ) );
 				$button_url = function_exists( 'ajth_sanitize_promo_url' ) ? ajth_sanitize_promo_url( (string) ( $item['button_url'] ?? '' ) ) : trim( (string) ( $item['button_url'] ?? '' ) );
 				$btn_on = ! isset( $item['button_enabled'] ) || ( function_exists( 'ajth_truthy' ) ? ajth_truthy( $item['button_enabled'] ) : ! empty( $item['button_enabled'] ) );
@@ -92,6 +95,8 @@ $uid = 'aj-accordion-slider';
 			<div
 				class="aj-accordion-slide <?php echo esc_attr( $tclass ); ?><?php echo $is_active ? ' is-active' : ''; ?>"
 				data-index="<?php echo esc_attr( (string) $i ); ?>"
+				data-link-url="<?php echo esc_url( $link_url ); ?>"
+				data-link-target="<?php echo esc_attr( $link_target ); ?>"
 				role="button"
 				tabindex="0"
 				aria-expanded="<?php echo $is_active ? 'true' : 'false'; ?>"
@@ -130,6 +135,14 @@ $uid = 'aj-accordion-slider';
 				</div>
 			</div>
 				<?php endforeach; ?>
+			<?php if ( $arrows_enabled && count( $items ) > 1 ) : ?>
+				<button type="button" class="aj-accordion-arrow aj-accordion-arrow--prev" aria-label="Slide précédente" data-accordion-prev="1">
+					<span aria-hidden="true">&#8249;</span>
+				</button>
+				<button type="button" class="aj-accordion-arrow aj-accordion-arrow--next" aria-label="Slide suivante" data-accordion-next="1">
+					<span aria-hidden="true">&#8250;</span>
+				</button>
+			<?php endif; ?>
 		</div>
 	</div>
 </section>
