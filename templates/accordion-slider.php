@@ -1,103 +1,62 @@
 <?php
-/**
- * Accordion Slider Template
- * Shortcode: [ajinsafro_slider]
- */
-
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
-
+$img = AJINSAFRO_HOME_URL . 'assets/img/';
 $slides = array(
-    array(
-        'title' => 'PROGRAMME DE FIDELITE',
-        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-1.png',
-        'cta_text' => "S'inscrire !",
-        'cta_url' => 'https://www.ajinsafro.ma/fidelite',
-        'cta_target' => '_blank',
-        'theme' => 'theme-0',
-        'overlay' => 'overlay-0',
-        'lang' => 'fr',
-    ),
-    array(
-        'title' => 'GROUP DEALS TRAVEL',
-        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-2.png',
-        'cta_text' => '',
-        'cta_url' => '',
-        'cta_target' => '_self',
-        'theme' => 'theme-1',
-        'overlay' => 'overlay-1',
-        'lang' => 'fr',
-    ),
-    array(
-        'title' => "L'7AJZ BKRI B'DHAB MCHRI",
-        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-3.png',
-        'cta_text' => 'احجز الآن',
-        'cta_url' => 'https://www.ajinsafro.ma/voyages',
-        'cta_target' => '_top',
-        'theme' => 'theme-2',
-        'overlay' => 'overlay-2',
-        'lang' => 'ar',
-    ),
-    array(
-        'title' => 'PROGRAMME BZTAM eSFAR',
-        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-4.png',
-        'cta_text' => '',
-        'cta_url' => '',
-        'cta_target' => '_self',
-        'theme' => 'theme-3',
-        'overlay' => 'overlay-3',
-        'lang' => 'fr',
-    ),
-    array(
-        'title' => 'IMPORTANT UPDATES',
-        'image' => 'https://i.ibb.co/4n5PwWsV/vecteezy-islamic-geometric-pattern-art-illustration-vector-14002298.jpg',
-        'cta_text' => '',
-        'cta_url' => '',
-        'cta_target' => '_self',
-        'theme' => 'theme-4',
-        'overlay' => 'overlay-4',
-        'lang' => 'fr',
-    ),
+	array(
+		'label'    => 'PROGRAMME DE FIDÉLITÉ',
+		'gradient' => 'linear-gradient(to bottom,#00a3e0,#0081bc)',
+		'image'    => $img . 'slide-1.png',
+		'cta'      => array( 'label' => "S'INSCRIRE !", 'url' => 'https://www.ajinsafro.ma/fidelite' ),
+	),
+	array(
+		'label'    => 'GROUP DEALS TRAVEL',
+		'gradient' => 'linear-gradient(to bottom,#4ade80,#16a34a)',
+		'image'    => $img . 'slide-2.png',
+		'cta'      => null,
+	),
+	array(
+		'label'    => "L'7AJZ BKRI B'DHAB MCHRI",
+		'gradient' => 'linear-gradient(to bottom,#1b5c8c,#0E3A5A)',
+		'image'    => $img . 'slide-3.png',
+		'cta'      => array( 'label' => 'احجز الآن', 'url' => 'https://www.ajinsafro.ma/voyages', 'arabic' => true ),
+	),
+	array(
+		'label'    => 'PROGRAMME BZTAM ESFAR',
+		'gradient' => 'linear-gradient(to bottom,#facc15,#f97316)',
+		'image'    => $img . 'slide-4.png',
+		'cta'      => null,
+	),
+	array(
+		'label'    => 'IMPORTANT UPDATES',
+		'gradient' => 'linear-gradient(to bottom,#ef4444,#b91c1c)',
+		'image'    => '',
+		'cta'      => null,
+	),
 );
-
-$slides = apply_filters( 'ajinsafro_slider_slides', $slides );
-
-if ( empty( $slides ) || ! is_array( $slides ) ) {
-    return;
-}
 ?>
-<div id="aji-accordion-slider" class="aji-accordion-slider" role="region" aria-label="Promotions AjiNsafro">
-    <?php foreach ( array_values( $slides ) as $index => $slide ) :
-        $title = isset( $slide['title'] ) ? (string) $slide['title'] : '';
-        $image = isset( $slide['image'] ) ? (string) $slide['image'] : '';
-        $cta_text = isset( $slide['cta_text'] ) ? (string) $slide['cta_text'] : '';
-        $cta_url = isset( $slide['cta_url'] ) ? (string) $slide['cta_url'] : '';
-        $cta_target = isset( $slide['cta_target'] ) ? (string) $slide['cta_target'] : '_self';
-        $theme = isset( $slide['theme'] ) ? (string) $slide['theme'] : 'theme-0';
-        $overlay = isset( $slide['overlay'] ) ? (string) $slide['overlay'] : 'overlay-0';
-        $lang = isset( $slide['lang'] ) ? (string) $slide['lang'] : 'fr';
-    ?>
-    <article class="aji-slide" data-index="<?php echo esc_attr( $index ); ?>">
-        <button class="aji-tab-bar <?php echo esc_attr( $theme ); ?>" type="button" aria-label="<?php echo esc_attr( $title ); ?>" aria-pressed="false">
-            <span class="aji-tab-label"><?php echo esc_html( $title ); ?></span>
-        </button>
-
-        <div class="aji-slide-content" role="group" aria-label="<?php echo esc_attr( $title ); ?>">
-            <?php if ( '' !== $image ) : ?>
-                <img class="aji-image" src="<?php echo esc_url( $image ); ?>" alt="<?php echo esc_attr( $title ); ?>" loading="<?php echo 0 === $index ? 'eager' : 'lazy'; ?>" <?php echo 0 === $index ? 'fetchpriority="high"' : ''; ?>>
-            <?php endif; ?>
-
-            <div class="aji-overlay <?php echo esc_attr( $overlay ); ?>"></div>
-
-            <?php if ( '' !== $cta_text && '' !== $cta_url ) : ?>
-                <div class="aji-cta-wrap">
-                    <a class="aji-cta<?php echo 'ar' === $lang ? ' aji-cta-ar' : ' aji-cta-orange'; ?>" href="<?php echo esc_url( $cta_url ); ?>" target="<?php echo esc_attr( $cta_target ); ?>" rel="noopener noreferrer">
-                        <?php echo esc_html( $cta_text ); ?>
-                    </a>
-                </div>
-            <?php endif; ?>
-        </div>
-    </article>
-    <?php endforeach; ?>
+<p class="aji-section-label">Explorez plus, voyagez mieux avec AjiNsafro</p>
+<div id="aji-accordion-slider">
+<?php foreach ( $slides as $i => $s ) : ?>
+<div class="aji-slide" data-index="<?php echo esc_attr( (string) $i ); ?>" role="button" tabindex="0" aria-label="<?php echo esc_attr( $s['label'] ); ?>">
+  <div class="aji-tab-bar" style="background:<?php echo esc_attr( $s['gradient'] ); ?>">
+    <span class="aji-tab-label"><?php echo esc_html( $s['label'] ); ?></span>
+  </div>
+  <div class="aji-slide-content">
+	<?php if ( ! empty( $s['image'] ) ) : ?>
+	  <img src="<?php echo esc_url( $s['image'] ); ?>" alt="<?php echo esc_attr( $s['label'] ); ?>" loading="lazy">
+	<?php else : ?>
+	  <div class="aji-placeholder">800x800</div>
+	<?php endif; ?>
+	<?php if ( ! empty( $s['cta'] ) ) : ?>
+	  <a href="<?php echo esc_url( $s['cta']['url'] ); ?>"
+		 class="aji-cta<?php echo ! empty( $s['cta']['arabic'] ) ? ' aji-arabic' : ''; ?>"
+		 target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();">
+		<?php echo esc_html( $s['cta']['label'] ); ?>
+	  </a>
+	<?php endif; ?>
+  </div>
+</div>
+<?php endforeach; ?>
 </div>
