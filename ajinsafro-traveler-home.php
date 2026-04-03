@@ -771,6 +771,16 @@ function ajth_normalize_promotions_settings( $promo, array $defaults ): array {
         return ( (int) ( $a['sort_order'] ?? 0 ) ) <=> ( (int) ( $b['sort_order'] ?? 0 ) );
     } );
 
+    $non_empty_titles = 0;
+    foreach ( $normalized as $item ) {
+        if ( trim( (string) ( $item['title'] ?? '' ) ) !== '' ) {
+            $non_empty_titles++;
+        }
+    }
+    if ( count( $normalized ) < 5 || $non_empty_titles < 2 ) {
+        $normalized = ajth_default_promotion_items_prototype();
+    }
+
     $max_slides = isset( $promo['max_slides'] ) ? max( 1, min( 20, (int) $promo['max_slides'] ) ) : 8;
 
     $images = array();

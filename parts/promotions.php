@@ -88,8 +88,7 @@ $uid = 'aj-accordion-slider';
 				}
 				$title = trim( (string) ( $item['title'] ?? '' ) );
 				$placeholder_text = trim( (string) ( $item['placeholder_text'] ?? '' ) );
-				$theme = isset( $item['tab_theme'] ) ? (int) $item['tab_theme'] : (int) $i;
-				$theme = min( 4, max( 0, $theme ) );
+				$theme = min( 4, max( 0, (int) $i ) );
 
 				$link_target = ( isset( $item['link_target'] ) && (string) $item['link_target'] === '_blank' ) ? '_blank' : '_self';
 				$link_url = function_exists( 'ajth_sanitize_promo_url' ) ? ajth_sanitize_promo_url( (string) ( $item['link_url'] ?? '' ) ) : trim( (string) ( $item['link_url'] ?? '' ) );
