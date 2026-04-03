@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $slides = array(
     array(
         'title' => 'PROGRAMME DE FIDELITE',
-        'image' => 'https://i.ibb.co/tTrXK11z/Voyagez-Plus-Gagnez-Plus.png',
+        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-1.jpg',
         'cta_text' => "S'inscrire !",
         'cta_url' => 'https://www.ajinsafro.ma/fidelite',
         'cta_target' => '_top',
@@ -21,7 +21,7 @@ $slides = array(
     ),
     array(
         'title' => 'GROUP DEALS TRAVEL',
-        'image' => 'https://i.ibb.co/KcVS1QKB/plus-on-est-nombreaux-plus-on-voyage-leger.png',
+        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-2.jpg',
         'cta_text' => '',
         'cta_url' => '',
         'cta_target' => '_self',
@@ -31,7 +31,7 @@ $slides = array(
     ),
     array(
         'title' => "L'7AJZ BKRI B'DHAB MCHRI",
-        'image' => 'https://i.ibb.co/tP3ByxFZ/7ajz-bkri.png',
+        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-3.jpg',
         'cta_text' => 'احجز الآن',
         'cta_url' => 'https://www.ajinsafro.ma/voyages',
         'cta_target' => '_top',
@@ -41,7 +41,7 @@ $slides = array(
     ),
     array(
         'title' => 'PROGRAMME BZTAM eSFAR',
-        'image' => 'https://i.ibb.co/qLZYDrYz/Voyagez-Plus-Gagnez-Plus-1.png',
+        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-4.jpg',
         'cta_text' => '',
         'cta_url' => '',
         'cta_target' => '_self',
@@ -67,6 +67,7 @@ if ( empty( $slides ) || ! is_array( $slides ) ) {
     return;
 }
 ?>
+<div style="width:100%; padding:0; margin:0;">
 <section class="aji-accordion-slider" id="aji-accordion-slider" role="region" aria-label="Promotions AjiNsafro">
     <?php foreach ( array_values( $slides ) as $index => $slide ) :
         $title = isset( $slide['title'] ) ? (string) $slide['title'] : '';
@@ -101,3 +102,4 @@ if ( empty( $slides ) || ! is_array( $slides ) ) {
     </article>
     <?php endforeach; ?>
 </section>
+</div>

@@ -103,9 +103,15 @@
     });
   }
 
+  function scheduleInit() {
+    setTimeout(function () {
+      initAjiSlider();
+    }, 100);
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAjiSlider);
+    document.addEventListener('DOMContentLoaded', scheduleInit);
   } else {
-    initAjiSlider();
+    scheduleInit();
   }
 })();
