@@ -77,16 +77,15 @@ if ( empty( $slides ) || ! is_array( $slides ) ) {
         $theme = isset( $slide['theme'] ) ? (string) $slide['theme'] : 'theme-0';
         $overlay = isset( $slide['overlay'] ) ? (string) $slide['overlay'] : 'overlay-0';
         $lang = isset( $slide['lang'] ) ? (string) $slide['lang'] : 'fr';
-        $is_active = 0 === $index;
     ?>
-    <article class="aji-slide<?php echo $is_active ? ' is-active' : ''; ?>" data-index="<?php echo esc_attr( $index ); ?>">
-        <button class="aji-tab <?php echo esc_attr( $theme ); ?>" type="button" aria-label="<?php echo esc_attr( $title ); ?>" aria-pressed="<?php echo $is_active ? 'true' : 'false'; ?>">
+    <article class="aji-slide" data-index="<?php echo esc_attr( $index ); ?>">
+        <button class="aji-tab-bar <?php echo esc_attr( $theme ); ?>" type="button" aria-label="<?php echo esc_attr( $title ); ?>" aria-pressed="false">
             <span class="aji-tab-label"><?php echo esc_html( $title ); ?></span>
         </button>
 
-        <div class="aji-content" role="group" aria-label="<?php echo esc_attr( $title ); ?>">
+        <div class="aji-slide-content" role="group" aria-label="<?php echo esc_attr( $title ); ?>">
             <?php if ( '' !== $image ) : ?>
-                <img class="aji-image" src="<?php echo esc_url( $image ); ?>" alt="<?php echo esc_attr( $title ); ?>" loading="<?php echo $is_active ? 'eager' : 'lazy'; ?>" <?php echo $is_active ? 'fetchpriority="high"' : ''; ?>>
+                <img class="aji-image" src="<?php echo esc_url( $image ); ?>" alt="<?php echo esc_attr( $title ); ?>" loading="<?php echo 0 === $index ? 'eager' : 'lazy'; ?>" <?php echo 0 === $index ? 'fetchpriority="high"' : ''; ?>>
             <?php endif; ?>
 
             <div class="aji-overlay <?php echo esc_attr( $overlay ); ?>"></div>
