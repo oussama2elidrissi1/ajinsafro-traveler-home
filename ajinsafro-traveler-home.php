@@ -179,20 +179,7 @@ add_shortcode( 'ajth_homepage', 'ajth_homepage_shortcode' );
  * Renders the standalone accordion slider template.
  */
 function ajinsafro_slider_shortcode( $atts ) {
-    wp_enqueue_style(
-        'ajinsafro-accordion-slider-css',
-        AJTH_URL . 'assets/css/accordion-slider.css',
-        array(),
-        AJTH_VERSION
-    );
-
-    wp_enqueue_script(
-        'ajinsafro-accordion-slider-js',
-        AJTH_URL . 'assets/js/accordion-slider.js',
-        array(),
-        AJTH_VERSION,
-        true
-    );
+    // Styles + script are inlined in templates/accordion-slider.php (Traveler theme overrides external assets).
 
     ob_start();
     include AJTH_DIR . 'templates/accordion-slider.php';
