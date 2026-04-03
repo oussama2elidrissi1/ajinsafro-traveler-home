@@ -11,17 +11,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 $slides = array(
     array(
         'title' => 'PROGRAMME DE FIDELITE',
-        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-1.jpg',
+        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-1.png',
         'cta_text' => "S'inscrire !",
         'cta_url' => 'https://www.ajinsafro.ma/fidelite',
-        'cta_target' => '_top',
+        'cta_target' => '_blank',
         'theme' => 'theme-0',
         'overlay' => 'overlay-0',
         'lang' => 'fr',
     ),
     array(
         'title' => 'GROUP DEALS TRAVEL',
-        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-2.jpg',
+        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-2.png',
         'cta_text' => '',
         'cta_url' => '',
         'cta_target' => '_self',
@@ -31,7 +31,7 @@ $slides = array(
     ),
     array(
         'title' => "L'7AJZ BKRI B'DHAB MCHRI",
-        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-3.jpg',
+        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-3.png',
         'cta_text' => 'احجز الآن',
         'cta_url' => 'https://www.ajinsafro.ma/voyages',
         'cta_target' => '_top',
@@ -41,7 +41,7 @@ $slides = array(
     ),
     array(
         'title' => 'PROGRAMME BZTAM eSFAR',
-        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-4.jpg',
+        'image' => AJINSAFRO_HOME_URL . 'assets/img/slide-4.png',
         'cta_text' => '',
         'cta_url' => '',
         'cta_target' => '_self',
@@ -67,7 +67,6 @@ if ( empty( $slides ) || ! is_array( $slides ) ) {
     return;
 }
 ?>
-<div style="width: 100%; margin-left: 0; margin-right: 0; padding: 0; box-sizing: border-box;">
 <div id="aji-accordion-slider" class="aji-accordion-slider" role="region" aria-label="Promotions AjiNsafro">
     <?php foreach ( array_values( $slides ) as $index => $slide ) :
         $title = isset( $slide['title'] ) ? (string) $slide['title'] : '';
@@ -101,5 +100,4 @@ if ( empty( $slides ) || ! is_array( $slides ) ) {
         </div>
     </article>
     <?php endforeach; ?>
-</div>
 </div>
