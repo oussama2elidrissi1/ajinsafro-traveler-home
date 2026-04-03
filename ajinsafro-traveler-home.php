@@ -3,7 +3,7 @@
  * Plugin Name: Ajinsafro Traveler Home
  * Plugin URI:  https://ajinsafro.com
  * Description: Surcharge la page d'accueil (front page) du thème Traveler avec une mise en page personnalisée : Hero, barre de recherche, offres dernière minute, destinations par région et bons coins.
- * Version:     1.0.1
+ * Version:     1.0.2
  * Author:      Ajinsafro
  * Author URI:  https://ajinsafro.com
  * Text Domain: ajinsafro-traveler-home
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /* ──────────────────────────────────────────────
  * Constants
  * ────────────────────────────────────────────── */
-define( 'AJTH_VERSION', '1.0.1' );
+define( 'AJTH_VERSION', '1.0.2' );
 define( 'AJTH_FILE',    __FILE__ );
 define( 'AJTH_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'AJTH_URL',     plugin_dir_url( __FILE__ ) );
