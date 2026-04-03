@@ -129,11 +129,6 @@ $render_featured = static function ( array $slide ) : string {
 		$style = '--aj-promo-accent:' . esc_attr( $accent ) . ';';
 	}
 
-	$rail = '';
-	if ( $title !== '' ) {
-		$rail = '<span class="aj-promo-split__rail" aria-hidden="true"><span class="aj-promo-split__rail-text">' . esc_html( $title ) . '</span></span>';
-	}
-
 	$media = '';
 	if ( $image_url !== '' ) {
 		$media = '<div class="aj-promo-split__media"><img src="' . esc_url( $image_url ) . '" alt="" loading="lazy" decoding="async" width="800" height="520"></div>';
@@ -162,10 +157,10 @@ $render_featured = static function ( array $slide ) : string {
 	$body = '<div class="aj-promo-split__body">' . $media . '<div class="aj-promo-split__scrim" aria-hidden="true"></div><div class="aj-promo-split__content">' . $title_inner . $desc . $btn . '</div></div>';
 
 	if ( $wrap_link ) {
-		return '<a class="aj-promo-split__featured-surface aj-promo-split__featured-surface--link" style="' . esc_attr( $style ) . '" href="' . esc_url( $link_url ) . '"' . ( $link_target === '_blank' ? ' target="_blank" rel="' . esc_attr( $rel ) . '"' : '' ) . '>' . $rail . $body . '</a>';
+		return '<a class="aj-promo-split__featured-surface aj-promo-split__featured-surface--link" style="' . esc_attr( $style ) . '" href="' . esc_url( $link_url ) . '"' . ( $link_target === '_blank' ? ' target="_blank" rel="' . esc_attr( $rel ) . '"' : '' ) . '>' . $body . '</a>';
 	}
 
-	return '<div class="aj-promo-split__featured-surface" style="' . esc_attr( $style ) . '" role="region">' . $rail . $body . '</div>';
+	return '<div class="aj-promo-split__featured-surface" style="' . esc_attr( $style ) . '" role="region">' . $body . '</div>';
 };
 
 $featured_slide = isset( $slides_payload[ $def_idx ] ) ? $slides_payload[ $def_idx ] : $slides_payload[0];
