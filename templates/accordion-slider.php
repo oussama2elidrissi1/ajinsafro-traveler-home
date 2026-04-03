@@ -1,7 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+if ( ! defined( 'ABSPATH' ) ) exit;
 $img = AJINSAFRO_HOME_URL . 'assets/img/';
 $slides = array(
 	array(
@@ -36,54 +34,55 @@ $slides = array(
 	),
 );
 ?>
-
-<!-- STYLES INLINE : bypass total du thème Traveler -->
 <style>
-#aji-wrap{width:100%;margin:0;padding:0;box-sizing:border-box}
-#aji-wrap .aji-label{font-family:Poppins,sans-serif;font-weight:700;font-size:14px;color:#0081bc;margin-bottom:10px;display:block}
-#aji-sl{display:flex;flex-direction:row;width:100%;height:180px;overflow:hidden;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.15);margin:0;padding:0;box-sizing:border-box}
-#aji-sl .as{display:flex;flex-direction:row;height:100%;flex:0 0 38px;min-width:38px;overflow:hidden;cursor:pointer;transition:flex .6s cubic-bezier(.77,0,.18,1)}
-#aji-sl .as.on{flex:1 1 auto}
-#aji-sl .tb{width:38px;min-width:38px;max-width:38px;height:100%;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;overflow:hidden;z-index:2}
-#aji-sl .tl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-90deg);white-space:nowrap;font-family:Poppins,sans-serif;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.12em;font-size:8px;pointer-events:none}
-#aji-sl .sc{position:relative;height:100%;flex:1 1 auto;overflow:hidden;opacity:0;transition:opacity .4s ease;min-width:0;background:#b8cdd8}
-#aji-sl .as.on .sc{opacity:1}
-#aji-sl .sc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block}
-#aji-sl .sc .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#9ca3af;font-weight:700;font-size:1.4rem;font-family:Poppins,sans-serif}
-#aji-sl .sc .btn{position:absolute;bottom:14%;right:5%;display:inline-block;background:#ff7200;color:#fff;padding:8px 24px;border-radius:50px;font-family:Poppins,sans-serif;font-weight:700;font-size:10px;text-transform:uppercase;text-decoration:none;letter-spacing:.08em;z-index:99;box-shadow:0 4px 16px rgba(255,114,0,.5);border:none;cursor:pointer;animation:apulse 2s infinite ease-in-out}
-#aji-sl .sc .btn.ar{background:#fff;color:#0081bc;font-family:Cairo,sans-serif;font-weight:900;font-size:13px;text-transform:none;letter-spacing:0;right:15%}
+#aji-root,#aji-root *{box-sizing:border-box;margin:0;padding:0;font-family:inherit}
+#aji-root{width:100%;display:block;margin-left:0!important;margin-right:0!important;padding-left:0!important;padding-right:0!important}
+.aji-label{font-family:'Poppins',sans-serif!important;font-weight:700!important;font-size:14px!important;color:#0081bc!important;margin-bottom:10px!important;display:block!important;padding:0!important}
+#aji-sl{display:flex!important;flex-direction:row!important;width:100%!important;height:160px!important;overflow:hidden!important;border-radius:8px!important;box-shadow:0 4px 20px rgba(0,0,0,.15)!important;padding:0!important;margin:0!important}
+#aji-sl .as{display:flex!important;flex-direction:row!important;height:100%!important;flex:0 0 36px!important;min-width:36px!important;overflow:hidden!important;cursor:pointer!important;transition:flex .6s cubic-bezier(.77,0,.18,1)!important}
+#aji-sl .as.on{flex:1 1 auto!important}
+#aji-sl .tb{width:36px!important;min-width:36px!important;max-width:36px!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;position:relative!important;flex-shrink:0!important;overflow:hidden!important;z-index:2!important}
+#aji-sl .tl{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%) rotate(-90deg)!important;white-space:nowrap!important;font-family:'Poppins',sans-serif!important;font-weight:700!important;color:#fff!important;text-transform:uppercase!important;letter-spacing:.12em!important;font-size:8px!important;pointer-events:none!important;user-select:none!important;display:block!important}
+#aji-sl .sc{position:relative!important;height:100%!important;flex:1 1 auto!important;overflow:hidden!important;opacity:0!important;transition:opacity .4s ease!important;min-width:0!important;background:#b8cdd8!important}
+#aji-sl .as.on .sc{opacity:1!important}
+#aji-sl .sc img{position:absolute!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center top!important;display:block!important;border:none!important;border-radius:0!important;box-shadow:none!important}
+#aji-sl .ph{position:absolute!important;inset:0!important;display:flex!important;align-items:center!important;justify-content:center!important;color:#9ca3af!important;font-weight:700!important;font-size:1.2rem!important}
+#aji-root #aji-sl .sc a.btn{position:absolute!important;bottom:12%!important;right:4%!important;display:inline-block!important;background:#ff7200!important;color:#ffffff!important;padding:7px 22px!important;border-radius:50px!important;font-family:'Poppins',sans-serif!important;font-weight:700!important;font-size:10px!important;text-transform:uppercase!important;text-decoration:none!important;letter-spacing:.08em!important;z-index:999!important;box-shadow:0 4px 14px rgba(255,114,0,.55)!important;border:none!important;cursor:pointer!important;line-height:1!important;animation:apulse 2s infinite ease-in-out!important;background-image:none!important;opacity:1!important;visibility:visible!important;pointer-events:all!important}
+#aji-root #aji-sl .sc a.btn:hover{background:#e06200!important;color:#fff!important;text-decoration:none!important}
+#aji-root #aji-sl .sc a.btn.ar{background:#ffffff!important;color:#0081bc!important;font-family:'Cairo',sans-serif!important;font-weight:900!important;font-size:13px!important;text-transform:none!important;letter-spacing:0!important;right:14%!important}
 @keyframes apulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 </style>
 
-<div id="aji-wrap">
+<div id="aji-root">
   <span class="aji-label">Explorez plus, voyagez mieux avec AjiNsafro</span>
   <div id="aji-sl">
-	<?php foreach ( $slides as $i => $s ) : ?>
-	<div class="as" data-i="<?php echo esc_attr( (string) $i ); ?>">
-	  <div class="tb" style="background:<?php echo esc_attr( $s['gradient'] ); ?>">
-		<span class="tl"><?php echo esc_html( $s['label'] ); ?></span>
-	  </div>
-	  <div class="sc">
-		<?php if ( ! empty( $s['image'] ) ) : ?>
-		  <img src="<?php echo esc_url( $s['image'] ); ?>" alt="<?php echo esc_attr( $s['label'] ); ?>" loading="lazy">
-		<?php else : ?>
-		  <div class="ph">800x800</div>
-		<?php endif; ?>
-		<?php if ( ! empty( $s['cta'] ) ) : ?>
-			<?php
-			$aji_cta_u = isset( $s['cta']['url'] ) ? (string) $s['cta']['url'] : '';
-			$aji_cta_h = ( '#' === $aji_cta_u ) ? '#' : esc_url( $aji_cta_u );
-			?>
-		  <a href="<?php echo $aji_cta_h; ?>"
-			 class="btn<?php echo ! empty( $s['cta']['arabic'] ) ? ' ar' : ''; ?>"
-			 target="_blank" rel="noopener noreferrer"
-			 onclick="event.stopPropagation()">
-			<?php echo esc_html( $s['cta']['label'] ); ?>
-		  </a>
-		<?php endif; ?>
-	  </div>
-	</div>
-	<?php endforeach; ?>
+    <?php foreach($slides as $i => $s): ?>
+    <div class="as" data-i="<?php echo $i; ?>">
+      <div class="tb" style="background:<?php echo esc_attr($s['gradient']); ?>">
+        <span class="tl"><?php echo esc_html($s['label']); ?></span>
+      </div>
+      <div class="sc">
+        <?php if(!empty($s['image'])): ?>
+          <img src="<?php echo esc_url($s['image']); ?>"
+               alt="<?php echo esc_attr($s['label']); ?>"
+               loading="lazy">
+        <?php else: ?>
+          <div class="ph">800&times;800</div>
+        <?php endif; ?>
+        <?php if(!empty($s['cta'])):
+          $href = ( '#' === $s['cta']['url'] ) ? '#' : esc_url($s['cta']['url']);
+        ?>
+          <a href="<?php echo $href; ?>"
+             class="btn<?php echo !empty($s['cta']['arabic']) ? ' ar' : ''; ?>"
+             target="_blank"
+             rel="noopener noreferrer"
+             onclick="event.stopPropagation()">
+            <?php echo esc_html($s['cta']['label']); ?>
+          </a>
+        <?php endif; ?>
+      </div>
+    </div>
+    <?php endforeach; ?>
   </div>
 </div>
 
