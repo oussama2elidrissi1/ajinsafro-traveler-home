@@ -67,8 +67,8 @@ if ( empty( $slides ) || ! is_array( $slides ) ) {
     return;
 }
 ?>
-<div style="width:100%; padding:0; margin:0;">
-<section class="aji-accordion-slider" id="aji-accordion-slider" role="region" aria-label="Promotions AjiNsafro">
+<div style="width: 100%; margin-left: 0; margin-right: 0; padding: 0; box-sizing: border-box;">
+<div id="aji-accordion-slider" class="aji-accordion-slider" role="region" aria-label="Promotions AjiNsafro">
     <?php foreach ( array_values( $slides ) as $index => $slide ) :
         $title = isset( $slide['title'] ) ? (string) $slide['title'] : '';
         $image = isset( $slide['image'] ) ? (string) $slide['image'] : '';
@@ -101,5 +101,5 @@ if ( empty( $slides ) || ! is_array( $slides ) ) {
         </div>
     </article>
     <?php endforeach; ?>
-</section>
+</div>
 </div>
