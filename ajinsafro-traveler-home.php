@@ -3,7 +3,7 @@
  * Plugin Name: Ajinsafro Traveler Home
  * Plugin URI:  https://ajinsafro.com
  * Description: Surcharge la page d'accueil (front page) du thème Traveler avec une mise en page personnalisée : Hero, barre de recherche, offres dernière minute, destinations par région et bons coins.
- * Version:     1.0.5
+ * Version:     1.0.6
  * Author:      Ajinsafro
  * Author URI:  https://ajinsafro.com
  * Text Domain: ajinsafro-traveler-home
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /* ──────────────────────────────────────────────
  * Constants
  * ────────────────────────────────────────────── */
-define( 'AJTH_VERSION', '1.0.5' );
+define( 'AJTH_VERSION', '1.0.6' );
 define( 'AJTH_FILE',    __FILE__ );
 define( 'AJTH_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'AJTH_URL',     plugin_dir_url( __FILE__ ) );
@@ -80,7 +80,7 @@ function ajth_enqueue_front_assets() {
     // Google Fonts - Poppins + Noto Sans Arabic (for RTL promo cards)
     wp_enqueue_style(
         'ajth-google-fonts',
-        'https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap',
+        'https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Noto+Sans+Arabic:wght@400;600;700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap',
         array(),
         null
     );
@@ -150,7 +150,7 @@ function ajth_preload_styles() {
         return;
     }
     echo '<link rel="preload" href="' . esc_url( AJTH_URL . 'assets/css/home.css' ) . '?ver=' . esc_attr( AJTH_VERSION ) . '" as="style">' . "\n";
-    echo '<link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" as="style">' . "\n";
+    echo '<link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Noto+Sans+Arabic:wght@400;600;700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" as="style">' . "\n";
     echo '<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">' . "\n";
 }
 add_action( 'wp_head', 'ajth_preload_styles', 0 );
@@ -392,69 +392,79 @@ function ajth_sanitize_promo_url( string $url ): string {
 function ajth_default_promotion_items_prototype(): array {
 	return array(
 		array(
-			'title'          => 'PROGRAMME DE FIDÉLITÉ',
-			'subtitle'       => '',
-			'image_url'      => 'https://i.ibb.co/tTrXK11z/Voyagez-Plus-Gagnez-Plus.png',
-			'link_url'       => 'https://www.ajinsafro.ma/fidelite',
-			'link_target'    => '_self',
-			'button_text'    => "S'inscrire !",
-			'button_url'     => 'https://www.ajinsafro.ma/fidelite',
-			'button_enabled' => true,
-			'accent_color'   => '',
-			'is_active'      => true,
-			'sort_order'     => 0,
+			'title'             => 'PROGRAMME DE FIDÉLITÉ',
+			'subtitle'          => '',
+			'image_url'         => 'https://i.ibb.co/tTrXK11z/Voyagez-Plus-Gagnez-Plus.png',
+			'link_url'          => 'https://www.ajinsafro.ma/fidelite',
+			'link_target'       => '_self',
+			'button_text'       => "S'inscrire !",
+			'button_url'        => 'https://www.ajinsafro.ma/fidelite',
+			'button_enabled'    => true,
+			'accent_color'      => '',
+			'tab_theme'         => 0,
+			'placeholder_text'  => '',
+			'is_active'         => true,
+			'sort_order'        => 0,
 		),
 		array(
-			'title'          => 'GROUP DEALS TRAVEL',
-			'subtitle'       => '',
-			'image_url'      => 'https://i.ibb.co/KcVS1QKB/plus-on-est-nombreaux-plus-on-voyage-leger.png',
-			'link_url'       => '',
-			'link_target'    => '_self',
-			'button_text'    => '',
-			'button_url'     => '',
-			'button_enabled' => false,
-			'accent_color'   => '',
-			'is_active'      => true,
-			'sort_order'     => 1,
+			'title'             => 'GROUP DEALS TRAVEL',
+			'subtitle'          => '',
+			'image_url'         => 'https://i.ibb.co/KcVS1QKB/plus-on-est-nombreaux-plus-on-voyage-leger.png',
+			'link_url'          => '',
+			'link_target'       => '_self',
+			'button_text'       => '',
+			'button_url'        => '',
+			'button_enabled'    => false,
+			'accent_color'      => '',
+			'tab_theme'         => 1,
+			'placeholder_text'  => '',
+			'is_active'         => true,
+			'sort_order'        => 1,
 		),
 		array(
-			'title'          => "L'7AJZ BKRI B'DHAB MCHRI",
-			'subtitle'       => '',
-			'image_url'      => 'https://i.ibb.co/tP3ByxFZ/7ajz-bkri.png',
-			'link_url'       => '',
-			'link_target'    => '_self',
-			'button_text'    => 'احجز الآن',
-			'button_url'     => '',
-			'button_enabled' => true,
-			'accent_color'   => '',
-			'is_active'      => true,
-			'sort_order'     => 2,
+			'title'             => "L'7AJZ BKRI B'DHAB MCHRI",
+			'subtitle'          => '',
+			'image_url'         => 'https://i.ibb.co/tP3ByxFZ/7ajz-bkri.png',
+			'link_url'          => '',
+			'link_target'       => '_self',
+			'button_text'       => 'احجز الآن',
+			'button_url'        => '',
+			'button_enabled'    => true,
+			'accent_color'      => '',
+			'tab_theme'         => 2,
+			'placeholder_text'  => '',
+			'is_active'         => true,
+			'sort_order'        => 2,
 		),
 		array(
-			'title'          => 'Programme BZTAM eSFAR',
-			'subtitle'       => '',
-			'image_url'      => '',
-			'link_url'       => '',
-			'link_target'    => '_self',
-			'button_text'    => '',
-			'button_url'     => '',
-			'button_enabled' => false,
-			'accent_color'   => '',
-			'is_active'      => true,
-			'sort_order'     => 3,
+			'title'             => 'Programme BZTAM eSFAR',
+			'subtitle'          => '',
+			'image_url'         => '',
+			'link_url'          => '',
+			'link_target'       => '_self',
+			'button_text'       => '',
+			'button_url'        => '',
+			'button_enabled'    => false,
+			'accent_color'      => '',
+			'tab_theme'         => 3,
+			'placeholder_text'  => '1000x800',
+			'is_active'         => true,
+			'sort_order'        => 3,
 		),
 		array(
-			'title'          => 'IMPORTANT UPDATES',
-			'subtitle'       => '',
-			'image_url'      => '',
-			'link_url'       => '',
-			'link_target'    => '_self',
-			'button_text'    => '',
-			'button_url'     => '',
-			'button_enabled' => false,
-			'accent_color'   => '',
-			'is_active'      => true,
-			'sort_order'     => 4,
+			'title'             => 'IMPORTANT UPDATES',
+			'subtitle'          => '',
+			'image_url'         => '',
+			'link_url'          => '',
+			'link_target'       => '_self',
+			'button_text'       => '',
+			'button_url'        => '',
+			'button_enabled'    => false,
+			'accent_color'      => '',
+			'tab_theme'         => 4,
+			'placeholder_text'  => '800x800',
+			'is_active'         => true,
+			'sort_order'        => 4,
 		),
 	);
 }
@@ -702,8 +712,11 @@ function ajth_normalize_promotions_settings( $promo, array $defaults ): array {
         $button_text = trim( (string) ( $item['button_text'] ?? '' ) );
         $button_url = ajth_sanitize_promo_url( (string) ( $item['button_url'] ?? '' ) );
         $link_url = ajth_sanitize_promo_url( (string) ( $item['link_url'] ?? '' ) );
+        $placeholder_text = trim( (string) ( $item['placeholder_text'] ?? '' ) );
+        $tab_theme = isset( $item['tab_theme'] ) ? (int) $item['tab_theme'] : (int) $idx;
+        $tab_theme = min( 4, max( 0, $tab_theme ) );
 
-        if ( '' === $title && '' === $subtitle && '' === $image_url && '' === $button_text && '' === $button_url && '' === $link_url ) {
+        if ( '' === $title && '' === $subtitle && '' === $image_url && '' === $button_text && '' === $button_url && '' === $link_url && '' === $placeholder_text ) {
             continue;
         }
 
@@ -723,6 +736,8 @@ function ajth_normalize_promotions_settings( $promo, array $defaults ): array {
             'button_url' => $button_url,
             'button_enabled' => ajth_truthy( $item['button_enabled'] ?? true ),
             'accent_color' => $accent,
+            'tab_theme' => $tab_theme,
+            'placeholder_text' => $placeholder_text,
             'is_active' => ajth_truthy( $item['is_active'] ?? $item['active'] ?? true ),
             'sort_order' => isset( $item['sort_order'] ) ? (int) $item['sort_order'] : ( isset( $item['order'] ) ? (int) $item['order'] : (int) $idx ),
         );
@@ -744,6 +759,8 @@ function ajth_normalize_promotions_settings( $promo, array $defaults ): array {
                 'button_url' => '',
                 'button_enabled' => true,
                 'accent_color' => '',
+                'tab_theme' => min( 4, (int) $idx ),
+                'placeholder_text' => '',
                 'is_active' => true,
                 'sort_order' => (int) $idx,
             );
