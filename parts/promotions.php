@@ -25,6 +25,16 @@ if ( ! $promo_section_on ) {
 $section_title = ! empty( $promo['title'] ) ? trim( (string) $promo['title'] ) : 'Explorez plus, voyagez mieux avec AjiNsafro';
 $raw_items = isset( $promo['items'] ) && is_array( $promo['items'] ) ? $promo['items'] : array();
 $max_slides = isset( $promo['max_slides'] ) ? max( 1, min( 20, (int) $promo['max_slides'] ) ) : 8;
+
+usort(
+	$raw_items,
+	static function ( $a, $b ) {
+		$a_order = is_array( $a ) ? (int) ( $a['sort_order'] ?? $a['order'] ?? 0 ) : 0;
+		$b_order = is_array( $b ) ? (int) ( $b['sort_order'] ?? $b['order'] ?? 0 ) : 0;
+		return $a_order <=> $b_order;
+	}
+);
+
 $items = array();
 foreach ( $raw_items as $row ) {
 	if ( ! is_array( $row ) ) {
@@ -46,7 +56,7 @@ if ( empty( $items ) ) {
 
 $autoplay = ! isset( $promo['autoplay'] ) || ( function_exists( 'ajth_truthy' ) ? ajth_truthy( $promo['autoplay'] ) : ! empty( $promo['autoplay'] ) );
 $delay_ms = isset( $promo['autoplay_delay_ms'] ) ? max( 2000, min( 60000, (int) $promo['autoplay_delay_ms'] ) ) : 5000;
-$arrows_enabled = ! isset( $promo['arrows_enabled'] ) || ( function_exists( 'ajth_truthy' ) ? ajth_truthy( $promo['arrows_enabled'] ) : ! empty( $promo['arrows_enabled'] ) );
+$arrows_enabled = isset( $promo['arrows_enabled'] ) && ( function_exists( 'ajth_truthy' ) ? ajth_truthy( $promo['arrows_enabled'] ) : ! empty( $promo['arrows_enabled'] ) );
 $def_idx = isset( $promo['default_active_index'] ) ? max( 0, (int) $promo['default_active_index'] ) : 0;
 if ( count( $items ) > 0 ) {
 	$def_idx = min( $def_idx, count( $items ) - 1 );
