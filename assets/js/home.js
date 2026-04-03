@@ -112,6 +112,13 @@
         var timer = null;
         var active = defIdx;
 
+        function flexOrderFor(activeIdx, idx) {
+            if (idx === activeIdx) {
+                return '0';
+            }
+            return String(idx < activeIdx ? idx + 1 : idx);
+        }
+
         function setActive(i) {
             if (!panels.length) return;
             var n = ((i % panels.length) + panels.length) % panels.length;
@@ -120,6 +127,7 @@
                 var on = idx === n;
                 p.classList.toggle('is-active', on);
                 p.setAttribute('aria-expanded', on ? 'true' : 'false');
+                p.style.order = flexOrderFor(n, idx);
             });
         }
 

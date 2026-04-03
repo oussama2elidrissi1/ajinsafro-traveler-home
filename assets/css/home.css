@@ -259,7 +259,9 @@
 .aj-promo-acc__strip {
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
     align-items: stretch;
+    justify-content: flex-start;
     gap: 6px;
     width: 100%;
     min-height: var(--aj-promo-h);
@@ -268,45 +270,106 @@
 .aj-promo-acc__panel {
     position: relative;
     flex: 0 0 var(--aj-promo-collapsed);
-    min-width: 40px;
-    max-width: 52px;
+    flex-shrink: 0;
+    min-width: 0;
+    max-width: var(--aj-promo-collapsed);
     border-radius: 12px;
     overflow: hidden;
     border: 1px solid rgba(226, 232, 240, 0.95);
     background: linear-gradient(145deg, #0e3a5a 0%, #145374 100%);
     box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
-    transition: flex 0.45s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.45s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.45s ease, box-shadow 0.3s ease;
-    will-change: flex;
+    transition: flex-basis 0.45s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.45s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.45s ease, box-shadow 0.3s ease;
 }
 
 .aj-promo-acc__panel.is-active {
-    flex: 1 1 68%;
-    min-width: min(100%, 520px);
+    flex: 1 1 auto;
+    min-width: 0;
     max-width: none;
+    width: auto;
     box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
     z-index: 2;
 }
 
+/* Surface: ref. 2 — rail gauche + zone visuelle (panneau ouvert uniquement) */
 .aj-promo-acc__surface {
     position: relative;
     display: grid;
-    grid-template: 1fr / 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(var(--aj-promo-h), auto);
     width: 100%;
-    height: 100%;
     min-height: var(--aj-promo-h);
+    height: 100%;
     text-decoration: none;
     color: inherit;
     cursor: pointer;
+}
+
+.aj-promo-acc__panel.is-active .aj-promo-acc__surface:has(.aj-promo-acc__rail) {
+    grid-template-columns: 30px minmax(0, 1fr);
 }
 
 .aj-promo-acc__surface--static {
     cursor: pointer;
 }
 
+.aj-promo-acc__rail {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    grid-column: 1;
+    grid-row: 1;
+    width: 30px;
+    min-width: 30px;
+    align-self: stretch;
+    padding: 6px 4px;
+    background: linear-gradient(180deg, #0c3558 0%, #082a45 100%);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.aj-promo-acc__panel.is-active .aj-promo-acc__rail {
+    display: flex;
+}
+
+.aj-promo-acc__rail-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    color: rgba(255, 255, 255, 0.95);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 100%;
+}
+
+.aj-promo-acc__main {
+    position: relative;
+    grid-column: 1;
+    grid-row: 1;
+    display: grid;
+    grid-template: 1fr / 1fr;
+    min-width: 0;
+    min-height: var(--aj-promo-h);
+    height: 100%;
+}
+
+.aj-promo-acc__panel.is-active .aj-promo-acc__surface:has(.aj-promo-acc__rail) .aj-promo-acc__main {
+    grid-column: 2;
+}
+
+.aj-promo-acc__panel.is-active .aj-promo-acc__surface:not(:has(.aj-promo-acc__rail)) .aj-promo-acc__main {
+    grid-column: 1;
+}
+
 .aj-promo-acc__media {
     grid-area: 1 / 1;
     position: relative;
     overflow: hidden;
+    min-height: var(--aj-promo-h);
 }
 
 .aj-promo-acc__media img {
@@ -514,6 +577,19 @@
 
     .aj-promo-acc__panel.is-active .aj-promo-acc__surface {
         min-height: clamp(140px, 42vw, 200px);
+    }
+
+    /* Mobile : rail masqué — une seule colonne */
+    .aj-promo-acc__rail {
+        display: none !important;
+    }
+
+    .aj-promo-acc__panel.is-active .aj-promo-acc__surface:has(.aj-promo-acc__rail) {
+        grid-template-columns: 1fr;
+    }
+
+    .aj-promo-acc__panel.is-active .aj-promo-acc__surface:has(.aj-promo-acc__rail) .aj-promo-acc__main {
+        grid-column: 1;
     }
 
     .aj-promo-acc,

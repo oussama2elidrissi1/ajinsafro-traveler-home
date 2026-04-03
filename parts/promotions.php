@@ -103,9 +103,11 @@ $uid = 'aj-promo-acc-' . ( function_exists( 'wp_unique_id' ) ? wp_unique_id() : 
 						$accent = trim( (string) ( $item['accent_color'] ?? '' ) );
 						$panel_id = $uid . '-panel-' . (int) $i;
 						$is_active_class = ( (int) $i === (int) $def_idx ) ? ' is-active' : '';
-						$style_vars = '';
+						// Flex order: active always first (left); others follow by index (ref. image 2).
+						$flex_order = (int) $i === (int) $def_idx ? 0 : ( (int) $i < (int) $def_idx ? (int) $i + 1 : (int) $i );
+						$style_vars = 'order:' . (int) $flex_order . ';';
 						if ( $accent !== '' && preg_match( '/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $accent ) ) {
-							$style_vars = '--aj-promo-accent:' . esc_attr( $accent ) . ';';
+							$style_vars .= '--aj-promo-accent:' . esc_attr( $accent ) . ';';
 						}
 						$show_btn_link = $btn_on && $button_text !== '' && $button_url !== '';
 						$conflict_links = ( $link_url !== '' && $show_btn_link && $button_url !== $link_url );
@@ -125,34 +127,42 @@ $uid = 'aj-promo-acc-' . ( function_exists( 'wp_unique_id' ) ? wp_unique_id() : 
 								<div class="aj-promo-acc__surface aj-promo-acc__surface--static" role="button" tabindex="0" aria-label="<?php echo esc_attr( $title !== '' ? $title : __( 'Panneau', 'ajinsafro-traveler-home' ) ); ?>">
 							<?php endif; ?>
 
-								<span class="aj-promo-acc__media" aria-hidden="true">
-									<?php if ( $image_url !== '' ) : ?>
-										<img src="<?php echo esc_url( $image_url ); ?>" alt="" loading="<?php echo (int) $i === 0 ? 'eager' : 'lazy'; ?>" decoding="async" width="800" height="560">
-									<?php else : ?>
-										<span class="aj-promo-acc__fallback" aria-hidden="true"></span>
-									<?php endif; ?>
-								</span>
-								<span class="aj-promo-acc__scrim" aria-hidden="true"></span>
-								<span class="aj-promo-acc__content">
-									<?php if ( $title !== '' ) : ?>
-										<?php if ( $conflict_links && $link_url !== '' ) : ?>
-											<a class="aj-promo-acc__title aj-promo-acc__title--link" href="<?php echo esc_url( $link_url ); ?>"<?php echo $link_target === '_blank' ? ' target="_blank" rel="' . esc_attr( $rel ) . '"' : ''; ?>><?php echo esc_html( $title ); ?></a>
+								<?php if ( $title !== '' ) : ?>
+									<span class="aj-promo-acc__rail" aria-hidden="true">
+										<span class="aj-promo-acc__rail-text"><?php echo esc_html( $title ); ?></span>
+									</span>
+								<?php endif; ?>
+
+								<span class="aj-promo-acc__main">
+									<span class="aj-promo-acc__media" aria-hidden="true">
+										<?php if ( $image_url !== '' ) : ?>
+											<img src="<?php echo esc_url( $image_url ); ?>" alt="" loading="<?php echo (int) $i === 0 ? 'eager' : 'lazy'; ?>" decoding="async" width="800" height="560">
 										<?php else : ?>
-											<span class="aj-promo-acc__title"><?php echo esc_html( $title ); ?></span>
+											<span class="aj-promo-acc__fallback" aria-hidden="true"></span>
 										<?php endif; ?>
-									<?php endif; ?>
-									<?php if ( $subtitle !== '' ) : ?>
-										<span class="aj-promo-acc__desc"><?php echo esc_html( $subtitle ); ?></span>
-									<?php endif; ?>
-									<?php if ( $show_btn_link ) : ?>
-										<span class="aj-promo-acc__btn-wrap">
-											<a class="aj-promo-acc__btn" href="<?php echo esc_url( $button_url ); ?>"<?php echo $link_target === '_blank' ? ' target="_blank" rel="' . esc_attr( $rel ) . '"' : ''; ?>><?php echo esc_html( $button_text ); ?></a>
-										</span>
-									<?php elseif ( $btn_on && $button_text !== '' && ! $show_btn_link ) : ?>
-										<span class="aj-promo-acc__btn-wrap">
-											<span class="aj-promo-acc__btn aj-promo-acc__btn--text"><?php echo esc_html( $button_text ); ?></span>
-										</span>
-									<?php endif; ?>
+									</span>
+									<span class="aj-promo-acc__scrim" aria-hidden="true"></span>
+									<span class="aj-promo-acc__content">
+										<?php if ( $title !== '' ) : ?>
+											<?php if ( $conflict_links && $link_url !== '' ) : ?>
+												<a class="aj-promo-acc__title aj-promo-acc__title--link" href="<?php echo esc_url( $link_url ); ?>"<?php echo $link_target === '_blank' ? ' target="_blank" rel="' . esc_attr( $rel ) . '"' : ''; ?>><?php echo esc_html( $title ); ?></a>
+											<?php else : ?>
+												<span class="aj-promo-acc__title"><?php echo esc_html( $title ); ?></span>
+											<?php endif; ?>
+										<?php endif; ?>
+										<?php if ( $subtitle !== '' ) : ?>
+											<span class="aj-promo-acc__desc"><?php echo esc_html( $subtitle ); ?></span>
+										<?php endif; ?>
+										<?php if ( $show_btn_link ) : ?>
+											<span class="aj-promo-acc__btn-wrap">
+												<a class="aj-promo-acc__btn" href="<?php echo esc_url( $button_url ); ?>"<?php echo $link_target === '_blank' ? ' target="_blank" rel="' . esc_attr( $rel ) . '"' : ''; ?>><?php echo esc_html( $button_text ); ?></a>
+											</span>
+										<?php elseif ( $btn_on && $button_text !== '' && ! $show_btn_link ) : ?>
+											<span class="aj-promo-acc__btn-wrap">
+												<span class="aj-promo-acc__btn aj-promo-acc__btn--text"><?php echo esc_html( $button_text ); ?></span>
+											</span>
+										<?php endif; ?>
+									</span>
 								</span>
 
 							<?php if ( $wrap_surface_a ) : ?>
