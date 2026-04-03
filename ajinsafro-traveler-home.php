@@ -3,7 +3,7 @@
  * Plugin Name: Ajinsafro Traveler Home
  * Plugin URI:  https://ajinsafro.com
  * Description: Surcharge la page d'accueil (front page) du thème Traveler avec une mise en page personnalisée : Hero, barre de recherche, offres dernière minute, destinations par région et bons coins.
- * Version:     1.0.4
+ * Version:     1.0.5
  * Author:      Ajinsafro
  * Author URI:  https://ajinsafro.com
  * Text Domain: ajinsafro-traveler-home
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /* ──────────────────────────────────────────────
  * Constants
  * ────────────────────────────────────────────── */
-define( 'AJTH_VERSION', '1.0.4' );
+define( 'AJTH_VERSION', '1.0.5' );
 define( 'AJTH_FILE',    __FILE__ );
 define( 'AJTH_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'AJTH_URL',     plugin_dir_url( __FILE__ ) );
@@ -366,6 +366,99 @@ function ajth_render_footer_sitewide() {
 }
 add_action( 'wp_footer', 'ajth_render_footer_sitewide', 1 );
 
+/**
+ * Strip prototype placeholder links (#) so panels are not wrapped in empty anchors.
+ *
+ * @param string $url Raw URL from settings.
+ * @return string Sanitized URL or empty string.
+ */
+function ajth_sanitize_promo_url( string $url ): string {
+	$url = trim( $url );
+	if ( $url === '' ) {
+		return '';
+	}
+	$lower = strtolower( $url );
+	if ( '#' === $lower || 'javascript:void(0)' === $lower || 'javascript:;' === $lower ) {
+		return '';
+	}
+	return $url;
+}
+
+/**
+ * Default “Explorez plus” slides — matches the approved HTML prototype (images + copy).
+ *
+ * @return array<int, array<string, mixed>>
+ */
+function ajth_default_promotion_items_prototype(): array {
+	return array(
+		array(
+			'title'          => 'PROGRAMME DE FIDÉLITÉ',
+			'subtitle'       => '',
+			'image_url'      => 'https://i.ibb.co/tTrXK11z/Voyagez-Plus-Gagnez-Plus.png',
+			'link_url'       => 'https://www.ajinsafro.ma/fidelite',
+			'link_target'    => '_self',
+			'button_text'    => "S'inscrire !",
+			'button_url'     => 'https://www.ajinsafro.ma/fidelite',
+			'button_enabled' => true,
+			'accent_color'   => '',
+			'is_active'      => true,
+			'sort_order'     => 0,
+		),
+		array(
+			'title'          => 'GROUP DEALS TRAVEL',
+			'subtitle'       => '',
+			'image_url'      => 'https://i.ibb.co/KcVS1QKB/plus-on-est-nombreaux-plus-on-voyage-leger.png',
+			'link_url'       => '',
+			'link_target'    => '_self',
+			'button_text'    => '',
+			'button_url'     => '',
+			'button_enabled' => false,
+			'accent_color'   => '',
+			'is_active'      => true,
+			'sort_order'     => 1,
+		),
+		array(
+			'title'          => "L'7AJZ BKRI B'DHAB MCHRI",
+			'subtitle'       => '',
+			'image_url'      => 'https://i.ibb.co/tP3ByxFZ/7ajz-bkri.png',
+			'link_url'       => '',
+			'link_target'    => '_self',
+			'button_text'    => 'احجز الآن',
+			'button_url'     => '',
+			'button_enabled' => true,
+			'accent_color'   => '',
+			'is_active'      => true,
+			'sort_order'     => 2,
+		),
+		array(
+			'title'          => 'Programme BZTAM eSFAR',
+			'subtitle'       => '',
+			'image_url'      => '',
+			'link_url'       => '',
+			'link_target'    => '_self',
+			'button_text'    => '',
+			'button_url'     => '',
+			'button_enabled' => false,
+			'accent_color'   => '',
+			'is_active'      => true,
+			'sort_order'     => 3,
+		),
+		array(
+			'title'          => 'IMPORTANT UPDATES',
+			'subtitle'       => '',
+			'image_url'      => '',
+			'link_url'       => '',
+			'link_target'    => '_self',
+			'button_text'    => '',
+			'button_url'     => '',
+			'button_enabled' => false,
+			'accent_color'   => '',
+			'is_active'      => true,
+			'sort_order'     => 4,
+		),
+	);
+}
+
 /* ──────────────────────────────────────────────
  * Helper: get plugin settings with defaults
  * ────────────────────────────────────────────── */
@@ -435,7 +528,7 @@ function ajth_get_settings() {
             'max_slides' => 8,
             'arrows_enabled' => true,
             'images' => array( '', '', '' ),
-            'items' => array(),
+            'items' => ajth_default_promotion_items_prototype(),
         ),
         'whatsapp_banner' => array(
             'enabled'   => true,
@@ -593,6 +686,9 @@ function ajth_normalize_promotions_settings( $promo, array $defaults ): array {
 
     $promo = array_replace_recursive( $defaults, $promo );
     $items = isset( $promo['items'] ) && is_array( $promo['items'] ) ? $promo['items'] : array();
+    if ( empty( $items ) ) {
+        $items = ajth_default_promotion_items_prototype();
+    }
     $normalized = array();
 
     foreach ( $items as $idx => $item ) {
@@ -604,8 +700,8 @@ function ajth_normalize_promotions_settings( $promo, array $defaults ): array {
         $title = trim( (string) ( $item['title'] ?? '' ) );
         $subtitle = trim( (string) ( $item['subtitle'] ?? $item['description'] ?? '' ) );
         $button_text = trim( (string) ( $item['button_text'] ?? '' ) );
-        $button_url = trim( (string) ( $item['button_url'] ?? '' ) );
-        $link_url = trim( (string) ( $item['link_url'] ?? '' ) );
+        $button_url = ajth_sanitize_promo_url( (string) ( $item['button_url'] ?? '' ) );
+        $link_url = ajth_sanitize_promo_url( (string) ( $item['link_url'] ?? '' ) );
 
         if ( '' === $title && '' === $subtitle && '' === $image_url && '' === $button_text && '' === $button_url && '' === $link_url ) {
             continue;
