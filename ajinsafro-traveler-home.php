@@ -57,11 +57,13 @@ add_action( 'plugins_loaded', 'ajth_init' );
  * ────────────────────────────────────────────── */
 function ajth_enqueue_front_assets() {
     $load = is_front_page() || is_home() || is_page( 'voyages' ) || is_post_type_archive( 'st_tours' );
+    $load_home_sections = is_front_page() || is_home();
 
     if ( ! $load && is_singular() ) {
         global $post;
         if ( $post && has_shortcode( $post->post_content, 'ajth_homepage' ) ) {
             $load = true;
+            $load_home_sections = true;
         }
     }
 
@@ -106,6 +108,23 @@ function ajth_enqueue_front_assets() {
         AJTH_VERSION,
         true
     );
+
+    if ( $load_home_sections ) {
+        wp_enqueue_style(
+            'ajth-home-reference-accordion-css',
+            AJTH_URL . 'assets/css/home-reference-accordion.css',
+            array( 'ajth-home-css' ),
+            AJTH_VERSION
+        );
+
+        wp_enqueue_script(
+            'ajth-home-reference-accordion-js',
+            AJTH_URL . 'assets/js/home-reference-accordion.js',
+            array(),
+            AJTH_VERSION,
+            true
+        );
+    }
 }
 add_action( 'wp_enqueue_scripts', 'ajth_enqueue_front_assets', 5 );
 
@@ -199,6 +218,23 @@ function ajinsafro_slider_shortcode( $atts ) {
     return ob_get_clean();
 }
 add_shortcode( 'ajinsafro_slider', 'ajinsafro_slider_shortcode' );
+
+/**
+ * Render the standalone homepage accordion section based on the approved reference.
+ *
+ * This is intentionally separate from the existing promotions block so the current
+ * section remains untouched on the home page.
+ *
+ * @return void
+ */
+function ajth_render_reference_accordion_section() {
+    $enabled = apply_filters( 'ajth_reference_accordion_enabled', true );
+    if ( ! $enabled ) {
+        return;
+    }
+
+    include AJTH_DIR . 'parts/reference-accordion.php';
+}
 
 /* ──────────────────────────────────────────────
  * Header settings managed from Laravel admin

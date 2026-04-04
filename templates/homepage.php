@@ -92,6 +92,9 @@ $dbr = ajth_get_destinations_by_region();
                     break;
                 case 'promotions':
                     include AJTH_DIR . 'parts/promotions.php';
+                    if ( function_exists( 'ajth_render_reference_accordion_section' ) ) {
+                        ajth_render_reference_accordion_section();
+                    }
                     break;
                 case 'whatsapp_banner':
                     include AJTH_DIR . 'parts/whatsapp-banner.php';
