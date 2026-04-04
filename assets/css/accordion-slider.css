@@ -1,334 +1,302 @@
-/*! AjiNsafro Accordion Slider — matches Slide(3).html reference exactly */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;900&family=Cairo:wght@700;900&display=swap');
+/**
+ * Ajinsafro home — horizontal accordion promo (reference: Slide(3).html).
+ * Scoped to #ajih-promo-accordion; no Tailwind. Heights ~52% of mockup for homepage.
+ */
 
-/* ────────────────────────────────────────────────
-   RESET — scoped to #aji-accordion so nothing
-   from the Traveler theme leaks in.
-   ──────────────────────────────────────────────── */
-#aji-accordion,
-#aji-accordion *,
-#aji-accordion *::before,
-#aji-accordion *::after {
-	box-sizing: border-box !important;
-	margin: 0 !important;
-	padding: 0 !important;
-	border: 0 !important;
-	outline: none !important;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&family=Cairo:wght@700;900&display=swap');
+
+/* ── Isolation reset (Traveler / Elementor safe) ───────────────────────── */
+#ajih-promo-accordion,
+#ajih-promo-accordion *,
+#ajih-promo-accordion *::before,
+#ajih-promo-accordion *::after {
+	box-sizing: border-box;
+}
+
+#ajih-promo-accordion {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	/* Mockup: 420 / 380 / 320 — scaled for real home section */
+	height: 220px;
+	overflow: hidden;
+	background: #fff;
+	border-radius: 0.5rem;
+	box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+	font-family: 'Poppins', Arial, sans-serif;
+	position: relative;
+}
+
+/* ── Slide row: tab + pane ─────────────────────────────────────────────── */
+#ajih-promo-accordion .ajih-acc__slide {
+	display: flex;
+	flex-direction: row;
+	flex: 0 0 auto;
+	align-items: stretch;
+	height: 100%;
+	min-width: 2rem;
+	overflow: hidden;
+	cursor: pointer;
+	transition: flex 700ms cubic-bezier(0.4, 0, 0.2, 1), min-width 700ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#ajih-promo-accordion .ajih-acc__slide--active {
+	flex: 1 1 0%;
+	min-width: 0;
+}
+
+/* ── Vertical tab strip ────────────────────────────────────────────────── */
+#ajih-promo-accordion .ajih-acc__tab {
+	width: 2rem;
+	min-width: 2rem;
+	max-width: 2rem;
+	height: 100%;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	z-index: 20;
+	box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+	transition: filter 200ms ease;
+}
+
+#ajih-promo-accordion .ajih-acc__tab:hover {
+	filter: brightness(1.1);
+}
+
+#ajih-promo-accordion .ajih-acc__tabtext {
+	position: absolute;
+	display: block;
+	transform: rotate(90deg);
+	white-space: nowrap;
+	font-family: 'Poppins', sans-serif;
+	font-weight: 600;
+	color: #fff;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	font-size: 10px;
+	max-width: 280px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	pointer-events: none;
+	user-select: none;
+}
+
+/* ── Pane (image area) ─────────────────────────────────────────────────── */
+#ajih-promo-accordion .ajih-acc__pane {
+	position: relative;
+	flex: 1 1 auto;
+	min-width: 0;
+	height: 100%;
+	overflow: hidden;
+	opacity: 0;
+	transition: opacity 500ms ease;
+	z-index: 10;
+}
+
+#ajih-promo-accordion .ajih-acc__pane--visible {
+	opacity: 1;
+}
+
+#ajih-promo-accordion .ajih-acc__img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center center;
+	display: block;
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	margin: 0;
+	padding: 0;
+}
+
+#ajih-promo-accordion .ajih-acc__overlay {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+#ajih-promo-accordion .ajih-acc__placeholder {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #6b7280;
+	font-weight: 700;
+	font-size: 1.25rem;
+	font-family: 'Poppins', sans-serif;
+}
+
+/* ── CTA positions (reference Tailwind bottom/right breakpoints) ──────── */
+#ajih-promo-accordion .ajih-acc__cta-wrap {
+	position: absolute;
+	z-index: 30;
+	pointer-events: none;
+}
+
+#ajih-promo-accordion .ajih-acc__cta-wrap--default {
+	bottom: 10%;
+	right: 5%;
+}
+
+#ajih-promo-accordion .ajih-acc__cta-wrap--arabic {
+	bottom: 10%;
+	right: 12%;
+}
+
+/* Theme-busting link styles */
+body #ajih-promo-accordion .ajih-acc__cta {
+	display: inline-block;
+	font-weight: 700;
+	border-radius: 9999px;
+	box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+	cursor: pointer;
+	pointer-events: auto;
 	text-decoration: none !important;
-	list-style: none !important;
-	-webkit-tap-highlight-color: transparent !important;
-}
-
-/* ────────────────────────────────────────────────
-   SLIDER ROOT
-   Reference: h-[420px] sm:h-[380px] md:h-[320px]
-   ──────────────────────────────────────────────── */
-#aji-accordion {
-	display: flex !important;
-	flex-direction: row !important;
-	width: 100% !important;
-	max-width: 100% !important;
-	height: 420px !important;
-	overflow: hidden !important;
-	background: #ffffff !important;
-	border-radius: 0.5rem !important;
-	box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
-	font-family: 'Poppins', Arial, sans-serif !important;
-	position: relative !important;
-}
-
-/* ────────────────────────────────────────────────
-   PANEL (each slide = tab + pane)
-   Reference: min-w-[2rem] collapsed, flex-1 active
-   ──────────────────────────────────────────────── */
-#aji-accordion .aji-panel {
-	display: flex !important;
-	flex-direction: row !important;
-	height: 100% !important;
-	min-width: 2rem !important;
-	overflow: hidden !important;
-	cursor: pointer !important;
-	transition: all 700ms cubic-bezier(0.22, 1, 0.36, 1) !important;
-	flex: 0 0 auto !important;
-}
-
-#aji-accordion .aji-panel.aji-panel--active {
-	flex: 1 1 0% !important;
-}
-
-/* ────────────────────────────────────────────────
-   TAB BAR (vertical colored strip)
-   Reference: w-8 / sm:w-10 / md:w-14
-   ──────────────────────────────────────────────── */
-#aji-accordion .aji-tab {
-	width: 2rem !important;
-	min-width: 2rem !important;
-	max-width: 2rem !important;
-	height: 100% !important;
-	flex-shrink: 0 !important;
-	display: flex !important;
-	align-items: center !important;
-	justify-content: center !important;
-	position: relative !important;
-	z-index: 20 !important;
-	box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2) !important;
-	transition: filter 200ms ease !important;
-}
-
-#aji-accordion .aji-tab:hover {
-	filter: brightness(1.10) !important;
-}
-
-/* ────────────────────────────────────────────────
-   TAB LABEL (rotated text)
-   Reference: rotate-90, tracking-widest, uppercase
-   ──────────────────────────────────────────────── */
-#aji-accordion .aji-tab-text {
-	position: absolute !important;
-	display: block !important;
-	transform: rotate(90deg) !important;
-	white-space: nowrap !important;
-	font-family: 'Poppins', sans-serif !important;
-	font-weight: 600 !important;
-	color: #ffffff !important;
-	text-transform: uppercase !important;
-	letter-spacing: 0.1em !important;
-	font-size: 10px !important;
-	max-width: 280px !important;
-	overflow: hidden !important;
-	text-overflow: ellipsis !important;
-	pointer-events: none !important;
-	user-select: none !important;
-}
-
-/* ────────────────────────────────────────────────
-   PANE (slide content area)
-   Reference: opacity-0 → opacity-100 on active
-   ──────────────────────────────────────────────── */
-#aji-accordion .aji-pane {
-	position: relative !important;
-	height: 100% !important;
-	flex: 1 1 auto !important;
-	min-width: 0 !important;
-	overflow: hidden !important;
-	opacity: 0 !important;
-	transition: opacity 500ms ease !important;
-	background: #e5e7eb !important;
-	z-index: 10 !important;
-}
-
-#aji-accordion .aji-panel.aji-panel--active .aji-pane {
-	opacity: 1 !important;
-}
-
-/* ────────────────────────────────────────────────
-   PANE IMAGE
-   Reference: absolute inset-0 object-cover
-   ──────────────────────────────────────────────── */
-#aji-accordion .aji-pane-img {
-	position: absolute !important;
-	top: 0 !important;
-	left: 0 !important;
-	right: 0 !important;
-	bottom: 0 !important;
-	width: 100% !important;
-	height: 100% !important;
-	object-fit: cover !important;
-	object-position: center !important;
-	display: block !important;
-	border-radius: 0 !important;
-	box-shadow: none !important;
-}
-
-/* ────────────────────────────────────────────────
-   OVERLAY (subtle gradient over image)
-   ──────────────────────────────────────────────── */
-#aji-accordion .aji-pane-overlay {
-	position: absolute !important;
-	top: 0 !important;
-	left: 0 !important;
-	right: 0 !important;
-	bottom: 0 !important;
-	pointer-events: none !important;
-}
-
-/* ────────────────────────────────────────────────
-   PLACEHOLDER (slide 5)
-   ──────────────────────────────────────────────── */
-#aji-accordion .aji-placeholder {
-	position: absolute !important;
-	top: 0 !important;
-	left: 0 !important;
-	right: 0 !important;
-	bottom: 0 !important;
-	display: flex !important;
-	align-items: center !important;
-	justify-content: center !important;
-	color: #6b7280 !important;
-	font-weight: 700 !important;
-	font-size: 1.25rem !important;
-	font-family: 'Poppins', sans-serif !important;
-}
-
-/* ────────────────────────────────────────────────
-   CTA BUTTON CONTAINER
-   Reference: absolute bottom-[10%] right-[5%]
-   ──────────────────────────────────────────────── */
-#aji-accordion .aji-cta-wrap {
-	position: absolute !important;
-	bottom: 10% !important;
-	right: 5% !important;
-	z-index: 50 !important;
-	pointer-events: none !important;
-}
-
-/* ────────────────────────────────────────────────
-   CTA BUTTON — ORANGE (default)
-   Highest specificity to beat Traveler theme.
-   ──────────────────────────────────────────────── */
-body #aji-accordion .aji-pane .aji-cta-wrap a.aji-cta {
-	display: inline-block !important;
-	background: #ff7200 !important;
+	border: none !important;
 	background-image: none !important;
-	color: #ffffff !important;
+	transition: background-color 300ms ease, transform 200ms ease;
+	animation: ajih-pulse-soft 2s infinite ease-in-out;
+	line-height: 1.3;
+}
+
+body #ajih-promo-accordion .ajih-acc__cta--orange {
+	background: #ff7200 !important;
+	color: #fff !important;
 	font-family: 'Poppins', sans-serif !important;
-	font-weight: 700 !important;
-	font-size: 9px !important;
 	text-transform: uppercase !important;
 	letter-spacing: 0.05em !important;
-	padding: 6px 16px !important;
-	border-radius: 9999px !important;
-	box-shadow: 0 10px 22px rgba(0, 0, 0, 0.24) !important;
-	cursor: pointer !important;
-	pointer-events: all !important;
-	line-height: 1.4 !important;
-	opacity: 1 !important;
-	visibility: visible !important;
-	position: relative !important;
-	animation: aji-pulse-soft 2s infinite ease-in-out !important;
-	transition: background-color 200ms ease, transform 200ms ease !important;
+	font-size: 9px !important;
+	padding: 0.375rem 1rem !important;
 }
 
-body #aji-accordion .aji-pane .aji-cta-wrap a.aji-cta:hover {
-	background: #e06500 !important;
-	transform: translateY(-1px) !important;
+body #ajih-promo-accordion .ajih-acc__cta--orange:hover {
+	background: #ea580c !important;
+	color: #fff !important;
 }
 
-/* ────────────────────────────────────────────────
-   CTA BUTTON — ARABIC (white, Cairo font)
-   ──────────────────────────────────────────────── */
-body #aji-accordion .aji-pane .aji-cta-wrap a.aji-cta.aji-cta--ar {
-	background: #ffffff !important;
+body #ajih-promo-accordion .ajih-acc__cta--arabic {
+	background: #fff !important;
 	color: #0081bc !important;
 	font-family: 'Cairo', sans-serif !important;
-	font-weight: 700 !important;
-	font-size: 14px !important;
 	text-transform: none !important;
 	letter-spacing: 0 !important;
-	padding: 6px 24px !important;
+	font-size: 0.875rem !important;
+	padding: 0.375rem 1.5rem !important;
 }
 
-body #aji-accordion .aji-pane .aji-cta-wrap a.aji-cta.aji-cta--ar:hover {
+body #ajih-promo-accordion .ajih-acc__cta--arabic:hover {
 	background: #f3f4f6 !important;
 }
 
-/* ────────────────────────────────────────────────
-   PULSE ANIMATION
-   ──────────────────────────────────────────────── */
-@keyframes aji-pulse-soft {
+@keyframes ajih-pulse-soft {
 	0%, 100% { transform: scale(1); }
 	50% { transform: scale(1.05); }
 }
 
-/* ────────────────────────────────────────────────
-   RESPONSIVE — matching reference breakpoints
-   sm:380px  md:320px  + tab widths sm:w-10 md:w-14
-   ──────────────────────────────────────────────── */
+/* ── Tablet ────────────────────────────────────────────────────────────── */
 @media (min-width: 640px) {
-	#aji-accordion {
-		height: 380px !important;
+	#ajih-promo-accordion {
+		height: 200px;
 	}
 
-	#aji-accordion .aji-panel {
-		min-width: 2.5rem !important;
+	#ajih-promo-accordion .ajih-acc__slide {
+		min-width: 2.5rem;
 	}
 
-	#aji-accordion .aji-tab {
-		width: 2.5rem !important;
-		min-width: 2.5rem !important;
-		max-width: 2.5rem !important;
+	#ajih-promo-accordion .ajih-acc__tab {
+		width: 2.5rem;
+		min-width: 2.5rem;
+		max-width: 2.5rem;
 	}
 
-	#aji-accordion .aji-tab-text {
-		font-size: 12px !important;
+	#ajih-promo-accordion .ajih-acc__tabtext {
+		font-size: 12px;
 	}
 
-	body #aji-accordion .aji-pane .aji-cta-wrap a.aji-cta {
+	#ajih-promo-accordion .ajih-acc__cta-wrap--default {
+		bottom: 13%;
+		right: 7%;
+	}
+
+	#ajih-promo-accordion .ajih-acc__cta-wrap--arabic {
+		bottom: 13%;
+		right: 15%;
+	}
+
+	body #ajih-promo-accordion .ajih-acc__cta--orange {
 		font-size: 10px !important;
-		padding: 6px 24px !important;
+		padding: 0.375rem 1.5rem !important;
 	}
 
-	body #aji-accordion .aji-pane .aji-cta-wrap a.aji-cta.aji-cta--ar {
-		font-size: 18px !important;
-		padding: 6px 32px !important;
+	body #ajih-promo-accordion .ajih-acc__cta--arabic {
+		font-size: 1.125rem !important;
+		padding: 0.375rem 2rem !important;
 	}
 
-	#aji-accordion .aji-cta-wrap {
-		bottom: 13% !important;
-		right: 7% !important;
-	}
-
-	#aji-accordion .aji-placeholder {
-		font-size: 1.875rem !important;
+	#ajih-promo-accordion .ajih-acc__placeholder {
+		font-size: 1.875rem;
 	}
 }
 
+/* ── Desktop ───────────────────────────────────────────────────────────── */
 @media (min-width: 768px) {
-	#aji-accordion {
-		height: 320px !important;
+	#ajih-promo-accordion {
+		height: 168px;
 	}
 
-	#aji-accordion .aji-panel {
-		min-width: 3.5rem !important;
+	#ajih-promo-accordion .ajih-acc__slide {
+		min-width: 3.5rem;
 	}
 
-	#aji-accordion .aji-tab {
-		width: 3.5rem !important;
-		min-width: 3.5rem !important;
-		max-width: 3.5rem !important;
+	#ajih-promo-accordion .ajih-acc__tab {
+		width: 3.5rem;
+		min-width: 3.5rem;
+		max-width: 3.5rem;
 	}
 
-	#aji-accordion .aji-tab-text {
-		font-size: 18px !important;
+	#ajih-promo-accordion .ajih-acc__tabtext {
+		font-size: 18px;
 	}
 
-	body #aji-accordion .aji-pane .aji-cta-wrap a.aji-cta {
-		font-size: 14px !important;
-		padding: 8px 32px !important;
+	#ajih-promo-accordion .ajih-acc__cta-wrap--default {
+		bottom: 15%;
+		right: 10%;
 	}
 
-	body #aji-accordion .aji-pane .aji-cta-wrap a.aji-cta.aji-cta--ar {
-		font-size: 20px !important;
-		padding: 8px 40px !important;
+	#ajih-promo-accordion .ajih-acc__cta-wrap--arabic {
+		bottom: 16%;
+		right: 18%;
 	}
 
-	#aji-accordion .aji-cta-wrap {
-		bottom: 15% !important;
-		right: 10% !important;
+	body #ajih-promo-accordion .ajih-acc__cta--orange {
+		font-size: 0.875rem !important;
+		padding: 0.5rem 2rem !important;
 	}
 
-	#aji-accordion .aji-placeholder {
-		font-size: 3rem !important;
+	body #ajih-promo-accordion .ajih-acc__cta--arabic {
+		font-size: 1.25rem !important;
+		padding: 0.5rem 2.5rem !important;
+	}
+
+	#ajih-promo-accordion .ajih-acc__placeholder {
+		font-size: 3rem;
 	}
 }
 
-/* ────────────────────────────────────────────────
-   ACCESSIBILITY
-   ──────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-	#aji-accordion .aji-panel,
-	#aji-accordion .aji-pane,
-	body #aji-accordion .aji-pane .aji-cta-wrap a.aji-cta {
+	#ajih-promo-accordion .ajih-acc__slide,
+	#ajih-promo-accordion .ajih-acc__pane,
+	body #ajih-promo-accordion .ajih-acc__cta {
 		transition: none !important;
 		animation: none !important;
 	}
