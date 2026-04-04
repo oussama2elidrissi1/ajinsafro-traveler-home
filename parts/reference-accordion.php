@@ -1,8 +1,6 @@
 <?php
 /**
- * Part: standalone homepage accordion copied from the approved reference slider.
- *
- * This block is intentionally independent from the existing promotions section.
+ * Part: standalone homepage accordion slider driven by home settings.
  *
  * @package AjinsafroTravelerHome
  */
@@ -11,75 +9,92 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$base_url = AJTH_URL . 'assets/img/';
+$settings = ajth_get_settings();
+$accordion = isset( $settings['accordion_slider'] ) && is_array( $settings['accordion_slider'] )
+	? $settings['accordion_slider']
+	: array();
 
-$slides = array(
-	array(
-		'title'   => "PROGRAMME DE FID\u{00C9}LIT\u{00C9}",
-		'image'   => $base_url . 'slide-1.png',
-		'pane_bg' => '#e5e7eb',
-		'tab_bg'  => 'linear-gradient(to bottom, #00a3e0, #0081bc)',
-		'overlay' => 'linear-gradient(to bottom, rgba(0, 163, 224, 0.10), rgba(0, 129, 188, 0.10))',
-		'cta'     => array(
-			'text'   => "S'inscrire !",
-			'url'    => 'https://www.ajinsafro.ma/fidelite',
-			'target' => '_top',
-			'kind'   => 'orange',
-			'wrap'   => 'default',
-		),
-	),
-	array(
-		'title'   => 'GROUP DEALS TRAVEL',
-		'image'   => $base_url . 'slide-2.png',
-		'pane_bg' => '#d1d5db',
-		'tab_bg'  => 'linear-gradient(to bottom, #4ade80, #16a34a)',
-		'overlay' => 'linear-gradient(to bottom, rgba(74, 222, 128, 0.05), rgba(22, 163, 74, 0.05))',
-		'cta'     => null,
-	),
-	array(
-		'title'   => "L'7AJZ BKRI B'DHAB MCHRI",
-		'image'   => $base_url . 'slide-3.png',
-		'pane_bg' => '#e5e7eb',
-		'tab_bg'  => 'linear-gradient(to bottom, #1b5c8c, #0e3a5a)',
-		'overlay' => 'linear-gradient(to bottom, rgba(27, 92, 140, 0.05), rgba(14, 58, 90, 0.05))',
-		'cta'     => array(
-			'text'   => "\u{0627}\u{062D}\u{062C}\u{0632} \u{0627}\u{0644}\u{0622}\u{0646}",
-			'url'    => '#',
-			'target' => '_self',
-			'kind'   => 'arabic',
-			'wrap'   => 'arabic',
-		),
-	),
-	array(
-		'title'   => 'Programme BZTAM eSFAR',
-		'image'   => $base_url . 'slide-4.png',
-		'pane_bg' => '#d1d5db',
-		'tab_bg'  => 'linear-gradient(to bottom, #facc15, #f97316)',
-		'overlay' => 'linear-gradient(to bottom, rgba(250, 204, 21, 0.10), rgba(249, 115, 22, 0.10))',
-		'cta'     => null,
-	),
-	array(
-		'title'   => 'IMPORTANT UPDATES',
-		'image'   => '',
-		'pane_bg' => '#e5e7eb',
-		'tab_bg'  => 'linear-gradient(to bottom, #ef4444, #b91c1c)',
-		'overlay' => '',
-		'cta'     => null,
-	),
+$raw_slides = isset( $accordion['slides'] ) && is_array( $accordion['slides'] )
+	? $accordion['slides']
+	: array();
+
+if ( count( $raw_slides ) < 1 ) {
+	return;
+}
+
+$tab_gradients = array(
+	'linear-gradient(to bottom, #00a3e0, #0081bc)',
+	'linear-gradient(to bottom, #4ade80, #16a34a)',
+	'linear-gradient(to bottom, #1b5c8c, #0e3a5a)',
+	'linear-gradient(to bottom, #facc15, #f97316)',
+	'linear-gradient(to bottom, #ef4444, #b91c1c)',
 );
 
-$slides = apply_filters( 'ajth_reference_accordion_slides', $slides );
+$pane_backgrounds = array( '#e5e7eb', '#d1d5db', '#e5e7eb', '#d1d5db', '#e5e7eb' );
+$slides = array();
+
+foreach ( array_values( $raw_slides ) as $index => $slide ) {
+	if ( ! is_array( $slide ) ) {
+		continue;
+	}
+
+	$title = trim( (string) ( $slide['title'] ?? '' ) );
+	if ( '' === $title ) {
+		continue;
+	}
+
+	$button_style = trim( (string) ( $slide['button_style'] ?? 'orange' ) );
+	if ( '' === $button_style ) {
+		$button_style = 'orange';
+	}
+	if ( 'white' === $button_style ) {
+		$button_style = 'arabic';
+	}
+	if ( 'white-arabic' === $button_style ) {
+		$button_style = 'arabic';
+	}
+
+	$button_text = trim( (string) ( $slide['button_text'] ?? '' ) );
+	$link = trim( (string) ( $slide['link'] ?? '#' ) );
+	$target = 'white-arabic' === $button_style ? '_self' : '_top';
+	if ( '#' === $link || '' === $link ) {
+		$target = '_self';
+	}
+
+	$slides[] = array(
+		'title' => $title,
+		'subtitle' => trim( (string) ( $slide['subtitle'] ?? '' ) ),
+		'image' => trim( (string) ( $slide['image'] ?? '' ) ),
+		'pane_bg' => $pane_backgrounds[ $index % count( $pane_backgrounds ) ],
+		'tab_bg' => $tab_gradients[ $index % count( $tab_gradients ) ],
+		'overlay' => trim( (string) ( $slide['overlay_color'] ?? '' ) ),
+		'cta' => '' !== $button_text ? array(
+			'text' => $button_text,
+			'url' => '' !== $link ? $link : '#',
+			'target' => $target,
+			'kind' => $button_style,
+			'wrap' => 'arabic' === $button_style ? 'arabic' : 'default',
+		) : null,
+	);
+}
+
+$slides = apply_filters( 'ajth_reference_accordion_slides', $slides, $accordion, $settings );
 
 if ( empty( $slides ) || ! is_array( $slides ) ) {
 	return;
 }
+
+$delay = isset( $accordion['autoplay_speed'] ) ? (int) $accordion['autoplay_speed'] : 5000;
+$delay = max( 2000, min( 30000, $delay ) );
+$autoplay = ! empty( $accordion['autoplay'] );
 ?>
 <section class="aj-section ajha-ref-section" id="aj-reference-accordion">
 	<div class="aj-container">
 		<div
 			class="ajha-ref-accordion"
 			data-ajha-ref-accordion="1"
-			data-delay="5000"
+			data-ajha-ref-autoplay="<?php echo $autoplay ? '1' : '0'; ?>"
+			data-delay="<?php echo esc_attr( (string) $delay ); ?>"
 			data-start-index="0"
 			role="region"
 			aria-label="<?php echo esc_attr__( 'Promotions AjiNsafro', 'ajinsafro-traveler-home' ); ?>"

@@ -199,7 +199,9 @@ add_shortcode( 'ajth_homepage', 'ajth_homepage_shortcode' );
  * @return void
  */
 function ajth_render_reference_accordion_section() {
-    $enabled = apply_filters( 'ajth_reference_accordion_enabled', true );
+    $settings = ajth_get_settings();
+    $enabled = ! empty( $settings['accordion_slider']['enabled'] );
+    $enabled = apply_filters( 'ajth_reference_accordion_enabled', $enabled, $settings );
     if ( ! $enabled ) {
         return;
     }
@@ -471,6 +473,12 @@ function ajth_get_settings() {
             array( 'title' => 'Shopping', 'subtitle' => 'Lorem ipsum dolor sit amet', 'icon' => 'fas fa-shopping-bag', 'image_url' => 'https://images.unsplash.com/photo-1481437156560-3205f6a55735?auto=format&fit=crop&w=800&q=80', 'link_url' => '#' ),
         ),
         'good_spots_title' => 'Les bons coins sur votre destination',
+        'accordion_slider' => array(
+            'enabled' => true,
+            'autoplay' => true,
+            'autoplay_speed' => 5000,
+            'slides' => ajth_default_accordion_slider_slides(),
+        ),
         'whatsapp_banner' => array(
             'enabled'   => true,
             'title'    => 'Rejoignez notre chaîne WhatsApp',
@@ -514,14 +522,34 @@ function ajth_get_settings() {
     if ( ! is_array( $saved ) || empty( $saved ) ) {
         $saved = ajth_legacy_settings_to_json();
     }
+    $needs_cleanup = false;
     if ( isset( $saved['promotions'] ) ) {
         unset( $saved['promotions'] );
+        $needs_cleanup = true;
+    }
+    if ( isset( $saved['sections']['promotions'] ) ) {
+        unset( $saved['sections']['promotions'] );
+        $needs_cleanup = true;
+    }
+    if ( isset( $saved['section_order'] ) && is_array( $saved['section_order'] ) ) {
+        $clean_order = array_values( array_filter( $saved['section_order'], static fn( $key ) => $key !== 'promotions' ) );
+        if ( $clean_order !== $saved['section_order'] ) {
+            $saved['section_order'] = $clean_order;
+            $needs_cleanup = true;
+        }
+    }
+    if ( $needs_cleanup ) {
+        update_option( 'aj_home_settings', wp_json_encode( $saved, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ), false );
     }
 
     $settings = array_replace_recursive( $defaults, $saved );
     $settings['holiday_theme'] = ajth_normalize_holiday_theme_settings(
         isset( $settings['holiday_theme'] ) ? $settings['holiday_theme'] : array(),
         $defaults['holiday_theme']
+    );
+    $settings['accordion_slider'] = ajth_normalize_accordion_slider_settings(
+        isset( $settings['accordion_slider'] ) ? $settings['accordion_slider'] : array(),
+        $defaults['accordion_slider']
     );
     $settings['section_order'] = ajth_normalize_section_order_with_holiday_theme(
         isset( $settings['section_order'] ) ? $settings['section_order'] : array(),
@@ -612,6 +640,119 @@ function ajth_normalize_holiday_theme_settings( $theme, array $defaults ): array
     } );
     $theme['items'] = $normalized;
     return $theme;
+}
+
+function ajth_default_accordion_slider_slides(): array {
+    return array(
+        array(
+            'title' => 'PROGRAMME DE FIDELITE',
+            'subtitle' => '',
+            'image' => AJTH_URL . 'assets/img/slide-1.png',
+            'link' => 'https://www.ajinsafro.ma/fidelite',
+            'button_text' => "S'inscrire !",
+            'button_style' => 'orange',
+            'overlay_color' => 'linear-gradient(to bottom, rgba(0, 163, 224, 0.10), rgba(0, 129, 188, 0.10))',
+            'order' => 1,
+        ),
+        array(
+            'title' => 'GROUP DEALS TRAVEL',
+            'subtitle' => '',
+            'image' => AJTH_URL . 'assets/img/slide-2.png',
+            'link' => '#',
+            'button_text' => '',
+            'button_style' => 'orange',
+            'overlay_color' => 'linear-gradient(to bottom, rgba(74, 222, 128, 0.05), rgba(22, 163, 74, 0.05))',
+            'order' => 2,
+        ),
+        array(
+            'title' => "L'7AJZ BKRI B'DHAB MCHRI",
+            'subtitle' => '',
+            'image' => AJTH_URL . 'assets/img/slide-3.png',
+            'link' => '#',
+            'button_text' => 'احجز الآن',
+            'button_style' => 'white-arabic',
+            'overlay_color' => 'linear-gradient(to bottom, rgba(27, 92, 140, 0.05), rgba(14, 58, 90, 0.05))',
+            'order' => 3,
+        ),
+        array(
+            'title' => 'Programme BZTAM eSFAR',
+            'subtitle' => '',
+            'image' => AJTH_URL . 'assets/img/slide-4.png',
+            'link' => '#',
+            'button_text' => '',
+            'button_style' => 'orange',
+            'overlay_color' => 'linear-gradient(to bottom, rgba(250, 204, 21, 0.10), rgba(249, 115, 22, 0.10))',
+            'order' => 4,
+        ),
+        array(
+            'title' => 'IMPORTANT UPDATES',
+            'subtitle' => '',
+            'image' => '',
+            'link' => '#',
+            'button_text' => '',
+            'button_style' => 'orange',
+            'overlay_color' => '',
+            'order' => 5,
+        ),
+    );
+}
+
+function ajth_normalize_accordion_slider_settings( $accordion, array $defaults ): array {
+    if ( is_string( $accordion ) ) {
+        $decoded = json_decode( $accordion, true );
+        $accordion = is_array( $decoded ) ? $decoded : array();
+    }
+    if ( ! is_array( $accordion ) ) {
+        $accordion = array();
+    }
+
+    $accordion = array_replace_recursive( $defaults, $accordion );
+    $accordion['enabled'] = ajth_truthy( $accordion['enabled'] ?? true );
+    $accordion['autoplay'] = ajth_truthy( $accordion['autoplay'] ?? true );
+    $accordion['autoplay_speed'] = max( 2000, min( 30000, (int) ( $accordion['autoplay_speed'] ?? 5000 ) ) );
+
+    $slides = $accordion['slides'] ?? array();
+    if ( is_string( $slides ) ) {
+        $decoded = json_decode( $slides, true );
+        $slides = is_array( $decoded ) ? $decoded : array();
+    }
+    if ( ! is_array( $slides ) ) {
+        $slides = array();
+    }
+
+    $normalized = array();
+    foreach ( $slides as $idx => $slide ) {
+        if ( is_string( $slide ) ) {
+            $decoded = json_decode( $slide, true );
+            $slide = is_array( $decoded ) ? $decoded : array();
+        }
+        if ( ! is_array( $slide ) ) {
+            continue;
+        }
+
+        $title = trim( (string) ( $slide['title'] ?? '' ) );
+        if ( $title === '' ) {
+            continue;
+        }
+
+        $normalized[] = array(
+            'title' => $title,
+            'subtitle' => trim( (string) ( $slide['subtitle'] ?? '' ) ),
+            'image' => trim( (string) ( $slide['image'] ?? '' ) ),
+            'link' => trim( (string) ( $slide['link'] ?? '#' ) ),
+            'button_text' => trim( (string) ( $slide['button_text'] ?? '' ) ),
+            'button_style' => trim( (string) ( $slide['button_style'] ?? 'orange' ) ),
+            'overlay_color' => trim( (string) ( $slide['overlay_color'] ?? '' ) ),
+            'order' => isset( $slide['order'] ) ? (int) $slide['order'] : ( $idx + 1 ),
+        );
+    }
+
+    usort( $normalized, static function( $a, $b ) {
+        return ( (int) ( $a['order'] ?? 0 ) ) <=> ( (int) ( $b['order'] ?? 0 ) );
+    } );
+    $accordion['slides'] = $normalized;
+
+    return $accordion;
 }
 
 function ajth_normalize_section_order_with_holiday_theme( $order, bool $holidayEnabled ): array {

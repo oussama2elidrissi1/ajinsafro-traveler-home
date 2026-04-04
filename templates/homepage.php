@@ -57,6 +57,9 @@ $dbr = ajth_get_destinations_by_region();
             if ( ! $enabled ) {
                 continue;
             }
+            if ( $key === 'cruises' && function_exists( 'ajth_render_reference_accordion_section' ) ) {
+                ajth_render_reference_accordion_section();
+            }
             if ( strpos( $key, 'custom_' ) === 0 && isset( $custom_sections[ $key ] ) ) {
                 $custom = $custom_sections[ $key ];
                 $title = ! empty( $custom['title'] ) ? $custom['title'] : '';
@@ -99,6 +102,5 @@ $dbr = ajth_get_destinations_by_region();
             }
         }
         ?>
-        <?php if ( function_exists( 'ajth_render_reference_accordion_section' ) ) { ajth_render_reference_accordion_section(); } ?>
     </div>
 </div>

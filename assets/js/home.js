@@ -94,7 +94,6 @@
         });
     }
 
-    /* Accordéon prototype (onglets verticaux + flex-1, autoplay ping-pong, pause au survol) */
     function initSlider(trackId, prevSelector, nextSelector) {
         var track = document.getElementById(trackId);
         if (!track) return;

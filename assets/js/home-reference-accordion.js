@@ -20,6 +20,7 @@
         var count = slides.length;
         var current = parseInt(root.getAttribute('data-start-index') || '0', 10);
         var delay = parseInt(root.getAttribute('data-delay') || String(DELAY_MS), 10);
+        var autoplayEnabled = root.getAttribute('data-ajha-ref-autoplay') !== '0';
         var direction = 1;
         var timer = null;
         var token = 0;
@@ -77,7 +78,7 @@
 
         function startAutoplay() {
             clearTimer();
-            if (count < 2) {
+            if (!autoplayEnabled || count < 2) {
                 return;
             }
 
@@ -91,7 +92,9 @@
                 }
 
                 setActive(index);
-                startAutoplay();
+                if (autoplayEnabled) {
+                    startAutoplay();
+                }
             });
 
             slide.addEventListener('keydown', function (event) {
@@ -105,7 +108,9 @@
 
                 event.preventDefault();
                 setActive(index);
-                startAutoplay();
+                if (autoplayEnabled) {
+                    startAutoplay();
+                }
             });
         });
 
@@ -113,13 +118,15 @@
         root.addEventListener('mouseleave', startAutoplay);
         root.addEventListener('focusin', clearTimer);
         root.addEventListener('focusout', function () {
-            if (!root.contains(document.activeElement)) {
+            if (autoplayEnabled && !root.contains(document.activeElement)) {
                 startAutoplay();
             }
         });
 
         setActive(current);
-        startAutoplay();
+        if (autoplayEnabled) {
+            startAutoplay();
+        }
     }
 
     function boot() {
