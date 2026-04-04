@@ -11,7 +11,7 @@ if ( ! isset( $settings ) || ! is_array( $settings ) ) {
     $settings = ajth_get_settings();
 }
 
-$default_order = array( 'last_minute', 'accommodations', 'holiday_theme', 'regions', 'good_spots', 'promotions', 'whatsapp_banner', 'cruises' );
+$default_order = array( 'last_minute', 'accommodations', 'holiday_theme', 'regions', 'good_spots', 'whatsapp_banner', 'cruises' );
 $section_order = ! empty( $settings['section_order'] ) && is_array( $settings['section_order'] )
     ? $settings['section_order']
     : $default_order;
@@ -90,12 +90,6 @@ $dbr = ajth_get_destinations_by_region();
                 case 'good_spots':
                     include AJTH_DIR . 'parts/good-spots.php';
                     break;
-                case 'promotions':
-                    include AJTH_DIR . 'parts/promotions.php';
-                    if ( function_exists( 'ajth_render_reference_accordion_section' ) ) {
-                        ajth_render_reference_accordion_section();
-                    }
-                    break;
                 case 'whatsapp_banner':
                     include AJTH_DIR . 'parts/whatsapp-banner.php';
                     break;
@@ -105,5 +99,6 @@ $dbr = ajth_get_destinations_by_region();
             }
         }
         ?>
+        <?php if ( function_exists( 'ajth_render_reference_accordion_section' ) ) { ajth_render_reference_accordion_section(); } ?>
     </div>
 </div>
