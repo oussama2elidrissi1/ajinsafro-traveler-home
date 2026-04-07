@@ -32,12 +32,9 @@ $duration_max = isset( $_GET['duration_max'] ) ? absint( $_GET['duration_max'] )
 $price_min    = isset( $_GET['price_min'] ) ? absint( $_GET['price_min'] ) : 0;
 $price_max    = isset( $_GET['price_max'] ) ? absint( $_GET['price_max'] ) : 0;
 
-$cats = get_terms(
-	array(
-		'taxonomy'   => 'tours_cat',
-		'hide_empty' => true,
-	)
-);
+$catalog_themes = function_exists( 'ajth_get_catalog_tour_category_terms_ordered' )
+	? ajth_get_catalog_tour_category_terms_ordered()
+	: array();
 $tags = get_terms(
 	array(
 		'taxonomy'   => 'tour_tag',
@@ -123,13 +120,18 @@ try {
 	</div>
 
 	<div class="aj-voyages-filters__card">
-		<h4 class="aj-voyages-filters__card-title"><?php esc_html_e( 'Catégorie', 'ajinsafro-traveler-home' ); ?></h4>
+		<h4 class="aj-voyages-filters__card-title"><?php esc_html_e( 'Thème du voyage', 'ajinsafro-traveler-home' ); ?></h4>
 		<label class="aj-voyages-filters__field">
 			<span class="aj-voyages-filters__label"><?php esc_html_e( 'Type de voyage', 'ajinsafro-traveler-home' ); ?></span>
 			<span class="aj-voyages-filters__control">
-				<select name="cat" class="aj-voyages-filters__select">
+				<select name="cat" class="aj-voyages-filters__select" aria-label="<?php esc_attr_e( 'Filtrer par type de voyage', 'ajinsafro-traveler-home' ); ?>">
 					<option value=""><?php esc_html_e( 'Toutes les catégories', 'ajinsafro-traveler-home' ); ?></option>
-					<?php foreach ( (array) $cats as $c ) : ?>
+					<?php foreach ( (array) $catalog_themes as $c ) : ?>
+						<?php
+						if ( ! $c instanceof WP_Term ) {
+							continue;
+						}
+						?>
 						<option value="<?php echo esc_attr( $c->slug ); ?>" <?php selected( $category_slug, $c->slug ); ?>>
 							<?php echo esc_html( $c->name ); ?>
 						</option>
