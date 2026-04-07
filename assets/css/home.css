@@ -3916,6 +3916,25 @@ body.aj-custom-footer [class*="footer"]:not(.aj-footer-v2):not(.aj-footer-v2 *):
     background-size: 16px 16px;
 }
 
+/* Hard override (theme-proof): prevent white-on-white selects/options in the catalog sidebar */
+.aj-voyages-filters-sidebar .aj-voyages-filters__select,
+.aj-voyages-filters-sidebar select.aj-voyages-filters__select {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+}
+
+.aj-voyages-filters-sidebar .aj-voyages-filters__select option,
+.aj-voyages-filters-sidebar select.aj-voyages-filters__select option {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+}
+
+.aj-voyages-filters-sidebar .aj-voyages-filters__select:focus,
+.aj-voyages-filters-sidebar select.aj-voyages-filters__select:focus {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+}
+
 .aj-voyages-filters__select::-ms-expand {
     display: none;
 }
