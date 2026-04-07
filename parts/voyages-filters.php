@@ -107,6 +107,7 @@ try {
 
 <form method="get" action="<?php echo esc_url( $voyages_page_url ); ?>" class="aj-voyages-filters-form">
 	<input type="hidden" name="post_type" value="st_tours">
+	<input type="hidden" name="catalog_orderby" value="<?php echo esc_attr( $catalog_orderby ); ?>">
 
 	<div class="aj-voyages-filters__intro">
 		<h3 class="aj-voyages-filters__heading"><?php esc_html_e( 'Affiner la recherche', 'ajinsafro-traveler-home' ); ?></h3>
@@ -125,14 +126,16 @@ try {
 		<h4 class="aj-voyages-filters__card-title"><?php esc_html_e( 'Catégorie', 'ajinsafro-traveler-home' ); ?></h4>
 		<label class="aj-voyages-filters__field">
 			<span class="aj-voyages-filters__label"><?php esc_html_e( 'Type de voyage', 'ajinsafro-traveler-home' ); ?></span>
-			<select name="cat" class="aj-voyages-filters__select">
-				<option value=""><?php esc_html_e( 'Toutes les catégories', 'ajinsafro-traveler-home' ); ?></option>
-				<?php foreach ( (array) $cats as $c ) : ?>
-					<option value="<?php echo esc_attr( $c->slug ); ?>" <?php selected( $category_slug, $c->slug ); ?>>
-						<?php echo esc_html( $c->name ); ?>
-					</option>
-				<?php endforeach; ?>
-			</select>
+			<span class="aj-voyages-filters__control">
+				<select name="cat" class="aj-voyages-filters__select">
+					<option value=""><?php esc_html_e( 'Toutes les catégories', 'ajinsafro-traveler-home' ); ?></option>
+					<?php foreach ( (array) $cats as $c ) : ?>
+						<option value="<?php echo esc_attr( $c->slug ); ?>" <?php selected( $category_slug, $c->slug ); ?>>
+							<?php echo esc_html( $c->name ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+			</span>
 		</label>
 	</div>
 
@@ -140,14 +143,16 @@ try {
 		<h4 class="aj-voyages-filters__card-title"><?php esc_html_e( 'Destination & dates', 'ajinsafro-traveler-home' ); ?></h4>
 		<label class="aj-voyages-filters__field">
 			<span class="aj-voyages-filters__label"><?php esc_html_e( 'Destination', 'ajinsafro-traveler-home' ); ?></span>
-			<select name="location_id" class="aj-voyages-filters__select">
-				<option value=""><?php esc_html_e( 'Toutes les destinations', 'ajinsafro-traveler-home' ); ?></option>
-				<?php foreach ( (array) $destinations as $d ) : ?>
-					<option value="<?php echo (int) $d['id']; ?>" <?php selected( $location_id, (int) $d['id'] ); ?>>
-						<?php echo esc_html( $d['label'] ); ?>
-					</option>
-				<?php endforeach; ?>
-			</select>
+			<span class="aj-voyages-filters__control">
+				<select name="location_id" class="aj-voyages-filters__select">
+					<option value=""><?php esc_html_e( 'Toutes les destinations', 'ajinsafro-traveler-home' ); ?></option>
+					<?php foreach ( (array) $destinations as $d ) : ?>
+						<option value="<?php echo (int) $d['id']; ?>" <?php selected( $location_id, (int) $d['id'] ); ?>>
+							<?php echo esc_html( $d['label'] ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+			</span>
 		</label>
 		<?php if ( empty( $destinations ) ) : ?>
 			<p class="aj-voyages-filters__muted"><?php esc_html_e( 'Aucune destination liée pour le moment.', 'ajinsafro-traveler-home' ); ?></p>
@@ -186,14 +191,16 @@ try {
 		<h4 class="aj-voyages-filters__card-title"><?php esc_html_e( 'Tags & options', 'ajinsafro-traveler-home' ); ?></h4>
 		<label class="aj-voyages-filters__field">
 			<span class="aj-voyages-filters__label"><?php esc_html_e( 'Tag', 'ajinsafro-traveler-home' ); ?></span>
-			<select name="tag" class="aj-voyages-filters__select">
-				<option value=""><?php esc_html_e( 'Tous les tags', 'ajinsafro-traveler-home' ); ?></option>
-				<?php foreach ( (array) $tags as $t ) : ?>
-					<option value="<?php echo esc_attr( $t->slug ); ?>" <?php selected( $tag_slug, $t->slug ); ?>>
-						<?php echo esc_html( $t->name ); ?>
-					</option>
-				<?php endforeach; ?>
-			</select>
+			<span class="aj-voyages-filters__control">
+				<select name="tag" class="aj-voyages-filters__select">
+					<option value=""><?php esc_html_e( 'Tous les tags', 'ajinsafro-traveler-home' ); ?></option>
+					<?php foreach ( (array) $tags as $t ) : ?>
+						<option value="<?php echo esc_attr( $t->slug ); ?>" <?php selected( $tag_slug, $t->slug ); ?>>
+							<?php echo esc_html( $t->name ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+			</span>
 		</label>
 		<label class="aj-voyages-filters__checkbox">
 			<input type="checkbox" name="featured" value="1" <?php checked( $featured ); ?>>

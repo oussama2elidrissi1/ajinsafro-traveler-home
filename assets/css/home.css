@@ -3841,8 +3841,9 @@ body.aj-custom-footer [class*="footer"]:not(.aj-footer-v2):not(.aj-footer-v2 *):
     margin-bottom: 16px;
     padding: 14px 14px 16px;
     border-radius: 12px;
-    background: #f8fafc;
-    border: 1px solid #eef2f7;
+    background: linear-gradient(180deg, #f8fafc, #f6f9fc);
+    border: 1px solid #e9eef5;
+    box-shadow: 0 6px 18px rgba(14, 58, 90, 0.04);
 }
 
 .aj-voyages-filters__card-title {
@@ -3886,9 +3887,15 @@ body.aj-custom-footer [class*="footer"]:not(.aj-footer-v2):not(.aj-footer-v2 *):
     color: #334155;
 }
 
+.aj-voyages-filters__control {
+    position: relative;
+    display: block;
+}
+
 .aj-voyages-filters__input,
 .aj-voyages-filters__select {
     width: 100%;
+    height: 44px;
     padding: 10px 12px;
     border-radius: 10px;
     border: 1px solid #e2e8f0;
@@ -3898,11 +3905,39 @@ body.aj-custom-footer [class*="footer"]:not(.aj-footer-v2):not(.aj-footer-v2 *):
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.aj-voyages-filters__select {
+    padding-right: 42px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 20 20'%3E%3Cpath fill='%2364748b' d='M5.6 7.5a1 1 0 0 1 1.4 0L10 10.5l3-3a1 1 0 1 1 1.4 1.4l-3.7 3.7a1 1 0 0 1-1.4 0L5.6 8.9a1 1 0 0 1 0-1.4Z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px 16px;
+}
+
+.aj-voyages-filters__select::-ms-expand {
+    display: none;
+}
+
+.aj-voyages-filters__input:hover,
+.aj-voyages-filters__select:hover {
+    border-color: #cbd5e1;
+}
+
 .aj-voyages-filters__input:focus,
 .aj-voyages-filters__select:focus {
     outline: none;
     border-color: #0083c4;
     box-shadow: 0 0 0 3px rgba(0, 131, 196, 0.15);
+}
+
+.aj-voyages-filters__input::placeholder {
+    color: #94a3b8;
+}
+
+.aj-voyages-filters__input[type="date"] {
+    padding-right: 12px;
 }
 
 .aj-voyages-filters__muted {
