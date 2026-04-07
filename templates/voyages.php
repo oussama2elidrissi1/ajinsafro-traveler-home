@@ -155,56 +155,133 @@ if ( ! empty( $meta_query ) ) {
     $query_args['meta_query'] = array_merge( array( 'relation' => 'AND' ), $meta_query );
 }
 
+// Sorting (stable URLs, SEO-friendly GET param).
+$catalog_orderby = isset( $_GET['catalog_orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['catalog_orderby'] ) ) : 'date';
+if ( $catalog_orderby === 'title' ) {
+    $query_args['orderby'] = 'title';
+    $query_args['order']   = 'ASC';
+} elseif ( $catalog_orderby === 'title_desc' ) {
+    $query_args['orderby'] = 'title';
+    $query_args['order']   = 'DESC';
+} else {
+    $query_args['orderby'] = 'date';
+    $query_args['order']   = 'DESC';
+}
+
 $q = new WP_Query( $query_args );
 
-$is_search = ! empty( $keyword );
+$is_search       = ! empty( $keyword );
+$has_any_filter  = $is_search
+    || $category_slug !== ''
+    || $tag_slug !== ''
+    || $location_id > 0
+    || $featured_only
+    || ( $depart_date !== '' && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $depart_date ) )
+    || $duration_min > 0
+    || $duration_max > 0
+    || $price_min > 0
+    || $price_max > 0;
+
+// Preserve all filter params in pagination links.
+$voyages_pagination_args = array(
+    'post_type'     => 'st_tours',
+    's'             => $search_text,
+    'location_name' => $location_name,
+    'cat'           => $category_slug,
+    'tag'           => $tag_slug,
+    'location_id'   => $location_id ? (string) $location_id : '',
+    'featured'      => $featured_only ? '1' : '',
+    'depart_date'   => $depart_date,
+    'duration_min'  => $duration_min ? (string) $duration_min : '',
+    'duration_max'  => $duration_max ? (string) $duration_max : '',
+    'price_min'     => $price_min ? (string) $price_min : '',
+    'price_max'     => $price_max ? (string) $price_max : '',
+    'catalog_orderby' => $catalog_orderby,
+);
+$voyages_pagination_args = array_filter(
+    $voyages_pagination_args,
+    static function ( $v ) {
+        return $v !== '' && $v !== null;
+    }
+);
+
+$voyages_page_url = function_exists( 'ajth_get_voyages_page_url' )
+	? ajth_get_voyages_page_url()
+	: home_url( '/?post_type=st_tours' );
 ?>
 
 <div class="aj-home-wrap">
     <div id="aj-home" class="aj-home aj-voyages-page">
-        <?php if ( ! $is_search ) : ?>
-        <section class="aj-voyages-hero">
+        <section class="aj-voyages-hero aj-voyages-hero--compact">
             <div class="aj-container">
                 <div class="aj-voyages-hero__header">
                     <div>
-                        <h1 class="aj-voyages-title"><?php esc_html_e( 'Tous les voyages', 'ajinsafro-traveler-home' ); ?></h1>
-                        <p class="aj-voyages-subtitle"><?php esc_html_e( 'Trouvez votre prochaine destination et réservez rapidement.', 'ajinsafro-traveler-home' ); ?></p>
+                        <?php if ( $is_search ) : ?>
+                            <h1 class="aj-voyages-title"><?php esc_html_e( 'Résultats de recherche', 'ajinsafro-traveler-home' ); ?></h1>
+                            <?php if ( $keyword ) : ?>
+                                <p class="aj-voyages-subtitle">
+                                    <?php printf( esc_html__( 'Recherche pour : %s', 'ajinsafro-traveler-home' ), '<strong>' . esc_html( $keyword ) . '</strong>' ); ?>
+                                </p>
+                            <?php elseif ( $has_any_filter ) : ?>
+                                <p class="aj-voyages-subtitle"><?php esc_html_e( 'Offres filtrées selon vos critères.', 'ajinsafro-traveler-home' ); ?></p>
+                            <?php endif; ?>
+                        <?php else : ?>
+                            <h1 class="aj-voyages-title"><?php esc_html_e( 'Tous les voyages', 'ajinsafro-traveler-home' ); ?></h1>
+                            <p class="aj-voyages-subtitle"><?php esc_html_e( 'Trouvez votre prochaine destination et réservez rapidement.', 'ajinsafro-traveler-home' ); ?></p>
+                        <?php endif; ?>
                     </div>
-                </div>
-                <div class="aj-voyages-search">
-                    <?php include AJTH_DIR . 'parts/voyages-filters.php'; ?>
                 </div>
             </div>
         </section>
-        <?php endif; ?>
 
-        <section class="aj-voyages-results">
-            <div class="aj-container">
-                <?php if ( $is_search ) : ?>
-                    <div class="aj-voyages-search-header">
-                        <h1 class="aj-voyages-title"><?php esc_html_e( 'Résultats de recherche', 'ajinsafro-traveler-home' ); ?></h1>
-                        <?php if ( $keyword ) : ?>
-                            <p class="aj-voyages-subtitle">
-                                <?php printf( esc_html__( 'Recherche pour : %s', 'ajinsafro-traveler-home' ), '<strong>' . esc_html( $keyword ) . '</strong>' ); ?>
+        <section class="aj-voyages-catalog">
+            <div class="aj-container aj-voyages-catalog__container">
+                <input type="checkbox" id="aj-voyages-filters-toggle" class="aj-voyages-filters-toggle" tabindex="-1" aria-hidden="true">
+                <label for="aj-voyages-filters-toggle" class="aj-voyages-filters-backdrop" aria-hidden="true"></label>
+
+                <div class="aj-voyages-catalog__grid">
+                <aside class="aj-voyages-filters-sidebar" id="aj-voyages-filters-panel" aria-label="<?php esc_attr_e( 'Filtres des voyages', 'ajinsafro-traveler-home' ); ?>">
+                    <label for="aj-voyages-filters-toggle" class="aj-voyages-filters-close" aria-label="<?php esc_attr_e( 'Fermer les filtres', 'ajinsafro-traveler-home' ); ?>"><span aria-hidden="true">&times;</span></label>
+                    <?php include AJTH_DIR . 'parts/voyages-filters.php'; ?>
+                </aside>
+
+                <main class="aj-voyages-catalog__main">
+                    <label for="aj-voyages-filters-toggle" class="aj-voyages-filters-mobile-trigger">
+                        <i class="fas fa-sliders-h" aria-hidden="true"></i>
+                        <?php esc_html_e( 'Filtres', 'ajinsafro-traveler-home' ); ?>
+                    </label>
+
+                    <div class="aj-voyages-toolbar">
+                        <div class="aj-voyages-toolbar__left">
+                            <h2 class="aj-voyages-toolbar__title"><?php echo $has_any_filter ? esc_html__( 'Offres correspondantes', 'ajinsafro-traveler-home' ) : esc_html__( 'Catalogue des voyages', 'ajinsafro-traveler-home' ); ?></h2>
+                            <p class="aj-voyages-toolbar__count">
+                                <?php
+                                printf(
+                                    esc_html( _n( '%d résultat', '%d résultats', intval( $q->found_posts ), 'ajinsafro-traveler-home' ) ),
+                                    intval( $q->found_posts )
+                                );
+                                ?>
                             </p>
-                        <?php endif; ?>
-                        <div class="aj-voyages-search">
-                            <?php include AJTH_DIR . 'parts/voyages-filters.php'; ?>
+                        </div>
+                        <div class="aj-voyages-toolbar__sort">
+                            <form method="get" class="aj-voyages-sort-form" action="<?php echo esc_url( $voyages_page_url ); ?>">
+                                <?php foreach ( $voyages_pagination_args as $pk => $pv ) : ?>
+                                    <?php
+                                    if ( 'catalog_orderby' === $pk ) {
+                                        continue;
+                                    }
+                                    ?>
+                                    <input type="hidden" name="<?php echo esc_attr( $pk ); ?>" value="<?php echo esc_attr( $pv ); ?>">
+                                <?php endforeach; ?>
+                                <label class="aj-voyages-sort-form__label" for="aj-voyages-catalog-orderby"><?php esc_html_e( 'Trier par', 'ajinsafro-traveler-home' ); ?></label>
+                                <select name="catalog_orderby" id="aj-voyages-catalog-orderby" class="aj-voyages-sort-form__select" onchange="this.form.submit()">
+                                    <option value="date" <?php selected( $catalog_orderby, 'date' ); ?>><?php esc_html_e( 'Plus récents', 'ajinsafro-traveler-home' ); ?></option>
+                                    <option value="title" <?php selected( $catalog_orderby, 'title' ); ?>><?php esc_html_e( 'Titre (A–Z)', 'ajinsafro-traveler-home' ); ?></option>
+                                    <option value="title_desc" <?php selected( $catalog_orderby, 'title_desc' ); ?>><?php esc_html_e( 'Titre (Z–A)', 'ajinsafro-traveler-home' ); ?></option>
+                                </select>
+                            </form>
                         </div>
                     </div>
-                <?php endif; ?>
-
-                <div class="aj-voyages-results__head">
-                    <h2 class="aj-section-title"><?php echo $is_search ? esc_html__( 'Voyages trouvés', 'ajinsafro-traveler-home' ) : esc_html__( 'Liste des voyages', 'ajinsafro-traveler-home' ); ?></h2>
-                    <p class="aj-voyages-results__count">
-                        <?php
-                        printf(
-                            esc_html( _n( '%d résultat', '%d résultats', intval( $q->found_posts ), 'ajinsafro-traveler-home' ) ),
-                            intval( $q->found_posts )
-                        );
-                        ?>
-                    </p>
-                </div>
 
                 <?php if ( $q->have_posts() ) : ?>
                     <div class="aj-voyages-grid">
@@ -262,6 +339,7 @@ $is_search = ! empty( $keyword );
                         'type'      => 'array',
                         'prev_text' => '«',
                         'next_text' => '»',
+                        'add_args'  => $voyages_pagination_args,
                     ) );
 
                     if ( ! empty( $pagination ) ) :
@@ -284,6 +362,8 @@ $is_search = ! empty( $keyword );
                         </p>
                     </div>
                 <?php endif; ?>
+                </main>
+                </div>
             </div>
         </section>
     </div>
