@@ -25,6 +25,17 @@ $location_name = isset( $_GET['location_name'] ) ? sanitize_text_field( wp_unsla
 $search_text   = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
 $keyword       = $location_name !== '' ? $location_name : $search_text;
 
+// CRUD-aligned filters (synced tour data)
+$category_slug   = isset( $_GET['cat'] ) ? sanitize_text_field( wp_unslash( $_GET['cat'] ) ) : '';
+$tag_slug        = isset( $_GET['tag'] ) ? sanitize_text_field( wp_unslash( $_GET['tag'] ) ) : '';
+$location_id     = isset( $_GET['location_id'] ) ? absint( $_GET['location_id'] ) : 0;
+$featured_only   = isset( $_GET['featured'] ) && (string) $_GET['featured'] === '1';
+$depart_date     = isset( $_GET['depart_date'] ) ? sanitize_text_field( wp_unslash( $_GET['depart_date'] ) ) : ''; // YYYY-MM-DD
+$duration_min    = isset( $_GET['duration_min'] ) ? absint( $_GET['duration_min'] ) : 0;
+$duration_max    = isset( $_GET['duration_max'] ) ? absint( $_GET['duration_max'] ) : 0;
+$price_min       = isset( $_GET['price_min'] ) ? absint( $_GET['price_min'] ) : 0;
+$price_max       = isset( $_GET['price_max'] ) ? absint( $_GET['price_max'] ) : 0;
+
 $query_args = array(
     'post_type'      => 'st_tours',
     'post_status'    => 'publish',
@@ -36,6 +47,112 @@ $query_args = array(
 
 if ( $keyword !== '' ) {
     $query_args['s'] = $keyword;
+}
+
+// Taxonomy filters
+$tax_query = array();
+if ( $category_slug !== '' ) {
+    $tax_query[] = array(
+        'taxonomy' => 'tours_cat',
+        'field'    => 'slug',
+        'terms'    => array( $category_slug ),
+    );
+}
+if ( $tag_slug !== '' ) {
+    $tax_query[] = array(
+        'taxonomy' => 'tour_tag',
+        'field'    => 'slug',
+        'terms'    => array( $tag_slug ),
+    );
+}
+if ( ! empty( $tax_query ) ) {
+    $query_args['tax_query'] = array_merge( array( 'relation' => 'AND' ), $tax_query );
+}
+
+// Meta filters (synced from CRUD/Traveler metas)
+$meta_query = array();
+if ( $featured_only ) {
+    $meta_query[] = array(
+        'key'     => 'is_featured',
+        'value'   => 'on',
+        'compare' => '=',
+    );
+}
+if ( $location_id > 0 ) {
+    // Traveler location metas can be in st_location_id / location_id / id_location or multi_location
+    $meta_query[] = array(
+        'relation' => 'OR',
+        array( 'key' => 'st_location_id', 'value' => (string) $location_id, 'compare' => '=' ),
+        array( 'key' => 'location_id', 'value' => (string) $location_id, 'compare' => '=' ),
+        array( 'key' => 'id_location', 'value' => (string) $location_id, 'compare' => '=' ),
+        // multi_location format: "_12_,_15_" or CSV
+        array( 'key' => 'multi_location', 'value' => '_' . $location_id . '_', 'compare' => 'LIKE' ),
+        array( 'key' => 'multi_location', 'value' => (string) $location_id, 'compare' => 'LIKE' ),
+    );
+}
+if ( $duration_min > 0 || $duration_max > 0 ) {
+    $min = $duration_min > 0 ? $duration_min : 1;
+    $max = $duration_max > 0 ? $duration_max : 9999;
+    $meta_query[] = array(
+        'key'     => 'duration_day',
+        'value'   => array( $min, $max ),
+        'type'    => 'NUMERIC',
+        'compare' => 'BETWEEN',
+    );
+}
+if ( $price_min > 0 || $price_max > 0 ) {
+    $min = $price_min > 0 ? $price_min : 0;
+    $max = $price_max > 0 ? $price_max : 999999999;
+    // We support several common price metas used in synced tours.
+    $meta_query[] = array(
+        'relation' => 'OR',
+        array(
+            'key'     => 'sale_price',
+            'value'   => array( $min, $max ),
+            'type'    => 'NUMERIC',
+            'compare' => 'BETWEEN',
+        ),
+        array(
+            'key'     => 'price',
+            'value'   => array( $min, $max ),
+            'type'    => 'NUMERIC',
+            'compare' => 'BETWEEN',
+        ),
+        array(
+            'key'     => 'adult_price',
+            'value'   => array( $min, $max ),
+            'type'    => 'NUMERIC',
+            'compare' => 'BETWEEN',
+        ),
+        array(
+            'key'     => 'base_price',
+            'value'   => array( $min, $max ),
+            'type'    => 'NUMERIC',
+            'compare' => 'BETWEEN',
+        ),
+    );
+}
+
+// Departure date filter (synced travel dates table). We keep it optional: only apply if table exists.
+if ( $depart_date !== '' && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $depart_date ) ) {
+    global $wpdb;
+    $dates_table = $wpdb->prefix . 'aj_travel_dates';
+    $table_exists = (bool) $wpdb->get_var( $wpdb->prepare(
+        "SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s",
+        $dates_table
+    ) );
+    if ( $table_exists ) {
+        $ids = $wpdb->get_col( $wpdb->prepare(
+            "SELECT DISTINCT travel_id FROM {$dates_table} WHERE is_active = 1 AND date = %s",
+            $depart_date
+        ) );
+        $ids = array_values( array_filter( array_map( 'absint', (array) $ids ) ) );
+        $query_args['post__in'] = ! empty( $ids ) ? $ids : array( 0 );
+    }
+}
+
+if ( ! empty( $meta_query ) ) {
+    $query_args['meta_query'] = array_merge( array( 'relation' => 'AND' ), $meta_query );
 }
 
 $q = new WP_Query( $query_args );
@@ -53,13 +170,9 @@ $is_search = ! empty( $keyword );
                         <h1 class="aj-voyages-title"><?php esc_html_e( 'Tous les voyages', 'ajinsafro-traveler-home' ); ?></h1>
                         <p class="aj-voyages-subtitle"><?php esc_html_e( 'Trouvez votre prochaine destination et réservez rapidement.', 'ajinsafro-traveler-home' ); ?></p>
                     </div>
-                    <a href="<?php echo esc_url( function_exists( 'ajth_get_vols_page_url' ) ? ajth_get_vols_page_url() : home_url( '/vols/' ) ); ?>" class="aj-voyages-vols-link">
-                        <i class="fas fa-plane"></i>
-                        <?php esc_html_e( 'Voir tous les vols', 'ajinsafro-traveler-home' ); ?>
-                    </a>
                 </div>
                 <div class="aj-voyages-search">
-                    <?php include AJTH_DIR . 'parts/search.php'; ?>
+                    <?php include AJTH_DIR . 'parts/voyages-filters.php'; ?>
                 </div>
             </div>
         </section>
@@ -76,7 +189,7 @@ $is_search = ! empty( $keyword );
                             </p>
                         <?php endif; ?>
                         <div class="aj-voyages-search">
-                            <?php include AJTH_DIR . 'parts/search.php'; ?>
+                            <?php include AJTH_DIR . 'parts/voyages-filters.php'; ?>
                         </div>
                     </div>
                 <?php endif; ?>
