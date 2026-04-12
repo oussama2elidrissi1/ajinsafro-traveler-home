@@ -169,15 +169,12 @@ $pagination_args = array_filter([
                                     $terms = get_the_terms(get_the_ID(), 'hotel_type');
                                     $type_label = (! empty($terms) && ! is_wp_error($terms)) ? $terms[0]->name : __('Hotel', 'ajinsafro-traveler-home');
 
-                                    // Image à la une WP : _thumbnail_id → get_post_thumbnail_id() ; URL → wp_get_attachment_image_url().
-                                    $thumb_id = (int) get_post_thumbnail_id(get_the_ID());
-                                    if ($thumb_id) {
-                                        $img = wp_get_attachment_image_url($thumb_id, 'medium');
-                                    } else {
-                                        $img = get_template_directory_uri() . '/assets/images/default-hotel.jpg';
-                                    }
-                                    if (empty($img)) {
-                                        $img = get_template_directory_uri() . '/assets/images/default-hotel.jpg';
+                                    // Image : get_post_thumbnail_id() → _thumbnail_id ; tailles large / medium_large ; secours galerie ; défaut plugin.
+                                    $img = function_exists('ajth_hebergement_catalog_card_image_url')
+                                        ? ajth_hebergement_catalog_card_image_url(get_the_ID())
+                                        : '';
+                                    if ($img === '' && function_exists('ajth_hebergement_default_card_image_url')) {
+                                        $img = ajth_hebergement_default_card_image_url();
                                     }
                                     ?>
                                     <article class="aj-voyages-grid__item">
