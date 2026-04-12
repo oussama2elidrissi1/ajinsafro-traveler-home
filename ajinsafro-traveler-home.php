@@ -204,6 +204,27 @@ function ajth_homepage_shortcode($atts)
 add_shortcode('ajth_homepage', 'ajth_homepage_shortcode');
 
 /**
+ * Render the shared Ajinsafro front header stack used by the home and catalog pages.
+ *
+ * Includes:
+ * - topbar + navbar
+ * - hero
+ * - floating search bar (rendered by parts/hero.php)
+ *
+ * @param  array|null  $settings
+ * @return void
+ */
+function ajth_render_primary_front_header(?array $settings = null): void
+{
+    if (! is_array($settings)) {
+        $settings = ajth_get_settings();
+    }
+
+    include AJTH_DIR.'parts/header.php';
+    include AJTH_DIR.'parts/hero.php';
+}
+
+/**
  * Render the standalone homepage accordion section based on the approved reference.
  *
  * @return void

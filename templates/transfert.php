@@ -5,6 +5,8 @@ if (! defined('ABSPATH')) {
 
 get_header();
 
+$settings = ajth_get_settings();
+
 $paged = max(1, absint(get_query_var('paged')), absint(get_query_var('page')));
 $search = isset($_GET['search']) ? sanitize_text_field(wp_unslash($_GET['search'])) : '';
 if ($search === '' && isset($_GET['s'])) {
@@ -162,6 +164,8 @@ $pagination_args = array_filter([
 
 <div class="aj-home-wrap">
     <div id="aj-home" class="aj-home aj-voyages-page">
+        <?php ajth_render_primary_front_header($settings); ?>
+
         <section class="aj-voyages-hero aj-voyages-hero--compact">
             <div class="aj-container">
                 <div class="aj-voyages-hero__header">
