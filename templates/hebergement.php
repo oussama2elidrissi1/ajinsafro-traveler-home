@@ -120,18 +120,7 @@ $pagination_args = array_filter([
 
 <div class="aj-home-wrap">
     <div id="aj-home" class="aj-home aj-voyages-page">
-        <?php ajth_render_primary_front_header($settings); ?>
-
-        <section class="aj-voyages-hero aj-voyages-hero--compact">
-            <div class="aj-container">
-                <div class="aj-voyages-hero__header">
-                    <div>
-                        <h1 class="aj-voyages-title"><?php esc_html_e('Hebergement', 'ajinsafro-traveler-home'); ?></h1>
-                        <p class="aj-voyages-subtitle"><?php esc_html_e('Catalogue dynamique alimente par les donnees Traveler existantes.', 'ajinsafro-traveler-home'); ?></p>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <?php ajth_render_site_header($settings); ?>
 
         <section class="aj-voyages-catalog">
             <div class="aj-container aj-voyages-catalog__container">

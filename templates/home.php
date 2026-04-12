@@ -29,7 +29,8 @@ $dbr = ajth_get_destinations_by_region();
 
 <div class="aj-home-wrap">
     <div id="aj-home" class="aj-home">
-        <?php ajth_render_primary_front_header( $settings ); ?>
+        <?php ajth_render_site_header( $settings ); ?>
+        <?php ajth_render_home_hero( $settings ); ?>
 
         <?php
         // Ensure whatsapp_banner is in section_order even if not saved yet
