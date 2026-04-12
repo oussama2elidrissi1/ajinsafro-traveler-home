@@ -197,7 +197,11 @@ $pagination_args = array_filter([
                             <div class="aj-voyages-grid">
                                 <?php while ($q->have_posts()) { $q->the_post();
                                     $detail = $activity_rows[get_the_ID()] ?? [];
+                                    $place_meta = get_post_meta(get_the_ID(), 'aj_activity_place_text', true);
                                     $place = $detail['address'] ?? '';
+                                    if ($place === '' || $place === null) {
+                                        $place = is_string($place_meta) ? $place_meta : '';
+                                    }
                                     $type = $detail['type_activity'] ?? '';
                                     $adult_price = $detail['adult_price'] ?? ($detail['min_price'] ?? '');
                                     $child_price = $detail['child_price'] ?? '';
