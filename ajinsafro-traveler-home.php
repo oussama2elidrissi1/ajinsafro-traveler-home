@@ -62,7 +62,7 @@ add_action('plugins_loaded', 'ajth_init');
  * ────────────────────────────────────────────── */
 function ajth_enqueue_front_assets()
 {
-    $load = is_front_page() || is_home() || is_page('voyages') || is_post_type_archive('st_tours');
+    $load = is_front_page() || is_home() || ajth_is_catalog_context();
     $load_home_sections = is_front_page() || is_home();
 
     if (! $load && is_singular()) {
@@ -142,7 +142,7 @@ function ajth_critical_header_css()
 {
     $h = ajth_get_header_settings();
     $on_home = is_front_page() || is_home();
-    $on_voyages = is_page('voyages') || is_post_type_archive('st_tours');
+    $on_voyages = ajth_is_catalog_context();
 
     $render_header = ! empty($h['enabled']) && ($on_home || $on_voyages || ! empty($h['show_header_sitewide']));
     $render_footer = ! empty($h['show_footer_sitewide']);
@@ -167,7 +167,7 @@ add_action('wp_head', 'ajth_critical_header_css', 1);
 /* Preload main stylesheet and critical fonts so header renders correctly on first paint */
 function ajth_preload_styles()
 {
-    $load = is_front_page() || is_home() || is_page('voyages') || is_post_type_archive('st_tours');
+    $load = is_front_page() || is_home() || ajth_is_catalog_context();
     if (! $load && is_singular()) {
         global $post;
         if ($post && has_shortcode($post->post_content, 'ajth_homepage')) {
@@ -373,7 +373,7 @@ function ajth_body_class_custom_header($classes)
 {
     $h = ajth_get_header_settings();
     $on_home = is_front_page() || is_home();
-    $on_voyages = is_page('voyages') || is_post_type_archive('st_tours');
+    $on_voyages = ajth_is_catalog_context();
 
     if (! empty($h['enabled']) && ($on_home || $on_voyages || ! empty($h['show_header_sitewide']))) {
         $classes[] = 'aj-custom-header';
@@ -397,7 +397,7 @@ add_filter('body_class', 'ajth_body_class_custom_header');
  * ────────────────────────────────────────────── */
 function ajth_render_header_sitewide()
 {
-    if (is_front_page() || is_home() || is_page('voyages') || is_post_type_archive('st_tours')) {
+    if (is_front_page() || is_home() || ajth_is_catalog_context()) {
         return;
     }
     $h = ajth_get_header_settings();
@@ -887,6 +887,88 @@ function ajth_get_vols_page_url()
     return home_url('/vols/');
 }
 
+function ajth_get_hebergement_page_url()
+{
+    $page = get_page_by_path('hebergement');
+    if ($page instanceof WP_Post) {
+        $url = get_permalink($page);
+        if ($url) {
+            return $url;
+        }
+    }
+
+    $archive = get_post_type_archive_link('st_hotel');
+    if ($archive) {
+        return $archive;
+    }
+
+    return home_url('/hebergement/');
+}
+
+function ajth_get_activites_page_url()
+{
+    $page = get_page_by_path('activites');
+    if ($page instanceof WP_Post) {
+        $url = get_permalink($page);
+        if ($url) {
+            return $url;
+        }
+    }
+
+    $archive = get_post_type_archive_link('st_activity');
+    if ($archive) {
+        return $archive;
+    }
+
+    return home_url('/activites/');
+}
+
+function ajth_get_transfert_page_url()
+{
+    $page = get_page_by_path('transfert');
+    if ($page instanceof WP_Post) {
+        $url = get_permalink($page);
+        if ($url) {
+            return $url;
+        }
+    }
+
+    $archive = get_post_type_archive_link('st_cars');
+    if ($archive) {
+        return $archive;
+    }
+
+    return home_url('/transfert/');
+}
+
+function ajth_is_voyages_context()
+{
+    return is_page('voyages') || is_post_type_archive('st_tours') || (is_search() && get_query_var('post_type') === 'st_tours');
+}
+
+function ajth_is_hebergement_context()
+{
+    return is_page('hebergement') || is_post_type_archive('st_hotel') || (is_search() && get_query_var('post_type') === 'st_hotel');
+}
+
+function ajth_is_activites_context()
+{
+    return is_page('activites') || is_post_type_archive('st_activity') || (is_search() && get_query_var('post_type') === 'st_activity');
+}
+
+function ajth_is_transfert_context()
+{
+    return is_page('transfert') || is_post_type_archive('st_cars') || (is_search() && get_query_var('post_type') === 'st_cars');
+}
+
+function ajth_is_catalog_context()
+{
+    return ajth_is_voyages_context()
+        || ajth_is_hebergement_context()
+        || ajth_is_activites_context()
+        || ajth_is_transfert_context();
+}
+
 /* ──────────────────────────────────────────────
  * Ensure "Voyages" page exists (slug: voyages)
  * ────────────────────────────────────────────── */
@@ -963,6 +1045,47 @@ function ajth_ensure_vols_page()
     ]);
 }
 
+function ajth_ensure_catalog_page(string $slug, string $title, string $content = ''): void
+{
+    $page = get_page_by_path($slug);
+    if ($page instanceof WP_Post) {
+        if ($page->post_status === 'trash') {
+            wp_untrash_post((int) $page->ID);
+        }
+        if ($page->post_status !== 'publish') {
+            wp_update_post([
+                'ID' => (int) $page->ID,
+                'post_status' => 'publish',
+            ]);
+        }
+
+        return;
+    }
+
+    wp_insert_post([
+        'post_type' => 'page',
+        'post_status' => 'publish',
+        'post_title' => $title,
+        'post_name' => $slug,
+        'post_content' => $content,
+    ]);
+}
+
+function ajth_ensure_hebergement_page(): void
+{
+    ajth_ensure_catalog_page('hebergement', 'Hébergement', '<!-- Ajinsafro Traveler Home : template hebergement (plugin). -->');
+}
+
+function ajth_ensure_activites_page(): void
+{
+    ajth_ensure_catalog_page('activites', 'Activités', '<!-- Ajinsafro Traveler Home : template activites (plugin). -->');
+}
+
+function ajth_ensure_transfert_page(): void
+{
+    ajth_ensure_catalog_page('transfert', 'Transfert', '<!-- Ajinsafro Traveler Home : template transfert (plugin). -->');
+}
+
 function ajth_ensure_login_page()
 {
     if (get_page_by_path('login')) {
@@ -1036,7 +1159,7 @@ function ajth_add_voyages_menu_item($items, $args)
     }
 
     $url = ajth_get_voyages_page_url();
-    $active = (is_page('voyages') || is_post_type_archive('st_tours')) ? ' current-menu-item current_page_item aj-active' : '';
+    $active = ajth_is_voyages_context() ? ' current-menu-item current_page_item aj-active' : '';
 
     $items .= '<li class="menu-item menu-item-type-custom menu-item-object-custom'.esc_attr($active).'">'
         .'<a href="'.esc_url($url).'"><i class="fas fa-suitcase-rolling"></i> <span>'.esc_html__('Voyages', 'ajinsafro-traveler-home').'</span></a>'
@@ -1331,6 +1454,9 @@ function ajth_activate()
     }
 
     ajth_ensure_voyages_page();
+    ajth_ensure_hebergement_page();
+    ajth_ensure_activites_page();
+    ajth_ensure_transfert_page();
     ajth_ensure_vols_page();
     ajth_ensure_login_page();
     ajth_ensure_maintenance_page();
@@ -1339,3 +1465,6 @@ register_activation_hook(__FILE__, 'ajth_activate');
 
 add_action('init', 'ajth_ensure_login_page', 20);
 add_action('init', 'ajth_ensure_maintenance_page', 20);
+add_action('init', 'ajth_ensure_hebergement_page', 20);
+add_action('init', 'ajth_ensure_activites_page', 20);
+add_action('init', 'ajth_ensure_transfert_page', 20);
