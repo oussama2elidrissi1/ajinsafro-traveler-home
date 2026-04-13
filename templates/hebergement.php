@@ -174,7 +174,7 @@ $pagination_args = array_filter([
                                         <a href="<?php the_permalink(); ?>" class="aj-card2 aj-hover-glass">
                                             <div class="aj-card2__image">
                                                 <?php if (has_post_thumbnail()) { ?>
-                                                    <?php the_post_thumbnail('medium_large', ['loading' => 'lazy', 'decoding' => 'async', 'class' => 'aj-catalog-card__img']); ?>
+                                                    <?php the_post_thumbnail('medium_large', ['loading' => 'lazy']); ?>
                                                 <?php } else { ?>
                                                     <div class="aj-voyages-image-fallback"></div>
                                                 <?php } ?>
