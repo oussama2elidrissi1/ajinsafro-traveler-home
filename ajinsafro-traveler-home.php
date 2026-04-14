@@ -1178,27 +1178,17 @@ function ajth_get_maintenance_url(): string
 
 function ajth_get_group_deals_url(): string
 {
-    $fallback = home_url('/group-deals/');
-    $login_endpoint = function_exists('ajth_public_login_endpoint')
-        ? trim((string) ajth_public_login_endpoint())
-        : '';
-
-    if ($login_endpoint !== '') {
-        $parts = wp_parse_url($login_endpoint);
-        if (is_array($parts) && ! empty($parts['host'])) {
-            $scheme = ! empty($parts['scheme']) ? (string) $parts['scheme'] : 'https';
-            $base = $scheme.'://'.$parts['host'];
-            if (! empty($parts['port'])) {
-                $base .= ':'.(int) $parts['port'];
-            }
-            $fallback = untrailingslashit($base).'/group-deals';
+    // Même pattern que ajth_get_voyages_page_url() / ajth_get_hebergement_page_url() :
+    // on pointe toujours vers la page WordPress, jamais vers le booking server.
+    $page = get_page_by_path('group-deals');
+    if ($page instanceof WP_Post) {
+        $url = get_permalink($page);
+        if ($url) {
+            return $url;
         }
     }
 
-    $resolved = apply_filters('ajth_group_deals_url', $fallback);
-    $resolved = is_string($resolved) ? trim($resolved) : '';
-
-    return $resolved !== '' ? $resolved : $fallback;
+    return home_url('/group-deals/');
 }
 
 function ajth_is_group_deals_label($label): bool
