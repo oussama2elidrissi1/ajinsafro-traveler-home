@@ -1,0 +1,439 @@
+<?php
+/**
+ * Part: Custom header (topbar + navbar)
+ * Header settings managed from Laravel admin /admin/settings/home-page
+ * Design based on AjinSafro modern travel theme
+ *
+ * @package AjinsafroTravelerHome
+ */
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+$hdr = ajth_get_header_settings();
+
+if ( empty( $hdr['enabled'] ) ) {
+    return;
+}
+
+if ( function_exists( 'ajth_normalize_storage_url' ) && ! empty( $hdr['logo_url'] ) ) {
+    $hdr['logo_url'] = ajth_normalize_storage_url( $hdr['logo_url'] );
+}
+
+$socials = isset( $hdr['socials'] ) && is_array( $hdr['socials'] ) ? $hdr['socials'] : array();
+
+$social_icons = array(
+    'facebook'  => '<i class="fab fa-facebook-f"></i>',
+    'twitter'   => '<i class="fab fa-twitter"></i>',
+    'youtube'   => '<i class="fab fa-youtube"></i>',
+    'instagram' => '<i class="fab fa-instagram"></i>',
+    'linkedin'  => '<i class="fab fa-linkedin-in"></i>',
+);
+
+$voyages_page_url = function_exists( 'ajth_get_voyages_page_url' )
+    ? ajth_get_voyages_page_url()
+    : home_url( '/voyages/' );
+$hebergement_page_url = function_exists( 'ajth_get_hebergement_page_url' )
+    ? ajth_get_hebergement_page_url()
+    : home_url( '/hebergement/' );
+$activites_page_url = function_exists( 'ajth_get_activites_page_url' )
+    ? ajth_get_activites_page_url()
+    : home_url( '/activites/' );
+$transfert_page_url = function_exists( 'ajth_get_transfert_page_url' )
+    ? ajth_get_transfert_page_url()
+    : home_url( '/transfert/' );
+$group_deals_page_url = function_exists( 'ajth_get_group_deals_url' )
+    ? ajth_get_group_deals_url()
+    : home_url( '/group-deals/' );
+$public_login_url = home_url( '/login/' );
+$public_signup_url = home_url( '/register/' );
+$maintenance_url = function_exists( 'ajth_get_maintenance_url' ) ? ajth_get_maintenance_url() : home_url( '/maintenance/' );
+$resolve_menu_url = static function ( $label, $url ) use ( $maintenance_url, $voyages_page_url, $hebergement_page_url, $activites_page_url, $transfert_page_url, $group_deals_page_url ) {
+    $url_value = trim( (string) $url );
+    $label_value = is_string( $label ) ? trim( wp_strip_all_tags( $label ) ) : '';
+    if ( $label_value !== '' && function_exists( 'remove_accents' ) ) {
+        $label_value = remove_accents( $label_value );
+    }
+    $label_value = $label_value !== '' ? mb_strtolower( $label_value, 'UTF-8' ) : '';
+    if ( in_array( $label_value, array( 'group deals', 'group deal', 'votre guide', 'guide' ), true ) ) {
+        return $group_deals_page_url;
+    }
+    $is_placeholder = (
+        $url_value === '' ||
+        $url_value === '#' ||
+        strpos( $url_value, '#' ) === 0 ||
+        $url_value === 'javascript:void(0)' ||
+        $url_value === 'javascript:void(0);'
+    );
+    if ( $is_placeholder ) {
+        if ( in_array( $label_value, array( 'voyages', 'voyage' ), true ) ) {
+            return $voyages_page_url;
+        }
+        if ( in_array( $label_value, array( 'hébergement', 'hebergement', 'hôtel', 'hotel' ), true ) ) {
+            return $hebergement_page_url;
+        }
+        if ( in_array( $label_value, array( 'activités', 'activites', 'activité', 'activite' ), true ) ) {
+            return $activites_page_url;
+        }
+        if ( in_array( $label_value, array( 'transfert', 'transferts' ), true ) ) {
+            return $transfert_page_url;
+        }
+    }
+    if ( $is_placeholder && function_exists( 'ajth_is_under_construction_label' ) && ajth_is_under_construction_label( $label ) ) {
+        return $maintenance_url;
+    }
+    return $url_value !== '' ? $url_value : '#';
+};
+
+$is_voyages_page     = function_exists( 'ajth_is_voyages_context' )     ? ajth_is_voyages_context()     : ( is_page( 'voyages' ) || is_post_type_archive( 'st_tours' ) );
+$is_hebergement_page = function_exists( 'ajth_is_hebergement_context' ) ? ajth_is_hebergement_context() : false;
+$is_activites_page   = function_exists( 'ajth_is_activites_context' )   ? ajth_is_activites_context()   : false;
+$is_group_deals_page = function_exists( 'ajth_is_group_deals_context' ) ? ajth_is_group_deals_context() : is_page( 'group-deals' );
+
+
+$title_icon_map = array(
+    'packages'     => 'fas fa-suitcase-rolling',
+    'package'      => 'fas fa-suitcase-rolling',
+    'voyages'      => 'fas fa-suitcase-rolling',
+    'voyage'       => 'fas fa-suitcase-rolling',
+    'hébergement'  => 'fas fa-hotel',
+    'hebergement'  => 'fas fa-hotel',
+    'hôtel'        => 'fas fa-hotel',
+    'hotel'        => 'fas fa-hotel',
+    'activités'    => 'fas fa-camera',
+    'activites'    => 'fas fa-camera',
+    'activité'     => 'fas fa-camera',
+    'transfert'    => 'fas fa-car-side',
+    'transferts'   => 'fas fa-car-side',
+    'hajj & omra'  => 'fas fa-kaaba',
+    'hajj'         => 'fas fa-kaaba',
+    'omra'         => 'fas fa-kaaba',
+    'group deals'  => 'fas fa-users',
+    'group deal'   => 'fas fa-users',
+    'votre guide'  => 'fas fa-users',
+    'guide'        => 'fas fa-users',
+    'accueil'      => 'fas fa-home',
+    'contact'      => 'fas fa-envelope',
+    'blog'         => 'fas fa-blog',
+);
+
+$default_menu_items = array(
+    array(
+        'label'    => 'Voyages',
+        'url'      => $voyages_page_url,
+        'icon'     => 'fas fa-suitcase-rolling',
+        'active'   => $is_voyages_page,
+        'children' => array(),
+    ),
+    array(
+        'label'    => 'Hébergement',
+        'url'      => $hebergement_page_url,
+        'icon'     => 'fas fa-hotel',
+        'active'   => $is_hebergement_page,
+        'children' => array(),
+    ),
+    array(
+        'label'    => 'Activités',
+        'url'      => $activites_page_url,
+        'icon'     => 'fas fa-camera',
+        'active'   => $is_activites_page,
+        'children' => array(),
+    ),
+    array(
+        'label'    => 'Hajj & Omra',
+        'url'      => $maintenance_url,
+        'icon'     => 'fas fa-kaaba',
+        'active'   => false,
+        'children' => array(),
+    ),
+    array(
+        'label'    => 'GROUP DEALS',
+        'url'      => $group_deals_page_url,
+        'icon'     => 'fas fa-users',
+        'active'   => $is_group_deals_page,
+        'children' => array(),
+    ),
+);
+
+/**
+ * Masque uniquement l’entrée « Transfert » dans le menu du header (pas la page /transfert/).
+ * Une seule inscription du filtre par requête.
+ */
+if ( empty( $GLOBALS['ajth_header_hide_transfert_nav_filter'] ) ) {
+    $GLOBALS['ajth_header_hide_transfert_nav_filter'] = true;
+    $ajth_header_menu_location = ! empty( $hdr['wp_menu_location'] ) ? $hdr['wp_menu_location'] : 'primary';
+    add_filter(
+        'wp_nav_menu_objects',
+        static function ( $items, $args ) use ( $ajth_header_menu_location ) {
+            if ( empty( $items ) || ! is_array( $items ) ) {
+                return $items;
+            }
+            if ( empty( $args->theme_location ) || $args->theme_location !== $ajth_header_menu_location ) {
+                return $items;
+            }
+            foreach ( $items as $key => $item ) {
+                if ( empty( $item->menu_item_parent ) || (int) $item->menu_item_parent !== 0 ) {
+                    continue;
+                }
+                $title = isset( $item->title ) ? wp_strip_all_tags( $item->title ) : '';
+                if ( $title !== '' && function_exists( 'remove_accents' ) ) {
+                    $title = remove_accents( $title );
+                }
+                $title = $title !== '' ? mb_strtolower( trim( $title ), 'UTF-8' ) : '';
+                if ( in_array( $title, array( 'transfert', 'transferts' ), true ) ) {
+                    unset( $items[ $key ] );
+                }
+            }
+            return $items;
+        },
+        10,
+        2
+    );
+}
+?>
+
+<header class="aj-header" id="aj-header">
+
+    <?php if ( ! empty( $hdr['topbar_enabled'] ) ) : ?>
+    <!-- Top Bar -->
+    <div class="aj-topbar">
+        <div class="aj-container aj-topbar__inner">
+            <!-- Left: Social + Contact -->
+            <div class="aj-topbar__left">
+                <!-- Social Icons -->
+                <div class="aj-topbar__socials">
+                    <?php foreach ( $social_icons as $key => $icon ) :
+                        $url = ! empty( $socials[ $key ] ) ? $socials[ $key ] : '';
+                        if ( $url === '' ) continue;
+                    ?>
+                        <a href="<?php echo esc_url( $url ); ?>" class="aj-topbar__social-link" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr( ucfirst( $key ) ); ?>">
+                            <?php echo $icon; // phpcs:ignore -- inline icon ?>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+                <!-- Contact Info -->
+                <div class="aj-topbar__contact">
+                    <?php if ( ! empty( $hdr['email'] ) ) : ?>
+                        <span class="aj-topbar__item">
+                            <i class="far fa-envelope"></i>
+                            <?php echo esc_html( $hdr['email'] ); ?>
+                        </span>
+                    <?php endif; ?>
+                    <?php if ( ! empty( $hdr['phone'] ) ) : ?>
+                        <span class="aj-topbar__item">
+                            <i class="fas fa-phone"></i>
+                            <?php echo esc_html( $hdr['phone'] ); ?>
+                        </span>
+                    <?php endif; ?>
+                </div>
+            </div>
+            
+            <!-- Right: Auth -->
+            <div class="aj-topbar__right">
+                <!-- Auth Links -->
+                <?php if ( ! empty( $hdr['show_auth_links'] ) ) : ?>
+                <div class="aj-topbar__auth">
+                    <?php if ( is_user_logged_in() ) : ?>
+                        <a href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>" class="aj-topbar__auth-link"><?php esc_html_e( 'SE DÉCONNECTER', 'ajinsafro-traveler-home' ); ?></a>
+                    <?php else : ?>
+                        <a href="<?php echo esc_url( $public_login_url ); ?>" class="aj-topbar__auth-link"><?php esc_html_e( 'SE CONNECTER', 'ajinsafro-traveler-home' ); ?></a>
+                        <a href="<?php echo esc_url( $public_signup_url ); ?>" class="aj-topbar__auth-link aj-topbar__auth-link--signup"><?php esc_html_e( "S'INSCRIRE", 'ajinsafro-traveler-home' ); ?></a>
+                    <?php endif; ?>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <?php if ( ! empty( $hdr['navbar_enabled'] ) ) : ?>
+    <!-- Main Navigation -->
+    <nav class="aj-navbar" id="aj-navbar">
+        <div class="aj-container aj-navbar__inner">
+
+            <!-- Logo -->
+            <div class="aj-navbar__logo">
+                <?php if ( ! empty( $hdr['logo_url'] ) ) : ?>
+                    <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
+                        <img src="<?php echo esc_url( $hdr['logo_url'] ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" class="aj-navbar__logo-img" loading="eager" fetchpriority="high">
+                    </a>
+                <?php else : ?>
+                    <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="aj-navbar__brand">
+                        <?php echo esc_html( get_bloginfo( 'name' ) ); ?>
+                    </a>
+                <?php endif; ?>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button type="button" class="aj-navbar__burger aj-header__toggle" id="aj-burger" aria-label="Menu" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Drawer (Mobile) / Menu (Desktop) -->
+            <div class="aj-drawer aj-header__drawer" id="aj-drawer" aria-hidden="true">
+                <div class="aj-drawer__header">
+                    <span class="aj-drawer__title"><?php esc_html_e( 'Menu', 'ajinsafro-traveler-home' ); ?></span>
+                    <button type="button" class="aj-drawer__close" id="aj-drawer-close" aria-label="<?php esc_attr_e( 'Fermer', 'ajinsafro-traveler-home' ); ?>">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <?php if ( ! empty( $hdr['show_auth_links'] ) ) : ?>
+                <div class="aj-drawer__auth aj-header__auth--mobile">
+                    <?php if ( is_user_logged_in() ) : ?>
+                        <a href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>" class="aj-auth-link aj-auth-link--block"><?php esc_html_e( 'Se déconnecter', 'ajinsafro-traveler-home' ); ?></a>
+                    <?php else : ?>
+                        <a href="<?php echo esc_url( $public_login_url ); ?>" class="aj-auth-link aj-auth-link--block"><?php esc_html_e( 'Se connecter', 'ajinsafro-traveler-home' ); ?></a>
+                        <a href="<?php echo esc_url( $public_signup_url ); ?>" class="aj-auth-link aj-auth-link--signup aj-auth-link--block"><?php esc_html_e( "S'inscrire", 'ajinsafro-traveler-home' ); ?></a>
+                    <?php endif; ?>
+                </div>
+                <?php endif; ?>
+                
+                <div class="aj-navbar__menu" id="aj-nav-menu">
+                <?php if ( ! empty( $hdr['menu_source'] ) && $hdr['menu_source'] === 'wp_menu' ) : ?>
+                    <?php
+                    $menu_location = ! empty( $hdr['wp_menu_location'] ) ? $hdr['wp_menu_location'] : 'primary';
+                    if ( has_nav_menu( $menu_location ) ) {
+                        wp_nav_menu( array(
+                            'theme_location' => $menu_location,
+                            'container'      => false,
+                            'menu_class'     => 'aj-nav-list',
+                            'depth'          => 2,
+                            'fallback_cb'    => false,
+                            'walker'         => new AJTH_Nav_Walker(),
+                        ) );
+                    } else {
+                        // Fallback: show default menu with icons
+                        ?>
+                        <ul class="aj-nav-list">
+                            <?php foreach ( $default_menu_items as $item ) : ?>
+                            <li class="<?php echo ! empty( $item['active'] ) ? 'aj-active' : ''; ?>">
+                                <a href="<?php echo esc_url( $item['url'] ); ?>">
+                                    <?php if ( ! empty( $item['icon'] ) ) : ?>
+                                        <i class="<?php echo esc_attr( $item['icon'] ); ?>"></i>
+                                    <?php endif; ?>
+                                    <span><?php echo esc_html( $item['label'] ); ?></span>
+                                    <?php if ( ! empty( $item['children'] ) ) : ?>
+                                        <i class="fas fa-chevron-down aj-caret"></i>
+                                    <?php endif; ?>
+                                </a>
+                                <?php if ( ! empty( $item['children'] ) ) : ?>
+                                    <ul class="aj-sub-menu">
+                                        <?php foreach ( $item['children'] as $child ) : ?>
+                                            <li><a href="<?php echo esc_url( $child['url'] ); ?>"><?php echo esc_html( $child['label'] ); ?></a></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php endif; ?>
+                            </li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <?php
+                    }
+                    ?>
+                <?php else : ?>
+                    <?php
+                    // Use custom links from Laravel admin, or default menu if empty
+                    $nav_links = ! empty( $hdr['links'] ) && is_array( $hdr['links'] ) ? $hdr['links'] : array();
+                    if ( empty( $nav_links ) ) {
+                        $nav_links = $default_menu_items;
+                    }
+                    // Ne pas afficher « Transfert » dans le menu (la page /transfert/ reste accessible ailleurs).
+                    $nav_links = array_values(
+                        array_filter(
+                            $nav_links,
+                            static function ( $link ) {
+                                $label = ! empty( $link['label'] ) ? wp_strip_all_tags( $link['label'] ) : '';
+                                if ( $label !== '' && function_exists( 'remove_accents' ) ) {
+                                    $label = remove_accents( $label );
+                                }
+                                $label = $label !== '' ? mb_strtolower( trim( $label ), 'UTF-8' ) : '';
+                                return ! in_array( $label, array( 'transfert', 'transferts' ), true );
+                            }
+                        )
+                    );
+                    ?>
+                    <ul class="aj-nav-list">
+                        <?php foreach ( $nav_links as $link ) :
+                            $label    = ! empty( $link['label'] ) ? $link['label'] : '';
+                            $label_key = $label !== '' ? mb_strtolower( remove_accents( wp_strip_all_tags( $label ) ), 'UTF-8' ) : '';
+                            if ( in_array( $label_key, array( 'group deals', 'group deal', 'votre guide', 'guide' ), true ) ) {
+                                $label = 'GROUP DEALS';
+                            }
+                            $url      = $resolve_menu_url(
+                                ! empty( $link['label'] ) ? $link['label'] : '',
+                                ! empty( $link['url'] ) ? $link['url'] : ''
+                            );
+                            $icon     = ! empty( $link['icon'] ) ? $link['icon'] : '';
+                            $children = ! empty( $link['children'] ) && is_array( $link['children'] ) ? $link['children'] : array();
+                            $has_sub  = ! empty( $children );
+                            $is_active = ! empty( $link['active'] );
+                            $is_highlight = ! empty( $link['highlight'] );
+
+                            // Auto-resolve icon from title map
+                            if ( empty( $icon ) && $label ) {
+                                $label_lower = trim( wp_strip_all_tags( $label ) );
+                                if ( $label_lower !== '' && function_exists( 'remove_accents' ) ) {
+                                    $label_lower = remove_accents( $label_lower );
+                                }
+                                $label_lower = $label_lower !== '' ? mb_strtolower( $label_lower, 'UTF-8' ) : '';
+                                if ( isset( $title_icon_map[ $label_lower ] ) ) {
+                                    $icon = $title_icon_map[ $label_lower ];
+                                }
+                            }
+                        ?>
+                        <li class="<?php echo $has_sub ? 'aj-has-sub' : ''; ?><?php echo $is_active ? ' aj-active' : ''; ?><?php echo $is_highlight ? ' aj-highlight' : ''; ?>">
+                            <a href="<?php echo esc_url( $url ); ?>" class="<?php echo $is_highlight ? 'aj-nav-highlight' : ''; ?>">
+                                <?php if ( $icon ) : ?>
+                                    <i class="<?php echo esc_attr( $icon ); ?>"></i>
+                                <?php endif; ?>
+                                <span><?php echo esc_html( $label ); ?></span>
+                                <?php if ( $has_sub ) : ?>
+                                    <i class="fas fa-chevron-down aj-caret"></i>
+                                <?php endif; ?>
+                            </a>
+                            <?php if ( $has_sub ) : ?>
+                                <ul class="aj-sub-menu">
+                                    <?php foreach ( $children as $child ) :
+                                        $child_icon = ! empty( $child['icon'] ) ? $child['icon'] : '';
+                                    ?>
+                                        <li>
+                                            <a href="<?php echo esc_url( $resolve_menu_url( ! empty( $child['label'] ) ? $child['label'] : '', ! empty( $child['url'] ) ? $child['url'] : '' ) ); ?>">
+                                                <?php if ( $child_icon ) : ?>
+                                                    <i class="<?php echo esc_attr( $child_icon ); ?>"></i>
+                                                <?php endif; ?>
+                                                <?php echo esc_html( ! empty( $child['label'] ) ? $child['label'] : '' ); ?>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+                </div>
+                
+                <!-- Low Cost Button (inside drawer for mobile) -->
+                <?php if ( ! empty( $hdr['lowcost_enabled'] ) ) : ?>
+                <div class="aj-drawer__lowcost">
+                    <a href="<?php echo esc_url( $resolve_menu_url( 'Formule low cost', ! empty( $hdr['lowcost_url'] ) ? $hdr['lowcost_url'] : '' ) ); ?>" class="aj-lowcost-btn">
+                        <i class="fas fa-fire"></i>
+                        <span><?php echo esc_html( ! empty( $hdr['lowcost_text'] ) ? $hdr['lowcost_text'] : 'Formule low cost' ); ?></span>
+                    </a>
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Low Cost Button (Desktop) -->
+            <?php if ( ! empty( $hdr['lowcost_enabled'] ) ) : ?>
+            <div class="aj-navbar__lowcost aj-header__lowcost--desktop">
+                <a href="<?php echo esc_url( $resolve_menu_url( 'Formule low cost', ! empty( $hdr['lowcost_url'] ) ? $hdr['lowcost_url'] : '' ) ); ?>" class="aj-lowcost-btn aj-lowcost-btn--animate">
+                    <i class="fas fa-fire aj-lowcost-btn__icon"></i>
+                    <span><?php echo esc_html( ! empty( $hdr['lowcost_text'] ) ? $hdr['lowcost_text'] : 'Formule low cost' ); ?></span>
+                </a>
+            </div>
+            <?php endif; ?>
+
+        </div>
+    </nav>
+    <?php endif; ?>
+
+</header>
