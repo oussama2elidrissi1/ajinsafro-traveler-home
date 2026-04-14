@@ -14,6 +14,11 @@ if (! defined('ABSPATH')) {
 
 get_header();
 
+// DEBUG MARKER — remove once confirmed loading
+echo '<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#e53e3e;color:#fff;padding:12px 20px;font-size:16px;font-weight:700;text-align:center;">
+    ✅ GROUP DEALS TEMPLATE LOADED — ' . esc_html(AJTH_VERSION) . '
+</div><div style="height:48px;"></div>';
+
 global $wpdb;
 
 $settings = ajth_get_settings();

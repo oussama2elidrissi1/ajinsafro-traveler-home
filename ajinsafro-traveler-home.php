@@ -1084,8 +1084,18 @@ function ajth_maybe_flush_rewrite_rules_once(): void
     flush_rewrite_rules(false);
     update_option('ajth_voyages_routing_flush_v1', '1', true);
 }
+
+function ajth_maybe_flush_rewrite_rules_group_deals(): void
+{
+    if (get_option('ajth_group_deals_routing_flush_v1')) {
+        return;
+    }
+    flush_rewrite_rules(false);
+    update_option('ajth_group_deals_routing_flush_v1', '1', true);
+}
 add_action('init', 'ajth_ensure_voyages_page', 10);
 add_action('init', 'ajth_maybe_flush_rewrite_rules_once', 99);
+add_action('init', 'ajth_maybe_flush_rewrite_rules_group_deals', 99);
 
 /* ──────────────────────────────────────────────
  * Ensure "Vols" page exists (slug: vols)
@@ -1570,8 +1580,14 @@ function ajth_activate()
 }
 register_activation_hook(__FILE__, 'ajth_activate');
 
+function ajth_ensure_group_deals_page(): void
+{
+    ajth_ensure_catalog_page('group-deals', 'Group Deals', '<!-- Ajinsafro Traveler Home : template group-deals (plugin). -->');
+}
+
 add_action('init', 'ajth_ensure_login_page', 20);
 add_action('init', 'ajth_ensure_maintenance_page', 20);
 add_action('init', 'ajth_ensure_hebergement_page', 20);
 add_action('init', 'ajth_ensure_activites_page', 20);
 add_action('init', 'ajth_ensure_transfert_page', 20);
+add_action('init', 'ajth_ensure_group_deals_page', 20);
