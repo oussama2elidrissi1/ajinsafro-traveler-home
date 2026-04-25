@@ -1,33 +1,39 @@
 (function () {
-  var page = document.querySelector('.aj-voyages-page--premium');
-  if (!page) {
-    return;
-  }
+    'use strict';
 
-  var sortSelect = page.querySelector('#aj-voyages-catalog-sort');
-  var filtersToggle = page.querySelector('#aj-voyages-filters-toggle');
-  var filterResetLinks = page.querySelectorAll('.aj-voyages-filters__reset, .aj-voyages-active-filters__reset');
-
-  if (sortSelect && sortSelect.form) {
-    sortSelect.addEventListener('change', function () {
-      sortSelect.form.submit();
-    });
-  }
-
-  filterResetLinks.forEach(function (link) {
-    link.addEventListener('click', function () {
-      if (filtersToggle) {
-        filtersToggle.checked = false;
-      }
-    });
-  });
-
-  document.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape' && filtersToggle && filtersToggle.checked) {
-      filtersToggle.checked = false;
-      if (document.body) {
-        document.body.style.overflow = '';
-      }
+    var root = document.getElementById('aj-voyages-booking');
+    if (!root) {
+        return;
     }
-  });
+
+    var drawer = root.querySelector('#ajvb-mobile-drawer');
+    var backdrop = root.querySelector('#ajvb-drawer-backdrop');
+    var openButton = root.querySelector('#ajvb-open-filters');
+    var closeButton = root.querySelector('#ajvb-close-filters');
+
+    if (!drawer || !backdrop || !openButton || !closeButton) {
+        return;
+    }
+
+    function openDrawer() {
+        drawer.classList.add('active');
+        backdrop.classList.add('active');
+        document.body.classList.add('aj-voyages-drawer-open');
+    }
+
+    function closeDrawer() {
+        drawer.classList.remove('active');
+        backdrop.classList.remove('active');
+        document.body.classList.remove('aj-voyages-drawer-open');
+    }
+
+    openButton.addEventListener('click', openDrawer);
+    closeButton.addEventListener('click', closeDrawer);
+    backdrop.addEventListener('click', closeDrawer);
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && drawer.classList.contains('active')) {
+            closeDrawer();
+        }
+    });
 })();

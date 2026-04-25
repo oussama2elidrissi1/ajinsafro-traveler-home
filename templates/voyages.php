@@ -672,294 +672,248 @@ $sort_options = [
     'newest' => 'Nouveautes',
     'title_asc' => 'Nom A-Z',
 ];
+
+$rating_label = static function (float $rating): string {
+    if ($rating >= 9) {
+        return 'Exceptionnel';
+    }
+    if ($rating >= 8) {
+        return 'Excellent';
+    }
+    if ($rating >= 7) {
+        return 'Tres bien';
+    }
+
+    return 'Correct';
+};
 ?>
 
 <div class="aj-home-wrap">
-    <div id="aj-home" class="aj-home aj-voyages-page aj-voyages-page--premium">
+    <div id="aj-home" class="aj-home aj-voyages-page aj-voyages-booking-page">
         <?php ajth_render_site_header($settings); ?>
 
-        <section class="aj-voyages-search-shell">
-            <div class="aj-container">
-                <div class="aj-voyages-search-hero">
-                    <div class="aj-voyages-search-hero__content">
-                        <span class="aj-voyages-search-hero__eyebrow">Catalogue Ajinsafro</span>
-                        <h1 class="aj-voyages-search-hero__title">Voyages, sejours et circuits avec une experience de reservation plus fluide.</h1>
-                        <p class="aj-voyages-search-hero__text">Comparez rapidement les offres, ciblez votre budget et trouvez le meilleur depart disponible sans quitter la page.</p>
-                    </div>
+        <div class="aj-voyages-booking" id="aj-voyages-booking">
+            <section class="hero">
+                <div class="container">
+                    <h1 class="hero-title">Voyages, sejours et circuits</h1>
+                    <p class="hero-subtitle">Comparez nos offres, choisissez votre destination et reservez votre prochain voyage avec Ajinsafro.</p>
 
-                    <form method="get" action="<?php echo esc_url($voyages_page_url); ?>" class="aj-voyages-searchbar" aria-label="Recherche rapide des voyages">
+                    <form class="search-panel" method="get" action="<?php echo esc_url($voyages_page_url); ?>">
                         <input type="hidden" name="sort" value="<?php echo esc_attr($sort); ?>">
-                        <div class="aj-voyages-searchbar__grid">
-                            <label class="aj-voyages-searchbar__field">
-                                <span class="aj-voyages-searchbar__label">Destination</span>
-                                <input type="text" name="dest" class="aj-voyages-searchbar__input" value="<?php echo esc_attr($dest !== '' ? $dest : $keyword); ?>" placeholder="Marrakech, Istanbul, Omra...">
-                            </label>
-                            <label class="aj-voyages-searchbar__field">
-                                <span class="aj-voyages-searchbar__label">Date de depart</span>
-                                <input type="date" name="depart_date" class="aj-voyages-searchbar__input" value="<?php echo esc_attr($depart_date); ?>">
-                            </label>
-                            <label class="aj-voyages-searchbar__field">
-                                <span class="aj-voyages-searchbar__label">Voyageurs min</span>
-                                <input type="number" min="1" name="guests_min" class="aj-voyages-searchbar__input" value="<?php echo esc_attr($guests_min > 0 ? (string) $guests_min : ''); ?>" placeholder="2">
-                            </label>
-                            <label class="aj-voyages-searchbar__field">
-                                <span class="aj-voyages-searchbar__label">Budget max</span>
-                                <input type="number" min="0" name="price_max" class="aj-voyages-searchbar__input" value="<?php echo esc_attr($price_max > 0 ? (string) $price_max : ''); ?>" placeholder="12000">
-                            </label>
-                            <button type="submit" class="aj-voyages-searchbar__submit">
-                                <i class="fas fa-search" aria-hidden="true"></i>
-                                Rechercher
-                            </button>
+                        <div class="search-field">
+                            <label for="ajvb-destination">Destination</label>
+                            <input id="ajvb-destination" name="dest" type="text" value="<?php echo esc_attr($dest !== '' ? $dest : $keyword); ?>" placeholder="Marrakech, Istanbul, Omra...">
                         </div>
+                        <div class="search-field">
+                            <label for="ajvb-depart-date">Date de depart</label>
+                            <input id="ajvb-depart-date" name="depart_date" type="date" value="<?php echo esc_attr($depart_date); ?>">
+                        </div>
+                        <div class="search-field">
+                            <label for="ajvb-travelers">Voyageurs</label>
+                            <input id="ajvb-travelers" name="guests_min" type="number" min="1" value="<?php echo esc_attr($guests_min > 0 ? (string) $guests_min : ''); ?>" placeholder="2">
+                        </div>
+                        <div class="search-field">
+                            <label for="ajvb-budget">Budget max</label>
+                            <input id="ajvb-budget" name="price_max" type="number" min="0" value="<?php echo esc_attr($price_max > 0 ? (string) $price_max : ''); ?>" placeholder="12000">
+                        </div>
+                        <button class="search-btn" type="submit">Rechercher</button>
                     </form>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="aj-voyages-catalog aj-voyages-catalog--premium">
-            <div class="aj-container aj-voyages-catalog__container">
-                <input type="checkbox" id="aj-voyages-filters-toggle" class="aj-voyages-filters-toggle" tabindex="-1" aria-hidden="true">
-                <label for="aj-voyages-filters-toggle" class="aj-voyages-filters-backdrop" aria-hidden="true"></label>
+            <main class="container main-grid">
+                <aside class="filters" aria-label="Filtres voyages">
+                    <div class="map-card">
+                        <button type="button">Conseils Ajinsafro</button>
+                    </div>
+                    <div class="filter-title">
+                        <h2>Filtrer par</h2>
+                        <a class="clear-link" href="<?php echo esc_url($voyages_page_url); ?>">Tout effacer</a>
+                    </div>
+                    <?php include AJTH_DIR . 'parts/voyages-filters.php'; ?>
+                </aside>
 
-                <div class="aj-voyages-catalog__grid">
-                    <aside class="aj-voyages-filters-sidebar" id="aj-voyages-filters-panel" aria-label="Filtres des voyages">
-                        <label for="aj-voyages-filters-toggle" class="aj-voyages-filters-close" aria-label="Fermer les filtres"><span aria-hidden="true">&times;</span></label>
-                        <?php include AJTH_DIR . 'parts/voyages-filters.php'; ?>
-                    </aside>
-
-                    <main class="aj-voyages-catalog__main">
-                        <label for="aj-voyages-filters-toggle" class="aj-voyages-filters-mobile-trigger aj-voyages-filters-mobile-trigger--sticky">
-                            <i class="fas fa-sliders-h" aria-hidden="true"></i>
-                            Filtres
-                            <?php if (! empty($active_filters)) { ?>
-                                <span class="aj-voyages-filters-mobile-trigger__count"><?php echo esc_html((string) count($active_filters)); ?></span>
-                            <?php } ?>
-                        </label>
-
-                        <section class="aj-voyages-summary-card">
-                            <div class="aj-voyages-summary-card__main">
-                                <span class="aj-voyages-summary-card__kicker">Resultats</span>
-                                <h2 class="aj-voyages-summary-card__title"><?php echo esc_html($results_headline); ?></h2>
-                                <p class="aj-voyages-summary-card__meta">
+                <section class="results">
+                    <div class="results-head">
+                        <div class="results-topline">
+                            <div>
+                                <h2><?php echo esc_html($results_headline); ?></h2>
+                                <div class="result-count">
                                     <?php if ($min_price_found !== null) { ?>
-                                        <span>A partir de <?php echo esc_html($format_price($min_price_found)); ?> DH / pers</span>
+                                        A partir de <?php echo esc_html($format_price($min_price_found)); ?> DH par personne
                                     <?php } else { ?>
-                                        <span>Tarifs disponibles sur demande</span>
+                                        Tarifs disponibles sur demande
                                     <?php } ?>
-                                    <span><?php echo esc_html($total_results > 0 ? sprintf('%d page(s) de resultats', $total_pages) : 'Aucun resultat pour les criteres actuels'); ?></span>
-                                </p>
-                            </div>
-                            <div class="aj-voyages-summary-card__stats">
-                                <div class="aj-voyages-summary-card__stat">
-                                    <strong><?php echo esc_html((string) $total_results); ?></strong>
-                                    <span>Offres visibles</span>
-                                </div>
-                                <div class="aj-voyages-summary-card__stat">
-                                    <strong><?php echo esc_html((string) count($destinations)); ?></strong>
-                                    <span>Destinations</span>
-                                </div>
-                                <div class="aj-voyages-summary-card__stat">
-                                    <strong><?php echo esc_html((string) count($upcoming_departure_dates)); ?></strong>
-                                    <span>Departs a venir</span>
                                 </div>
                             </div>
-                        </section>
+                            <form method="get" action="<?php echo esc_url($voyages_page_url); ?>" class="sort-wrap">
+                                <?php foreach ($current_filters as $key => $value) { ?>
+                                    <?php if ($key === 'sort' || $key === 'paged') { continue; } ?>
+                                    <input type="hidden" name="<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($value); ?>">
+                                <?php } ?>
+                                Trier par
+                                <select name="sort" id="ajvb-sort-select" onchange="this.form.submit()">
+                                    <?php foreach ($sort_options as $sort_value => $sort_label) { ?>
+                                        <option value="<?php echo esc_attr($sort_value); ?>" <?php selected($sort, $sort_value); ?>><?php echo esc_html($sort_label); ?></option>
+                                    <?php } ?>
+                                </select>
+                            </form>
+                        </div>
+                        <div class="chips">
+                            <span class="chip"><?php echo esc_html((string) $total_results); ?> voyages visibles</span>
+                            <span class="chip"><?php echo esc_html((string) count($destinations)); ?> destinations</span>
+                            <span class="chip"><?php echo esc_html((string) count($upcoming_departure_dates)); ?> departs a venir</span>
+                            <?php foreach ($active_filters as $active_filter) { ?>
+                                <a href="<?php echo esc_url($active_filter['url']); ?>" class="chip">
+                                    <span><?php echo esc_html($active_filter['label']); ?></span>
+                                </a>
+                            <?php } ?>
+                        </div>
+                    </div>
 
-                        <?php if (! empty($active_filters)) { ?>
-                            <section class="aj-voyages-active-filters" aria-label="Filtres actifs">
-                                <div class="aj-voyages-active-filters__row">
-                                    <?php foreach ($active_filters as $active_filter) { ?>
-                                        <a href="<?php echo esc_url($active_filter['url']); ?>" class="aj-voyages-active-filters__chip">
-                                            <span><?php echo esc_html($active_filter['label']); ?></span>
-                                            <i class="fas fa-times" aria-hidden="true"></i>
-                                        </a>
-                                    <?php } ?>
-                                </div>
-                                <a href="<?php echo esc_url($voyages_page_url); ?>" class="aj-voyages-active-filters__reset">Reinitialiser tous les filtres</a>
-                            </section>
-                        <?php } ?>
+                    <div class="deal-strip">
+                        <div>
+                            <strong>Voyages selectionnes avec l'accompagnement Ajinsafro</strong>
+                            <span>Departures, tarifs et disponibilites mis a jour depuis vos offres WordPress.</span>
+                        </div>
+                        <a href="<?php echo esc_url($voyages_page_url); ?>" class="deal-strip__link">Explorer</a>
+                    </div>
 
-                        <div class="aj-voyages-toolbar aj-voyages-toolbar--premium">
-                            <div class="aj-voyages-toolbar__left">
-                                <h2 class="aj-voyages-toolbar__title"><?php echo esc_html($total_results > 0 ? 'Offres disponibles' : 'Ajustez votre recherche'); ?></h2>
-                                <p class="aj-voyages-toolbar__count"><?php echo esc_html($total_results > 0 ? 'Tri, comparaison et reservation depuis une seule vue.' : 'Essayez d elargir vos dates, votre budget ou votre destination.'); ?></p>
-                            </div>
-                            <div class="aj-voyages-toolbar__sort">
-                                <form method="get" class="aj-voyages-sort-form" action="<?php echo esc_url($voyages_page_url); ?>">
-                                    <?php foreach ($current_filters as $key => $value) { ?>
-                                        <?php if ($key === 'sort' || $key === 'paged') { continue; } ?>
-                                        <input type="hidden" name="<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($value); ?>">
-                                    <?php } ?>
-                                    <label class="aj-voyages-sort-form__label" for="aj-voyages-catalog-sort">Trier par</label>
-                                    <select name="sort" id="aj-voyages-catalog-sort" class="aj-voyages-sort-form__select" onchange="this.form.submit()">
-                                        <?php foreach ($sort_options as $sort_value => $sort_label) { ?>
-                                            <option value="<?php echo esc_attr($sort_value); ?>" <?php selected($sort, $sort_value); ?>><?php echo esc_html($sort_label); ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </form>
-                            </div>
+                    <?php if (! empty($cards_page)) { ?>
+                        <div class="hotel-list">
+                            <?php foreach ($cards_page as $card) { ?>
+                                <article class="hotel-card aj-voyage-card">
+                                    <a href="<?php echo esc_url($card['permalink']); ?>" class="photo-wrap" aria-label="<?php echo esc_attr($card['title']); ?>">
+                                        <?php ajth_render_catalog_card_image($card['id']); ?>
+                                        <button class="fav" type="button" aria-label="Ajouter aux favoris">♡</button>
+                                        <div class="photo-badges">
+                                            <?php if ($card['is_featured']) { ?>
+                                                <span class="photo-badge">Selection Ajinsafro</span>
+                                            <?php } ?>
+                                            <?php if ($card['is_promo']) { ?>
+                                                <span class="photo-badge photo-badge--promo">Promo</span>
+                                            <?php } ?>
+                                            <?php if (! empty($card['stock_badge'])) { ?>
+                                                <span class="photo-badge photo-badge--stock"><?php echo esc_html($card['stock_badge']['label']); ?></span>
+                                            <?php } ?>
+                                        </div>
+                                    </a>
+
+                                    <div class="hotel-main">
+                                        <div class="meta meta--caps">
+                                            <span><?php echo esc_html(! empty($card['themes']) ? implode(' / ', $card['themes']) : 'Selection Ajinsafro'); ?></span>
+                                        </div>
+                                        <h3><a href="<?php echo esc_url($card['permalink']); ?>"><?php echo esc_html($card['title']); ?></a></h3>
+                                        <div class="location">
+                                            <?php if ($card['destination'] !== '') { ?><span>Destination: <?php echo esc_html($card['destination']); ?></span><?php } ?>
+                                            <?php if ($card['duration_days'] > 0 || $card['duration_label'] !== '') { ?><span><?php echo esc_html($card['duration_label']); ?></span><?php } ?>
+                                        </div>
+                                        <div class="meta">
+                                            <?php if ($card['departure_city'] !== '') { ?><span>Depart: <?php echo esc_html($card['departure_city']); ?></span><?php } ?>
+                                            <?php if ($card['next_departure_label'] !== '') { ?><span>Date: <?php echo esc_html($card['next_departure_label']); ?></span><?php } ?>
+                                            <?php if ($card['max_people'] > 0) { ?><span><?php echo esc_html((string) $card['max_people']); ?> voyageurs max</span><?php } ?>
+                                        </div>
+                                        <p class="description"><?php echo esc_html($card['excerpt']); ?></p>
+                                        <div class="amenities">
+                                            <?php foreach ($card['service_chips'] as $service_chip) { ?>
+                                                <span class="amenity"><?php echo esc_html($service_chip); ?></span>
+                                            <?php } ?>
+                                            <?php foreach ($card['tags'] as $tag_name) { ?>
+                                                <span class="amenity amenity--subtle"><?php echo esc_html($tag_name); ?></span>
+                                            <?php } ?>
+                                        </div>
+                                        <div class="good-note">Support Ajinsafro · Disponibilites verifiees · Reservation rapide</div>
+                                    </div>
+
+                                    <aside class="hotel-side">
+                                        <div class="rating-box">
+                                            <div class="rating-text">
+                                                <?php if ($card['rating'] > 0) { ?>
+                                                    <strong><?php echo esc_html($rating_label((float) $card['rating'])); ?></strong>
+                                                    <span><?php echo esc_html($card['reviews'] > 0 ? sprintf('%d avis', $card['reviews']) : 'Sans avis'); ?></span>
+                                                <?php } else { ?>
+                                                    <strong>Nouveau</strong>
+                                                    <span>Sans note client</span>
+                                                <?php } ?>
+                                            </div>
+                                            <div class="rating-score"><?php echo esc_html($card['rating'] > 0 ? number_format((float) $card['rating'], 1, '.', '') : 'New'); ?></div>
+                                        </div>
+
+                                        <div class="price-area">
+                                            <small>A partir de</small>
+                                            <div>
+                                                <?php if ($card['price_reference_label'] !== '') { ?>
+                                                    <span class="old-price"><?php echo esc_html($card['price_reference_label']); ?> DH</span>
+                                                <?php } ?>
+                                                <span class="price"><?php echo esc_html($card['price_from_label'] !== '' ? $card['price_from_label'] . ' DH' : 'Prix sur demande'); ?></span>
+                                            </div>
+                                            <div class="tax"><?php echo esc_html($card['price_from_label'] !== '' ? 'par personne' : 'selon disponibilite'); ?></div>
+                                        </div>
+
+                                        <div class="card-actions">
+                                            <a class="secondary-btn" href="<?php echo esc_url($card['permalink']); ?>">Voir le voyage</a>
+                                            <a class="primary-btn" href="<?php echo esc_url($card['permalink']); ?>#ajtb-v1-summary-card">Reserver</a>
+                                        </div>
+                                    </aside>
+                                </article>
+                            <?php } ?>
                         </div>
 
-                        <?php if (! empty($cards_page)) { ?>
-                            <div class="aj-voyages-results-list">
-                                <?php foreach ($cards_page as $card) { ?>
-                                    <article class="aj-voyages-result-card">
-                                        <a href="<?php echo esc_url($card['permalink']); ?>" class="aj-voyages-result-card__media" aria-label="<?php echo esc_attr($card['title']); ?>">
-                                            <div class="aj-voyages-result-card__media-frame">
-                                                <?php ajth_render_catalog_card_image($card['id']); ?>
-                                            </div>
+                        <?php
+                        $pagination_base = str_replace(
+                            '%25%23%25',
+                            '%#%',
+                            add_query_arg(array_merge($current_filters, ['paged' => '%#%']), $voyages_page_url)
+                        );
+                        $pagination = paginate_links([
+                            'base' => $pagination_base,
+                            'format' => '',
+                            'current' => $paged,
+                            'total' => $total_pages,
+                            'type' => 'array',
+                            'prev_text' => '&laquo;',
+                            'next_text' => '&raquo;',
+                        ]);
+                        ?>
 
-                                            <div class="aj-voyages-result-card__badges">
-                                                <?php if ($card['is_featured']) { ?>
-                                                    <span class="aj-voyages-badge aj-voyages-badge--brand">Ajinsafro recommande</span>
-                                                <?php } ?>
-                                                <?php if ($card['is_promo']) { ?>
-                                                    <span class="aj-voyages-badge aj-voyages-badge--promo">Promo</span>
-                                                <?php } ?>
-                                                <?php if (! empty($card['stock_badge'])) { ?>
-                                                    <span class="aj-voyages-badge aj-voyages-badge--<?php echo esc_attr($card['stock_badge']['tone']); ?>"><?php echo esc_html($card['stock_badge']['label']); ?></span>
-                                                <?php } ?>
-                                            </div>
-                                        </a>
-
-                                        <div class="aj-voyages-result-card__body">
-                                            <div class="aj-voyages-result-card__content">
-                                                <div class="aj-voyages-result-card__topline">
-                                                    <?php if (! empty($card['themes'])) { ?>
-                                                        <span class="aj-voyages-result-card__theme"><?php echo esc_html(implode(' / ', $card['themes'])); ?></span>
-                                                    <?php } else { ?>
-                                                        <span class="aj-voyages-result-card__theme">Selection Ajinsafro</span>
-                                                    <?php } ?>
-                                                </div>
-
-                                                <h3 class="aj-voyages-result-card__title"><a href="<?php echo esc_url($card['permalink']); ?>"><?php echo esc_html($card['title']); ?></a></h3>
-
-                                                <div class="aj-voyages-result-card__meta-line">
-                                                    <?php if ($card['destination'] !== '') { ?>
-                                                        <span><i class="fas fa-map-marker-alt" aria-hidden="true"></i><?php echo esc_html($card['destination']); ?></span>
-                                                    <?php } ?>
-                                                    <?php if ($card['duration_days'] > 0 || $card['duration_label'] !== '') { ?>
-                                                        <span><i class="far fa-clock" aria-hidden="true"></i><?php echo esc_html($card['duration_label']); ?></span>
-                                                    <?php } ?>
-                                                    <?php if ($card['departure_city'] !== '') { ?>
-                                                        <span><i class="fas fa-plane-departure" aria-hidden="true"></i>Depart <?php echo esc_html($card['departure_city']); ?></span>
-                                                    <?php } ?>
-                                                    <?php if ($card['next_departure_label'] !== '') { ?>
-                                                        <span><i class="far fa-calendar-alt" aria-hidden="true"></i><?php echo esc_html($card['next_departure_label']); ?></span>
-                                                    <?php } ?>
-                                                    <?php if ($card['max_people'] > 0) { ?>
-                                                        <span><i class="fas fa-users" aria-hidden="true"></i>Jusqu a <?php echo esc_html((string) $card['max_people']); ?> voyageurs</span>
-                                                    <?php } ?>
-                                                </div>
-
-                                                <div class="aj-voyages-result-card__rating-row">
-                                                    <?php if ($card['rating'] > 0) { ?>
-                                                        <span class="aj-voyages-rating-pill">
-                                                            <strong><?php echo esc_html(number_format((float) $card['rating'], 1, ',', ' ')); ?></strong>
-                                                            <span><?php echo esc_html($card['rating'] >= 9 ? 'Exceptionnel' : ($card['rating'] >= 8 ? 'Excellent' : 'Tres bien')); ?></span>
-                                                        </span>
-                                                    <?php } else { ?>
-                                                        <span class="aj-voyages-rating-pill aj-voyages-rating-pill--muted">
-                                                            <strong>Nouveau</strong>
-                                                            <span>Sans note client</span>
-                                                        </span>
-                                                    <?php } ?>
-                                                    <span class="aj-voyages-result-card__reviews"><?php echo esc_html($card['reviews'] > 0 ? sprintf('%d avis', $card['reviews']) : 'Aucun avis publie'); ?></span>
-                                                </div>
-
-                                                <p class="aj-voyages-result-card__excerpt"><?php echo esc_html($card['excerpt']); ?></p>
-
-                                                <div class="aj-voyages-result-card__chips">
-                                                    <?php foreach ($card['service_chips'] as $service_chip) { ?>
-                                                        <span class="aj-voyages-result-card__chip aj-voyages-result-card__chip--service"><?php echo esc_html($service_chip); ?></span>
-                                                    <?php } ?>
-                                                    <?php foreach ($card['tags'] as $tag_name) { ?>
-                                                        <span class="aj-voyages-result-card__chip"><?php echo esc_html($tag_name); ?></span>
-                                                    <?php } ?>
-                                                    <?php if (! empty($card['stock_badge'])) { ?>
-                                                        <span class="aj-voyages-result-card__chip aj-voyages-result-card__chip--date"><?php echo esc_html($card['stock_badge']['label']); ?></span>
-                                                    <?php } ?>
-                                                </div>
-
-                                                <div class="aj-voyages-result-card__trust">
-                                                    <span>Confirmation rapide</span>
-                                                    <span>Support Ajinsafro</span>
-                                                    <span>Places verifiees</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="aj-voyages-result-card__pricing">
-                                                <button type="button" class="aj-voyages-result-card__favorite" aria-label="Ajouter aux favoris">
-                                                    <i class="far fa-heart" aria-hidden="true"></i>
-                                                </button>
-
-                                                <div class="aj-voyages-result-card__pricing-copy">
-                                                    <?php if ($card['price_reference_label'] !== '') { ?>
-                                                        <span class="aj-voyages-result-card__old-price"><?php echo esc_html($card['price_reference_label']); ?> DH</span>
-                                                    <?php } ?>
-
-                                                    <?php if ($card['price_from_label'] !== '') { ?>
-                                                        <span class="aj-voyages-result-card__price-prefix">A partir de</span>
-                                                        <div class="aj-voyages-result-card__price"><?php echo esc_html($card['price_from_label']); ?> <span>DH</span></div>
-                                                        <span class="aj-voyages-result-card__price-note">par personne</span>
-                                                    <?php } else { ?>
-                                                        <span class="aj-voyages-result-card__price-prefix">Tarif</span>
-                                                        <div class="aj-voyages-result-card__price aj-voyages-result-card__price--small">Prix sur demande</div>
-                                                        <span class="aj-voyages-result-card__price-note">selon disponibilite</span>
-                                                    <?php } ?>
-                                                </div>
-
-                                                <div class="aj-voyages-result-card__actions">
-                                                    <a href="<?php echo esc_url($card['permalink']); ?>" class="aj-voyages-result-card__cta aj-voyages-result-card__cta--ghost">Voir les details</a>
-                                                    <a href="<?php echo esc_url($card['permalink']); ?>#ajtb-v1-summary-card" class="aj-voyages-result-card__cta aj-voyages-result-card__cta--primary">Reserver</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </article>
+                        <?php if (! empty($pagination)) { ?>
+                            <nav class="aj-voyages-pagination" aria-label="Pagination voyages">
+                                <?php foreach ($pagination as $page_link) { ?>
+                                    <?php echo wp_kses_post($page_link); ?>
                                 <?php } ?>
-                            </div>
-
-                            <?php
-                            $pagination_base = str_replace(
-                                '%25%23%25',
-                                '%#%',
-                                add_query_arg(array_merge($current_filters, ['paged' => '%#%']), $voyages_page_url)
-                            );
-                            $pagination = paginate_links([
-                                'base' => $pagination_base,
-                                'format' => '',
-                                'current' => $paged,
-                                'total' => $total_pages,
-                                'type' => 'array',
-                                'prev_text' => '&laquo;',
-                                'next_text' => '&raquo;',
-                            ]);
-                            ?>
-
-                            <?php if (! empty($pagination)) { ?>
-                                <nav class="aj-voyages-pagination" aria-label="Pagination voyages">
-                                    <?php foreach ($pagination as $page_link) { ?>
-                                        <?php echo wp_kses_post($page_link); ?>
-                                    <?php } ?>
-                                </nav>
-                            <?php } ?>
-                        <?php } else { ?>
-                            <section class="aj-voyages-empty aj-voyages-empty--premium">
-                                <div class="aj-voyages-empty__icon"><i class="fas fa-compass" aria-hidden="true"></i></div>
-                                <h3>Aucun voyage ne correspond a vos criteres</h3>
-                                <p>Elargissez la destination, les dates ou le budget pour retrouver des offres disponibles.</p>
-                                <div class="aj-voyages-empty__actions">
-                                    <a href="<?php echo esc_url($voyages_page_url); ?>" class="aj-voyages-result-card__cta aj-voyages-result-card__cta--primary">Reinitialiser les filtres</a>
-                                    <?php if ($dest !== '' || $keyword !== '') { ?>
-                                        <a href="<?php echo esc_url($build_url(['dest' => '', 's' => '', 'location_name' => ''])); ?>" class="aj-voyages-result-card__cta aj-voyages-result-card__cta--ghost">Retirer la recherche</a>
-                                    <?php } ?>
-                                </div>
-                            </section>
+                            </nav>
                         <?php } ?>
-                    </main>
+                    <?php } else { ?>
+                        <div class="empty-state" style="display:block;">
+                            <h3>Aucun voyage trouve</h3>
+                            <p>Essayez de modifier votre budget, vos dates ou votre destination.</p>
+                            <a class="primary-btn" href="<?php echo esc_url($voyages_page_url); ?>">Reinitialiser les filtres</a>
+                        </div>
+                    <?php } ?>
+                </section>
+
+                <aside class="ad-col" aria-label="Promotions voyages">
+                    <div class="ad-box">
+                        <strong>Departs verifies sur nos sejours phares</strong>
+                        <button type="button">Voir les offres</button>
+                    </div>
+                    <div class="ad-box">
+                        <strong>Circuits, omra et escapades selectionnes par Ajinsafro</strong>
+                        <button type="button">Reserver</button>
+                    </div>
+                </aside>
+            </main>
+
+            <button class="mobile-filter-btn" type="button" id="ajvb-open-filters">Filtres</button>
+            <div class="drawer-backdrop" id="ajvb-drawer-backdrop"></div>
+            <aside class="mobile-drawer" id="ajvb-mobile-drawer" aria-label="Filtres mobile">
+                <div class="drawer-head">
+                    <h3>Filtres</h3>
+                    <button type="button" id="ajvb-close-filters">x</button>
                 </div>
-            </div>
-        </section>
+                <?php include AJTH_DIR . 'parts/voyages-filters.php'; ?>
+            </aside>
+        </div>
     </div>
 </div>
 
