@@ -119,6 +119,23 @@ function ajth_enqueue_front_assets()
         true
     );
 
+    if ( function_exists( 'ajth_is_hebergement_context' ) && ajth_is_hebergement_context() ) {
+        wp_enqueue_style(
+            'ajth-hebergement-booking-css',
+            AJTH_URL . 'assets/css/hebergement-booking.css',
+            ['ajth-home-css'],
+            AJTH_VERSION
+        );
+
+        wp_enqueue_script(
+            'ajth-hebergement-booking-js',
+            AJTH_URL . 'assets/js/hebergement-booking.js',
+            [],
+            AJTH_VERSION,
+            true
+        );
+    }
+
     if ($load_home_sections) {
         wp_enqueue_style(
             'ajth-home-reference-accordion-css',
