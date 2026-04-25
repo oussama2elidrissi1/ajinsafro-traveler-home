@@ -1,0 +1,28 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="107" y1="72" x2="1112" y2="744" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0E3A5A"/>
+      <stop offset="0.55" stop-color="#0C6A9B"/>
+      <stop offset="1" stop-color="#F37A1F"/>
+    </linearGradient>
+    <linearGradient id="card" x1="328" y1="166" x2="809" y2="569" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.08"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" rx="32" fill="url(#bg)"/>
+  <circle cx="179" cy="137" r="138" fill="#FFFFFF" fill-opacity="0.08"/>
+  <circle cx="1045" cy="671" r="184" fill="#FFFFFF" fill-opacity="0.08"/>
+  <path d="M0 597C182 523 315 495 459 525C607 556 710 668 837 692C968 716 1070 653 1200 553V800H0V597Z" fill="#FFFFFF" fill-opacity="0.12"/>
+  <rect x="268" y="150" width="664" height="420" rx="34" fill="url(#card)" stroke="#FFFFFF" stroke-opacity="0.22"/>
+  <rect x="320" y="206" width="252" height="308" rx="24" fill="#FFFFFF" fill-opacity="0.16"/>
+  <path d="M345 447L407 377L467 431L519 360L547 395V482H345V447Z" fill="#FFFFFF" fill-opacity="0.72"/>
+  <circle cx="513" cy="282" r="28" fill="#FFD78C"/>
+  <rect x="607" y="226" width="212" height="22" rx="11" fill="#FFFFFF" fill-opacity="0.86"/>
+  <rect x="607" y="269" width="264" height="18" rx="9" fill="#FFFFFF" fill-opacity="0.52"/>
+  <rect x="607" y="308" width="236" height="18" rx="9" fill="#FFFFFF" fill-opacity="0.52"/>
+  <rect x="607" y="347" width="172" height="18" rx="9" fill="#FFFFFF" fill-opacity="0.52"/>
+  <rect x="607" y="401" width="111" height="52" rx="18" fill="#F37A1F"/>
+  <rect x="735" y="401" width="122" height="52" rx="18" fill="#FFFFFF" fill-opacity="0.2"/>
+  <path d="M748 106L767 147H812L775 173L790 214L748 189L706 214L721 173L684 147H729L748 106Z" fill="#FFFFFF" fill-opacity="0.92"/>
+</svg>

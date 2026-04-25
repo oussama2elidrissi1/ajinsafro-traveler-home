@@ -1,0 +1,524 @@
+.aj-voyages-page--premium {
+  background: linear-gradient(180deg, #f4f8fc 0%, #f7fafc 220px, #f4f7fb 100%);
+}
+
+.aj-voyages-page--premium .aj-voyages-search-shell {
+  padding: 18px 0 10px;
+}
+
+.aj-voyages-page--premium .aj-voyages-search-hero {
+  display: grid;
+  gap: 18px;
+  padding: 22px 24px 20px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(14, 58, 90, 0.96), rgba(0, 131, 196, 0.92));
+  box-shadow: 0 18px 42px rgba(14, 58, 90, 0.16);
+}
+
+.aj-voyages-page--premium .aj-voyages-search-hero__content {
+  max-width: 760px;
+}
+
+.aj-voyages-page--premium .aj-voyages-search-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #e8f4fb;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.aj-voyages-page--premium .aj-voyages-search-hero__title {
+  margin: 10px 0 8px;
+  color: #fff;
+  font-size: clamp(1.8rem, 3vw, 2.45rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+.aj-voyages-page--premium .aj-voyages-search-hero__text {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+.aj-voyages-page--premium .aj-voyages-searchbar {
+  position: static;
+  width: 100%;
+  margin: 0;
+}
+
+.aj-voyages-page--premium .aj-voyages-searchbar__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) repeat(3, minmax(0, 1fr)) auto;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(8px);
+}
+
+.aj-voyages-page--premium .aj-voyages-searchbar__field {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.aj-voyages-page--premium .aj-voyages-searchbar__label {
+  margin-bottom: 6px;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.aj-voyages-page--premium .aj-voyages-searchbar__input {
+  min-height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.aj-voyages-page--premium .aj-voyages-searchbar__submit {
+  min-width: 158px;
+  min-height: 100%;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f37a1f, #ff8b2a);
+  box-shadow: 0 14px 28px rgba(243, 122, 31, 0.28);
+}
+
+.aj-voyages-page--premium .aj-voyages-catalog__grid {
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.aj-voyages-page--premium .aj-voyages-filters-sidebar {
+  top: 92px;
+  border-radius: 24px;
+  background: #fff;
+  border: 1px solid #e4edf6;
+  box-shadow: 0 14px 34px rgba(14, 58, 90, 0.08);
+  padding: 18px;
+}
+
+.aj-voyages-page--premium .aj-voyages-filters__heading {
+  margin: 0 0 4px;
+  color: #0e3a5a;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.aj-voyages-page--premium .aj-voyages-filters__hint {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.aj-voyages-page--premium .aj-voyages-filter-group {
+  margin-bottom: 10px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fff, #f9fbfe);
+}
+
+.aj-voyages-page--premium .aj-voyages-filter-group__summary {
+  padding: 15px 16px;
+}
+
+.aj-voyages-page--premium .aj-voyages-filter-group__body {
+  padding: 0 16px 16px;
+}
+
+.aj-voyages-page--premium .aj-voyages-filters__input,
+.aj-voyages-page--premium .aj-voyages-filters__select {
+  min-height: 44px;
+  border-radius: 12px;
+}
+
+.aj-voyages-page--premium .aj-voyages-filters__actions--sticky {
+  padding-top: 14px;
+}
+
+.aj-voyages-page--premium .aj-voyages-filters__submit,
+.aj-voyages-page--premium .aj-voyages-filters__reset {
+  min-height: 46px;
+  border-radius: 14px;
+}
+
+.aj-voyages-page--premium .aj-voyages-summary-card {
+  padding: 18px 20px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+}
+
+.aj-voyages-page--premium .aj-voyages-summary-card__meta {
+  margin-top: 6px;
+  gap: 8px 16px;
+  font-size: 0.86rem;
+}
+
+.aj-voyages-page--premium .aj-voyages-summary-card__stats {
+  min-width: min(100%, 300px);
+}
+
+.aj-voyages-page--premium .aj-voyages-summary-card__stat {
+  padding: 12px 14px;
+  border-radius: 16px;
+}
+
+.aj-voyages-page--premium .aj-voyages-active-filters {
+  margin-bottom: 14px;
+}
+
+.aj-voyages-page--premium .aj-voyages-active-filters__chip {
+  padding: 8px 11px;
+  font-size: 0.8rem;
+}
+
+.aj-voyages-page--premium .aj-voyages-toolbar--premium {
+  align-items: end;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid #e6edf6;
+  box-shadow: 0 12px 28px rgba(14, 58, 90, 0.06);
+}
+
+.aj-voyages-page--premium .aj-voyages-toolbar__title {
+  margin: 0;
+  color: #0e3a5a;
+  font-size: 1.12rem;
+  font-weight: 800;
+}
+
+.aj-voyages-page--premium .aj-voyages-toolbar__count {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.aj-voyages-page--premium .aj-voyages-sort-form__select {
+  min-height: 44px;
+  border-radius: 999px;
+}
+
+.aj-voyages-page--premium .aj-voyages-results-list {
+  gap: 14px;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card {
+  grid-template-columns: 296px minmax(0, 1fr);
+  border-radius: 22px;
+  border: 1px solid #dfe9f3;
+  box-shadow: 0 14px 30px rgba(14, 58, 90, 0.08);
+  overflow: hidden;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__media {
+  min-height: 228px;
+  max-height: 228px;
+  background: #d9e5ef;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__media-frame,
+.aj-voyages-page--premium .aj-voyages-result-card__media-frame img,
+.aj-voyages-page--premium .aj-voyages-result-card__media-frame .aj-catalog-card__img {
+  display: block;
+  width: 100%;
+  height: 228px;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__media-frame img,
+.aj-voyages-page--premium .aj-voyages-result-card__media-frame .aj-catalog-card__img {
+  object-fit: cover;
+}
+
+.aj-voyages-page--premium .aj-catalog-card__img--fallback {
+  background: #dbe7f2;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__badges {
+  inset: 12px auto auto 12px;
+  gap: 6px;
+}
+
+.aj-voyages-page--premium .aj-voyages-badge {
+  padding: 6px 9px;
+  font-size: 0.67rem;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__body {
+  grid-template-columns: minmax(0, 1fr) 188px;
+  gap: 16px;
+  padding: 16px 18px;
+  min-height: 228px;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__topline {
+  margin-bottom: 6px;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__theme {
+  font-size: 0.74rem;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__title {
+  margin: 0 0 8px;
+  font-size: 1.22rem;
+  line-height: 1.18;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__meta-line {
+  gap: 7px 14px;
+  margin-bottom: 10px;
+  font-size: 0.82rem;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__rating-row {
+  margin-bottom: 10px;
+  gap: 8px;
+}
+
+.aj-voyages-page--premium .aj-voyages-rating-pill {
+  padding: 7px 10px;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__excerpt {
+  margin: 0 0 10px;
+  color: #475569;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__chips {
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__chip,
+.aj-voyages-page--premium .aj-voyages-result-card__trust span {
+  padding: 6px 9px;
+  font-size: 0.72rem;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__chip--service {
+  background: #eef7ff;
+  border-color: #d4e9fa;
+  color: #0e3a5a;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__chip--date {
+  background: #fff4e8;
+  border-color: #ffd8b2;
+  color: #9a4b00;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__trust {
+  gap: 6px;
+  margin-top: auto;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__pricing {
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  padding-left: 14px;
+  border-left: 1px solid #edf2f7;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__pricing-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__favorite {
+  width: 38px;
+  height: 38px;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__old-price {
+  font-size: 0.76rem;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__price-prefix {
+  font-size: 0.74rem;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__price {
+  font-size: 1.72rem;
+  line-height: 0.95;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__price span {
+  font-size: 0.78rem;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__price--small {
+  font-size: 1.08rem;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__price-note {
+  font-size: 0.76rem;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__actions {
+  width: 100%;
+  gap: 8px;
+}
+
+.aj-voyages-page--premium .aj-voyages-result-card__cta {
+  min-height: 42px;
+  border-radius: 12px;
+  font-size: 0.84rem;
+}
+
+.aj-voyages-page--premium .aj-voyages-empty--premium {
+  border-radius: 22px;
+}
+
+@media (max-width: 1180px) {
+  .aj-voyages-page--premium .aj-voyages-catalog__grid {
+    grid-template-columns: 296px minmax(0, 1fr);
+  }
+
+  .aj-voyages-page--premium .aj-voyages-searchbar__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aj-voyages-page--premium .aj-voyages-searchbar__submit {
+    min-height: 54px;
+    grid-column: 1 / -1;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-result-card__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .aj-voyages-page--premium .aj-voyages-result-card__pricing {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-left: 0;
+    padding-top: 12px;
+    border-left: 0;
+    border-top: 1px solid #edf2f7;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-result-card__pricing-copy {
+    align-items: flex-start;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-result-card__actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 991px) {
+  .aj-voyages-page--premium .aj-voyages-catalog__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-search-hero {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-summary-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-summary-card__stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    min-width: 0;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-result-card {
+    grid-template-columns: 1fr;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-result-card__media,
+  .aj-voyages-page--premium .aj-voyages-result-card__media-frame,
+  .aj-voyages-page--premium .aj-voyages-result-card__media-frame img,
+  .aj-voyages-page--premium .aj-voyages-result-card__media-frame .aj-catalog-card__img {
+    height: 220px;
+    max-height: 220px;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-filters-mobile-trigger--sticky {
+    position: sticky;
+    bottom: 14px;
+    display: inline-flex;
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .aj-voyages-page--premium .aj-voyages-search-shell {
+    padding-top: 14px;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-search-hero__title {
+    font-size: 1.58rem;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-searchbar__grid,
+  .aj-voyages-page--premium .aj-voyages-summary-card__stats,
+  .aj-voyages-page--premium .aj-voyages-result-card__actions {
+    grid-template-columns: 1fr;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-summary-card,
+  .aj-voyages-page--premium .aj-voyages-toolbar--premium,
+  .aj-voyages-page--premium .aj-voyages-result-card__body {
+    padding: 14px;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-toolbar--premium {
+    align-items: stretch;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-result-card {
+    border-radius: 18px;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-result-card__title {
+    font-size: 1.08rem;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-result-card__pricing {
+    align-items: stretch;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-result-card__pricing-copy {
+    align-items: flex-start;
+  }
+
+  .aj-voyages-page--premium .aj-voyages-result-card__favorite {
+    align-self: flex-end;
+  }
+}

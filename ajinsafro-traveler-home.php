@@ -136,6 +136,23 @@ function ajth_enqueue_front_assets()
         );
     }
 
+    if ( function_exists( 'ajth_is_voyages_context' ) && ajth_is_voyages_context() ) {
+        wp_enqueue_style(
+            'ajth-voyages-results-css',
+            AJTH_URL . 'assets/css/aj-voyages-results.css',
+            ['ajth-home-css'],
+            AJTH_VERSION
+        );
+
+        wp_enqueue_script(
+            'ajth-voyages-results-js',
+            AJTH_URL . 'assets/js/aj-voyages-results.js',
+            [],
+            AJTH_VERSION,
+            true
+        );
+    }
+
     if ( function_exists( 'ajth_is_activites_context' ) && ajth_is_activites_context() ) {
         wp_enqueue_style(
             'ajth-activites-getyourguide-css',

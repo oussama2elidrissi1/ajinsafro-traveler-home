@@ -61,7 +61,7 @@ $promo_only = $get_bool('promo_only');
 $available_only = $get_bool('available_only');
 $min_rating = (float) $get_text('min_rating');
 $sort = $get_text('sort', $get_text('catalog_orderby', 'recommended'));
-$allowed_sorts = ['recommended', 'price_asc', 'price_desc', 'rating_desc', 'popular', 'duration_desc', 'departure_soonest', 'newest', 'title_asc'];
+$allowed_sorts = ['recommended', 'price_asc', 'price_desc', 'rating_desc', 'popular', 'promo_first', 'duration_asc', 'duration_desc', 'departure_soonest', 'newest', 'title_asc'];
 if (! in_array($sort, $allowed_sorts, true)) {
     $sort = 'recommended';
 }
@@ -284,6 +284,10 @@ if (! empty($post_ids)) {
 }
 $destinations = array_values($destinations);
 sort($available_departure_dates);
+$upcoming_departure_dates = array_values(array_filter(
+    $available_departure_dates,
+    static fn (string $date_value): bool => $date_value >= $today
+));
 
 $format_price = static function (?float $price): string {
     if ($price === null || $price <= 0) {
@@ -322,14 +326,26 @@ foreach ($post_ids as $post_id) {
         }
         return trim((string) $source[$key][0]);
     };
+    $first_meta_value = static function (array $source, array $keys) use ($meta_value): string {
+        foreach ($keys as $key) {
+            $value = $meta_value($source, $key);
+            if ($value !== '') {
+                return $value;
+            }
+        }
+
+        return '';
+    };
 
     $post_date = get_post_field('post_date', $post_id);
+    $title = get_the_title($post_id);
     $address = $meta_value($meta, 'address');
     $catalog_destination = $meta_value($meta, 'aj_catalog_destination');
     $destination_label = $catalog_destination !== '' ? $catalog_destination : $address;
     $duration_days = (int) $meta_value($meta, 'duration_day');
     $duration_text = $meta_value($meta, 'duration');
     $max_people = (int) $meta_value($meta, 'max_people');
+    $departure_city = $first_meta_value($meta, ['departure_city', 'depart_city', 'start_city', 'origin_city', 'flight_departure_city', 'aj_departure_city', 'aj_tour_departure_city']);
     $review_score = (float) $meta_value($meta, 'review_score');
     $rate_review = (float) $meta_value($meta, 'rate_review');
     $rating_score = max($review_score, $rate_review);
@@ -410,6 +426,32 @@ foreach ($post_ids as $post_id) {
             $tag_names[] = $term->name;
         }
     }
+    $discovery_pool = strtolower(implode(' ', array_filter(array_merge($theme_names, $tag_names, [$title]))));
+    $service_chips = [];
+    $service_keywords = [
+        'Vol inclus' => ['vol', 'flight'],
+        'Hotel inclus' => ['hotel', 'hebergement', 'riad', 'resort'],
+        'Transfert' => ['transfert', 'transfer', 'navette'],
+        'Guide' => ['guide', 'accompagne'],
+        'Visa' => ['visa'],
+        'Activites' => ['activite', 'excursion', 'visite'],
+        'Low cost' => ['low cost', 'economique', 'budget'],
+        'Premium' => ['premium', 'luxe', 'vip'],
+        'Famille' => ['famille', 'family'],
+        'Couple' => ['couple', 'honeymoon'],
+        'Groupe' => ['groupe', 'group'],
+        'Omra' => ['omra'],
+        'Hajj' => ['hajj'],
+    ];
+    foreach ($service_keywords as $service_label => $keywords) {
+        foreach ($keywords as $keyword_match) {
+            if ($keyword_match !== '' && strpos($discovery_pool, $keyword_match) !== false) {
+                $service_chips[] = $service_label;
+                break;
+            }
+        }
+    }
+    $service_chips = array_values(array_slice(array_unique($service_chips), 0, 4));
 
     if ($price_min > 0 && ($price_from === null || $price_from < $price_min)) {
         continue;
@@ -446,15 +488,15 @@ foreach ($post_ids as $post_id) {
 
     $cards[] = [
         'id' => $post_id,
-        'title' => get_the_title($post_id),
+        'title' => $title,
         'permalink' => get_permalink($post_id),
         'excerpt' => get_the_excerpt($post_id) !== ''
-            ? wp_trim_words(get_the_excerpt($post_id), 24, '...')
-            : wp_trim_words(wp_strip_all_tags(get_post_field('post_content', $post_id)), 24, '...'),
-        'image' => get_the_post_thumbnail_url($post_id, 'large'),
+            ? wp_trim_words(get_the_excerpt($post_id), 22, '...')
+            : wp_trim_words(wp_strip_all_tags(get_post_field('post_content', $post_id)), 22, '...'),
         'destination' => $destination_label,
         'duration_days' => $duration_days,
         'duration_label' => $build_duration_label($duration_days, $duration_text),
+        'departure_city' => $departure_city,
         'max_people' => $max_people,
         'rating' => $rating_score,
         'reviews' => $comment_count,
@@ -470,6 +512,7 @@ foreach ($post_ids as $post_id) {
         'stock_badge' => $stock_badge,
         'themes' => array_slice($theme_names, 0, 2),
         'tags' => array_slice($tag_names, 0, 3),
+        'service_chips' => $service_chips,
         'post_timestamp' => $post_date ? strtotime($post_date) : 0,
         'departure_timestamp' => $next_departure ? strtotime((string) $next_departure['date']) : 0,
     ];
@@ -498,6 +541,14 @@ usort($cards, static function (array $left, array $right) use ($sort): int {
         case 'popular':
             return $compare_numbers($left['reviews'], $right['reviews'], false)
                 ?: $compare_numbers($left['rating'], $right['rating'], false);
+
+        case 'promo_first':
+            return $compare_numbers((int) $left['is_promo'], (int) $right['is_promo'], false)
+                ?: $compare_numbers($left['price_from'] ?? PHP_INT_MAX, $right['price_from'] ?? PHP_INT_MAX, true);
+
+        case 'duration_asc':
+            return $compare_numbers($left['duration_days'] ?: PHP_INT_MAX, $right['duration_days'] ?: PHP_INT_MAX, true)
+                ?: $compare_numbers($left['price_from'] ?? PHP_INT_MAX, $right['price_from'] ?? PHP_INT_MAX, true);
 
         case 'duration_desc':
             return $compare_numbers($left['duration_days'], $right['duration_days'], false)
@@ -614,7 +665,9 @@ $sort_options = [
     'price_desc' => 'Prix decroissant',
     'rating_desc' => 'Meilleures notes',
     'popular' => 'Plus populaires',
-    'duration_desc' => 'Sejours les plus longs',
+    'promo_first' => 'Promotions d abord',
+    'duration_asc' => 'Duree courte',
+    'duration_desc' => 'Duree longue',
     'departure_soonest' => 'Departs les plus proches',
     'newest' => 'Nouveautes',
     'title_asc' => 'Nom A-Z',
@@ -706,8 +759,8 @@ $sort_options = [
                                     <span>Destinations</span>
                                 </div>
                                 <div class="aj-voyages-summary-card__stat">
-                                    <strong><?php echo esc_html((string) count($available_departure_dates)); ?></strong>
-                                    <span>Dates actives</span>
+                                    <strong><?php echo esc_html((string) count($upcoming_departure_dates)); ?></strong>
+                                    <span>Departs a venir</span>
                                 </div>
                             </div>
                         </section>
@@ -752,14 +805,9 @@ $sort_options = [
                                 <?php foreach ($cards_page as $card) { ?>
                                     <article class="aj-voyages-result-card">
                                         <a href="<?php echo esc_url($card['permalink']); ?>" class="aj-voyages-result-card__media" aria-label="<?php echo esc_attr($card['title']); ?>">
-                                            <?php if (! empty($card['image'])) { ?>
-                                                <img src="<?php echo esc_url($card['image']); ?>" alt="<?php echo esc_attr($card['title']); ?>" loading="lazy">
-                                            <?php } else { ?>
-                                                <div class="aj-voyages-result-card__fallback">
-                                                    <i class="fas fa-image" aria-hidden="true"></i>
-                                                    <span>Visuel a venir</span>
-                                                </div>
-                                            <?php } ?>
+                                            <div class="aj-voyages-result-card__media-frame">
+                                                <?php ajth_render_catalog_card_image($card['id']); ?>
+                                            </div>
 
                                             <div class="aj-voyages-result-card__badges">
                                                 <?php if ($card['is_featured']) { ?>
@@ -778,7 +826,7 @@ $sort_options = [
                                             <div class="aj-voyages-result-card__content">
                                                 <div class="aj-voyages-result-card__topline">
                                                     <?php if (! empty($card['themes'])) { ?>
-                                                        <span class="aj-voyages-result-card__theme"><?php echo esc_html(implode(' · ', $card['themes'])); ?></span>
+                                                        <span class="aj-voyages-result-card__theme"><?php echo esc_html(implode(' / ', $card['themes'])); ?></span>
                                                     <?php } else { ?>
                                                         <span class="aj-voyages-result-card__theme">Selection Ajinsafro</span>
                                                     <?php } ?>
@@ -787,8 +835,18 @@ $sort_options = [
                                                 <h3 class="aj-voyages-result-card__title"><a href="<?php echo esc_url($card['permalink']); ?>"><?php echo esc_html($card['title']); ?></a></h3>
 
                                                 <div class="aj-voyages-result-card__meta-line">
-                                                    <span><i class="fas fa-map-marker-alt" aria-hidden="true"></i><?php echo esc_html($card['destination'] !== '' ? $card['destination'] : 'Destination a confirmer'); ?></span>
-                                                    <span><i class="far fa-clock" aria-hidden="true"></i><?php echo esc_html($card['duration_label']); ?></span>
+                                                    <?php if ($card['destination'] !== '') { ?>
+                                                        <span><i class="fas fa-map-marker-alt" aria-hidden="true"></i><?php echo esc_html($card['destination']); ?></span>
+                                                    <?php } ?>
+                                                    <?php if ($card['duration_days'] > 0 || $card['duration_label'] !== '') { ?>
+                                                        <span><i class="far fa-clock" aria-hidden="true"></i><?php echo esc_html($card['duration_label']); ?></span>
+                                                    <?php } ?>
+                                                    <?php if ($card['departure_city'] !== '') { ?>
+                                                        <span><i class="fas fa-plane-departure" aria-hidden="true"></i>Depart <?php echo esc_html($card['departure_city']); ?></span>
+                                                    <?php } ?>
+                                                    <?php if ($card['next_departure_label'] !== '') { ?>
+                                                        <span><i class="far fa-calendar-alt" aria-hidden="true"></i><?php echo esc_html($card['next_departure_label']); ?></span>
+                                                    <?php } ?>
                                                     <?php if ($card['max_people'] > 0) { ?>
                                                         <span><i class="fas fa-users" aria-hidden="true"></i>Jusqu a <?php echo esc_html((string) $card['max_people']); ?> voyageurs</span>
                                                     <?php } ?>
@@ -812,11 +870,14 @@ $sort_options = [
                                                 <p class="aj-voyages-result-card__excerpt"><?php echo esc_html($card['excerpt']); ?></p>
 
                                                 <div class="aj-voyages-result-card__chips">
+                                                    <?php foreach ($card['service_chips'] as $service_chip) { ?>
+                                                        <span class="aj-voyages-result-card__chip aj-voyages-result-card__chip--service"><?php echo esc_html($service_chip); ?></span>
+                                                    <?php } ?>
                                                     <?php foreach ($card['tags'] as $tag_name) { ?>
                                                         <span class="aj-voyages-result-card__chip"><?php echo esc_html($tag_name); ?></span>
                                                     <?php } ?>
-                                                    <?php if ($card['next_departure_label'] !== '') { ?>
-                                                        <span class="aj-voyages-result-card__chip aj-voyages-result-card__chip--date">Depart: <?php echo esc_html($card['next_departure_label']); ?></span>
+                                                    <?php if (! empty($card['stock_badge'])) { ?>
+                                                        <span class="aj-voyages-result-card__chip aj-voyages-result-card__chip--date"><?php echo esc_html($card['stock_badge']['label']); ?></span>
                                                     <?php } ?>
                                                 </div>
 
@@ -832,19 +893,21 @@ $sort_options = [
                                                     <i class="far fa-heart" aria-hidden="true"></i>
                                                 </button>
 
-                                                <?php if ($card['price_reference_label'] !== '') { ?>
-                                                    <span class="aj-voyages-result-card__old-price"><?php echo esc_html($card['price_reference_label']); ?> DH</span>
-                                                <?php } ?>
+                                                <div class="aj-voyages-result-card__pricing-copy">
+                                                    <?php if ($card['price_reference_label'] !== '') { ?>
+                                                        <span class="aj-voyages-result-card__old-price"><?php echo esc_html($card['price_reference_label']); ?> DH</span>
+                                                    <?php } ?>
 
-                                                <?php if ($card['price_from_label'] !== '') { ?>
-                                                    <span class="aj-voyages-result-card__price-prefix">A partir de</span>
-                                                    <div class="aj-voyages-result-card__price"><?php echo esc_html($card['price_from_label']); ?> <span>DH</span></div>
-                                                    <span class="aj-voyages-result-card__price-note">par personne</span>
-                                                <?php } else { ?>
-                                                    <span class="aj-voyages-result-card__price-prefix">Tarif</span>
-                                                    <div class="aj-voyages-result-card__price aj-voyages-result-card__price--small">Sur demande</div>
-                                                    <span class="aj-voyages-result-card__price-note">selon disponibilite</span>
-                                                <?php } ?>
+                                                    <?php if ($card['price_from_label'] !== '') { ?>
+                                                        <span class="aj-voyages-result-card__price-prefix">A partir de</span>
+                                                        <div class="aj-voyages-result-card__price"><?php echo esc_html($card['price_from_label']); ?> <span>DH</span></div>
+                                                        <span class="aj-voyages-result-card__price-note">par personne</span>
+                                                    <?php } else { ?>
+                                                        <span class="aj-voyages-result-card__price-prefix">Tarif</span>
+                                                        <div class="aj-voyages-result-card__price aj-voyages-result-card__price--small">Prix sur demande</div>
+                                                        <span class="aj-voyages-result-card__price-note">selon disponibilite</span>
+                                                    <?php } ?>
+                                                </div>
 
                                                 <div class="aj-voyages-result-card__actions">
                                                     <a href="<?php echo esc_url($card['permalink']); ?>" class="aj-voyages-result-card__cta aj-voyages-result-card__cta--ghost">Voir les details</a>
