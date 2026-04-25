@@ -170,6 +170,23 @@ function ajth_enqueue_front_assets()
         );
     }
 
+    if ( function_exists( 'ajth_is_group_deals_context' ) && ajth_is_group_deals_context() ) {
+        wp_enqueue_style(
+            'ajth-group-deals-fusion-css',
+            AJTH_URL . 'assets/css/group-deals-fusion.css',
+            ['ajth-home-css'],
+            AJTH_VERSION
+        );
+
+        wp_enqueue_script(
+            'ajth-group-deals-fusion-js',
+            AJTH_URL . 'assets/js/group-deals-fusion.js',
+            [],
+            AJTH_VERSION,
+            true
+        );
+    }
+
     if ($load_home_sections) {
         wp_enqueue_style(
             'ajth-home-reference-accordion-css',
