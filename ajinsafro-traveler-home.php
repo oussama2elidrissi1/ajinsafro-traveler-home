@@ -136,6 +136,23 @@ function ajth_enqueue_front_assets()
         );
     }
 
+    if ( function_exists( 'ajth_is_activites_context' ) && ajth_is_activites_context() ) {
+        wp_enqueue_style(
+            'ajth-activites-getyourguide-css',
+            AJTH_URL . 'assets/css/activites-getyourguide.css',
+            ['ajth-home-css'],
+            AJTH_VERSION
+        );
+
+        wp_enqueue_script(
+            'ajth-activites-getyourguide-js',
+            AJTH_URL . 'assets/js/activites-getyourguide.js',
+            [],
+            AJTH_VERSION,
+            true
+        );
+    }
+
     if ($load_home_sections) {
         wp_enqueue_style(
             'ajth-home-reference-accordion-css',
