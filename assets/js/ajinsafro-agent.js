@@ -1,8 +1,8 @@
 (function () {
     'use strict';
 
-    if (typeof window.ajthAgentConfig !== 'object') {
-        return;
+    if (typeof window.ajthAgentConfig !== 'object' || window.ajthAgentConfig === null) {
+        window.ajthAgentConfig = {};
     }
 
     var root = document.getElementById('ajth-agent-root');
@@ -19,6 +19,7 @@
     var form = root.querySelector('[data-ajth-agent-form]');
     var input = form ? form.querySelector('input[name="message"]') : null;
     var quickReplies = root.querySelector('[data-ajth-agent-quick-replies]');
+    var labels = config.labels || {};
 
     function setOpenState(isOpen) {
         if (!panel) {
@@ -28,6 +29,9 @@
         if (isOpen) {
             panel.hidden = false;
             root.classList.add('is-open');
+            if (openButton) {
+                openButton.setAttribute('aria-expanded', 'true');
+            }
             if (input) {
                 window.setTimeout(function () {
                     input.focus();
@@ -38,6 +42,9 @@
 
         panel.hidden = true;
         root.classList.remove('is-open');
+        if (openButton) {
+            openButton.setAttribute('aria-expanded', 'false');
+        }
     }
 
     function escapeHtml(value) {
@@ -164,6 +171,10 @@
     }
 
     if (openButton) {
+        openButton.setAttribute('aria-expanded', 'false');
+    }
+
+    if (openButton) {
         openButton.addEventListener('click', function () {
             setOpenState(true);
         });
@@ -174,6 +185,19 @@
             setOpenState(false);
         });
     }
+
+    root.addEventListener('click', function (event) {
+        var trigger = event.target.closest('[data-ajth-agent-open]');
+        if (trigger) {
+            setOpenState(true);
+            return;
+        }
+
+        var closer = event.target.closest('[data-ajth-agent-close]');
+        if (closer) {
+            setOpenState(false);
+        }
+    });
 
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape' && root.classList.contains('is-open')) {
@@ -188,6 +212,6 @@
         });
     }
 
-    appendMessage('agent', config.welcomeMessage || 'Bonjour, je suis Ajinsafro Agent.');
+    appendMessage('agent', config.welcomeMessage || labels.welcomeMessage || 'Bonjour, je suis Ajinsafro Agent.');
     renderQuickReplies(config.quickReplies || []);
 })();
