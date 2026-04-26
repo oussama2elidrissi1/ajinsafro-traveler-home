@@ -2,8 +2,12 @@
     position: fixed;
     right: 18px;
     bottom: 18px;
-    z-index: 10050;
+    z-index: 2147483647;
     font-family: 'Poppins', 'Segoe UI', sans-serif;
+}
+
+.ajth-agent-root * {
+    pointer-events: auto;
 }
 
 .ajth-agent-toggle {
@@ -33,6 +37,7 @@
     position: absolute;
     right: 0;
     bottom: 72px;
+    z-index: 2147483647;
     width: min(380px, calc(100vw - 24px));
     height: min(620px, calc(100vh - 120px));
     display: grid;
