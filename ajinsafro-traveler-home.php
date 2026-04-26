@@ -138,6 +138,36 @@ function ajth_enqueue_front_assets()
             AJTH_VERSION,
             true
         );
+
+        if ( function_exists( 'getAjinsafroHebergements' ) ) {
+            $hebergements = getAjinsafroHebergements(
+                200,
+                array(
+                    'posts_per_page' => 200,
+                    'orderby'        => 'date',
+                    'order'          => 'DESC',
+                )
+            );
+
+            wp_localize_script(
+                'ajth-hebergement-booking-js',
+                'ajthHebergementConfig',
+                array(
+                    'hotels' => array_values( $hebergements ),
+                    'currency' => 'DH',
+                    'strings' => array(
+                        'see_offer'   => 'Voir l\'offre',
+                        'ask_availability' => 'Demander disponibilite',
+                        'available'   => 'Disponible',
+                        'recommended' => 'Recommande',
+                        'support_note'=> 'Confirmation rapide · Support Ajinsafro',
+                        'from_price'  => 'A partir de',
+                        'per_night'   => 'par nuit',
+                        'results'     => 'resultats trouves',
+                    ),
+                )
+            );
+        }
     }
 
     if ( function_exists( 'ajth_is_voyages_context' ) && ajth_is_voyages_context() ) {
