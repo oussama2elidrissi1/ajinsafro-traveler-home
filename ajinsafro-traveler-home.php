@@ -40,6 +40,7 @@ require_once AJTH_DIR.'includes/catalog-image-helpers.php';
 require_once AJTH_DIR.'includes/hebergement-catalog.php';
 require_once AJTH_DIR.'includes/class-catalog-cache-invalidate.php';
 require_once AJTH_DIR.'includes/class-admin-settings.php';
+require_once AJTH_DIR.'includes/class-ajinsafro-agent.php';
 require_once AJTH_DIR.'includes/tour-category-defaults.php';
 require_once AJTH_DIR.'includes/voyages-routing.php';
 
@@ -52,6 +53,9 @@ function ajth_init()
 {
     // Template routing (front-end)
     new AJTH_Template_Router;
+
+    // Public AI assistant
+    new AJTH_Ajinsafro_Agent;
 
     // Admin settings page
     if (is_admin()) {
