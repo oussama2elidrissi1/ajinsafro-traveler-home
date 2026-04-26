@@ -19,7 +19,7 @@ class AJTH_Ajinsafro_Agent
     public function __construct()
     {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets'], 20);
-        add_action('wp_footer', [$this, 'render_widget'], 20);
+        add_action('wp_footer', [$this, 'render_widget'], 5);
         add_action('rest_api_init', [$this, 'register_rest_routes']);
         add_action('admin_menu', [$this, 'register_admin_page']);
         add_action('admin_init', [$this, 'handle_admin_save']);

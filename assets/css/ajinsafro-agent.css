@@ -3,9 +3,12 @@
     right: 18px;
     bottom: 18px;
     z-index: 2147483647;
+    isolation: isolate;
     font-family: 'Poppins', 'Segoe UI', sans-serif;
+    pointer-events: none;
 }
 
+.ajth-agent-root > *,
 .ajth-agent-root * {
     pointer-events: auto;
 }
