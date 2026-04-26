@@ -15,7 +15,7 @@ if (! defined('ABSPATH')) {
         <div class="filter-body">
             <input class="filter-search" type="text" name="s" value="<?php echo esc_attr($search_text); ?>" placeholder="Nom, destination...">
 
-            <select name="dest" class="filter-select">
+            <select name="destination" class="filter-select">
                 <option value="">Toutes les destinations</option>
                 <?php foreach ((array) $destinations as $destination_option) { ?>
                     <option value="<?php echo esc_attr($destination_option['value']); ?>" <?php selected($dest, $destination_option['value']); ?>>
@@ -24,7 +24,7 @@ if (! defined('ABSPATH')) {
                 <?php } ?>
             </select>
 
-            <input type="date" name="depart_date" class="filter-search" value="<?php echo esc_attr($depart_date); ?>">
+            <input type="date" name="date_depart" class="filter-search" value="<?php echo esc_attr($depart_date); ?>">
         </div>
     </details>
 
@@ -32,8 +32,8 @@ if (! defined('ABSPATH')) {
         <summary>Budget</summary>
         <div class="filter-body">
             <div class="mini-inputs">
-                <input type="number" min="0" name="price_min" value="<?php echo esc_attr($price_min > 0 ? (string) $price_min : ''); ?>" placeholder="Min DH">
-                <input type="number" min="0" name="price_max" value="<?php echo esc_attr($price_max > 0 ? (string) $price_max : ''); ?>" placeholder="Max DH">
+                <input type="number" min="0" name="budget_min" value="<?php echo esc_attr($price_min > 0 ? (string) $price_min : ''); ?>" placeholder="Min DH">
+                <input type="number" min="0" name="budget_max" value="<?php echo esc_attr($price_max > 0 ? (string) $price_max : ''); ?>" placeholder="Max DH">
             </div>
         </div>
     </details>
@@ -45,11 +45,11 @@ if (! defined('ABSPATH')) {
                 <input type="number" min="0" name="duration_min" value="<?php echo esc_attr($duration_min > 0 ? (string) $duration_min : ''); ?>" placeholder="Jours min">
                 <input type="number" min="0" name="duration_max" value="<?php echo esc_attr($duration_max > 0 ? (string) $duration_max : ''); ?>" placeholder="Jours max">
             </div>
-            <input type="number" min="1" name="guests_min" value="<?php echo esc_attr($guests_min > 0 ? (string) $guests_min : ''); ?>" placeholder="Voyageurs minimum">
+            <input type="number" min="1" name="voyageurs" value="<?php echo esc_attr($guests_min > 0 ? (string) $guests_min : ''); ?>" placeholder="Voyageurs minimum">
         </div>
     </details>
 
-    <?php if (! empty($catalog_themes) || ! empty($catalog_tags)) { ?>
+    <?php if (! empty($catalog_themes) || ! empty($catalog_tour_types) || ! empty($catalog_tags)) { ?>
         <details class="accordion" open>
             <summary>Type et themes</summary>
             <div class="filter-body">
@@ -60,6 +60,18 @@ if (! defined('ABSPATH')) {
                             <?php if (! $theme_term instanceof WP_Term) { continue; } ?>
                             <option value="<?php echo esc_attr($theme_term->slug); ?>" <?php selected($category_slug, $theme_term->slug); ?>>
                                 <?php echo esc_html($theme_term->name); ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                <?php } ?>
+
+                <?php if (! empty($catalog_tour_types)) { ?>
+                    <select name="tour_type" class="filter-select">
+                        <option value="">Tous les types</option>
+                        <?php foreach ((array) $catalog_tour_types as $type_term) { ?>
+                            <?php if (! $type_term instanceof WP_Term) { continue; } ?>
+                            <option value="<?php echo esc_attr($type_term->slug); ?>" <?php selected($tour_type_slug, $type_term->slug); ?>>
+                                <?php echo esc_html($type_term->name); ?>
                             </option>
                         <?php } ?>
                     </select>
