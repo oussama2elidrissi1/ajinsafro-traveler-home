@@ -219,6 +219,15 @@
         return Number(value).toLocaleString('fr-FR') + ' ' + (config.currency || 'DH');
     }
 
+    function escapeHtml(value) {
+        return String(value === null || value === undefined ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     function renderHotelCard(hotel) {
         var amenities = hotel.amenities.slice(0, 4).map(function (key) {
             return '<span class="amenity">' + (amenityLabels[key] || key) + '</span>';
@@ -262,6 +271,70 @@
                     '<div class="card-actions">' +
                         '<a class="primary-btn" href="' + hotel.url + '">' + (strings.see_offer || 'Voir l\'offre') + '</a>' +
                         '<a class="secondary-btn" href="' + hotel.url + '">' + (strings.ask_availability || 'Demander disponibilite') + '</a>' +
+                    '</div>' +
+                '</aside>' +
+            '</article>';
+    }
+
+    function renderHotelCard(hotel) {
+        var amenities = hotel.amenities.slice(0, 4).map(function (key) {
+            return '<span class="amenity">' + (amenityLabels[key] || key) + '</span>';
+        }).join('');
+        var stars = hotel.stars > 0 ? hotel.stars + ' etoiles' : 'Type libre';
+        var imageUrl = hotel.image && hotel.image.trim() ? hotel.image : '';
+        var imageMarkup = imageUrl
+            ? '<img src="' + escapeHtml(imageUrl) + '" alt="' + escapeHtml(hotel.name || hotel.title || 'Hebergement Ajinsafro') + '" loading="lazy">'
+            : '<div class="photo-placeholder">Aucune photo</div>';
+        var categoryBadge = hotel.category || 'Hebergement';
+        var ratingSecondaryText = hotel.reviews > 0
+            ? hotel.reviews.toLocaleString('fr-FR') + ' avis'
+            : (hotel.category || 'Hebergement');
+        var metaItems = [
+            hotel.location ? '<div class="meta-item"><span class="meta-item__label">Destination</span><strong>' + escapeHtml(hotel.location) + '</strong></div>' : '',
+            hotel.stars > 0 ? '<div class="meta-item"><span class="meta-item__label">Standing</span><strong>' + escapeHtml(stars) + '</strong></div>' : '',
+            (boardLabels[hotel.board] || hotel.category) ? '<div class="meta-item"><span class="meta-item__label">Formule</span><strong>' + escapeHtml(boardLabels[hotel.board] || hotel.category) + '</strong></div>' : '',
+            '<div class="meta-item"><span class="meta-item__label">Statut</span><strong>' + (hotel.available ? 'Disponible' : 'Sur demande') + '</strong></div>'
+        ].filter(Boolean).join('');
+        var ratingMarkup = hotel.rating
+            ? '<div class="rating-box">' +
+                '<div class="rating-text"><strong>' + getRatingLabel(hotel.rating) + '</strong><span>' + escapeHtml(ratingSecondaryText) + '</span></div>' +
+                '<div class="rating-score">' + hotel.rating.toFixed(1) + '</div>' +
+              '</div>'
+            : '<div class="rating-box">' +
+                '<div class="rating-text"><strong>' + escapeHtml(hotel.category || 'Hebergement') + '</strong><span>' + escapeHtml(hotel.stars > 0 ? hotel.stars + ' etoiles' : 'Hebergement') + '</span></div>' +
+                '<div class="rating-score">' + (hotel.stars > 0 ? hotel.stars : '•') + '</div>' +
+              '</div>';
+
+        return '' +
+            '<article class="hotel-card" data-id="' + hotel.id + '">' +
+                '<div class="photo-wrap' + (imageUrl ? '' : ' photo-wrap--placeholder') + '">' +
+                    '<a class="photo-link" href="' + escapeHtml(hotel.url) + '">' + imageMarkup + '</a>' +
+                    '<button class="fav" type="button" aria-label="Ajouter aux favoris">♡</button>' +
+                    '<div class="photo-badges">' +
+                        (hotel.popular ? '<span class="photo-badge">' + escapeHtml(strings.recommended || 'Recommande') + '</span>' : '') +
+                        '<span class="photo-badge photo-badge--type">' + escapeHtml(categoryBadge) + '</span>' +
+                        (hotel.discount ? '<span class="photo-badge photo-badge--promo">Promo ' + escapeHtml(String(hotel.discount)) + '%</span>' : '') +
+                    '</div>' +
+                '</div>' +
+                '<div class="hotel-main">' +
+                    '<div class="meta meta--caps meta--compact"><span>' + escapeHtml(categoryBadge) + '</span></div>' +
+                    '<h3><a href="' + escapeHtml(hotel.url) + '">' + escapeHtml(hotel.name) + '</a></h3>' +
+                    '<div class="location location--primary"><span>' + escapeHtml(hotel.location || 'Localisation non renseignee') + '</span></div>' +
+                    '<div class="meta-grid">' + metaItems + '</div>' +
+                    '<p class="description">' + escapeHtml(hotel.description || 'Hebergement Ajinsafro disponible dans notre catalogue.') + '</p>' +
+                    '<div class="amenities">' + amenities + '</div>' +
+                    '<div class="good-note">' + escapeHtml(strings.support_note || 'Confirmation rapide · Support Ajinsafro') + '</div>' +
+                '</div>' +
+                '<aside class="hotel-side">' +
+                    '<div>' + ratingMarkup + '</div>' +
+                    '<div class="price-area">' +
+                        '<small>' + (strings.from_price || 'A partir de') + '</small>' +
+                        '<div>' + (hotel.oldPrice ? '<span class="old-price">' + formatPrice(hotel.oldPrice) + '</span>' : '') + '<span class="price">' + formatPrice(hotel.price) + '</span></div>' +
+                        '<div class="tax">' + (strings.per_night || 'par nuit') + '</div>' +
+                    '</div>' +
+                    '<div class="card-actions">' +
+                        '<a class="secondary-btn" href="' + escapeHtml(hotel.url) + '">' + (strings.see_offer || 'Voir l\'offre') + '</a>' +
+                        '<a class="primary-btn" href="' + escapeHtml(hotel.url) + '">' + (strings.ask_availability || 'Demander disponibilite') + '</a>' +
                     '</div>' +
                 '</aside>' +
             '</article>';
