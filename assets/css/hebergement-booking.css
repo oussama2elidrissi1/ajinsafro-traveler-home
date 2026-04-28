@@ -64,7 +64,7 @@
     border-radius: 18px;
     box-shadow: 0 18px 45px rgba(15, 23, 42, 0.22);
     display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr auto;
+    grid-template-columns: 1.45fr 1fr 1fr 1fr 1fr auto;
     gap: 0;
     overflow: hidden;
     color: var(--text);
@@ -378,6 +378,46 @@
     white-space: nowrap;
 }
 
+.aj-hebergement-booking .catalog-section {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.aj-hebergement-booking .catalog-section__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.aj-hebergement-booking .catalog-section__head h3 {
+    margin: 0 0 4px;
+    font-size: 24px;
+    letter-spacing: -0.04em;
+}
+
+.aj-hebergement-booking .catalog-section__head p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.45;
+    max-width: 720px;
+}
+
+.aj-hebergement-booking .catalog-section__count {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #eef6ff;
+    border: 1px solid #cde6ff;
+    color: #075985;
+    font-size: 12px;
+    font-weight: 850;
+    white-space: nowrap;
+}
+
 .aj-hebergement-booking .hotel-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -618,6 +658,31 @@
     padding: 6px 9px;
     font-size: 12px;
     font-weight: 800;
+}
+
+.aj-hebergement-booking .amenity--subtle {
+    background: #eef6ff;
+    border-color: #d6ebff;
+    color: #075985;
+}
+
+.aj-hebergement-booking .amenity--with-icon {
+    gap: 6px;
+}
+
+.aj-hebergement-booking .amenity__icon {
+    font-size: 12px;
+    line-height: 1;
+}
+
+.aj-hebergement-booking .pack-includes {
+    display: grid;
+    gap: 8px;
+}
+
+.aj-hebergement-booking .pack-includes strong {
+    font-size: 13px;
+    letter-spacing: -0.01em;
 }
 
 .aj-hebergement-booking .good-note {
@@ -940,6 +1005,10 @@
 
     .aj-hebergement-booking .price-area {
         text-align: left;
+    }
+
+    .aj-hebergement-booking .catalog-section__head {
+        flex-direction: column;
     }
 }
 
