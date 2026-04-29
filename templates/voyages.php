@@ -1333,9 +1333,6 @@ $rating_label = static function (float $rating): string {
                                         </div>
                                         <p class="description"><?php echo esc_html($card['excerpt']); ?></p>
                                         <div class="hotel-highlights">
-                                            <?php if ($card['next_departure_label'] !== '') { ?>
-                                                <span class="hotel-highlight">Depart : <?php echo esc_html($card['next_departure_label']); ?></span>
-                                            <?php } ?>
                                             <?php foreach (array_slice($card['service_chips'], 0, 2) as $service_chip) { ?>
                                                 <span class="hotel-highlight"><?php echo esc_html($service_chip); ?></span>
                                             <?php } ?>
@@ -1343,18 +1340,15 @@ $rating_label = static function (float $rating): string {
                                     </div>
 
                                     <aside class="hotel-side">
-                                        <div class="rating-box">
-                                            <div class="rating-text">
-                                                <?php if ($card['rating'] > 0) { ?>
+                                        <?php if ($card['rating'] > 0) { ?>
+                                            <div class="rating-box">
+                                                <div class="rating-text">
                                                     <strong><?php echo esc_html($rating_label((float) $card['rating'])); ?></strong>
                                                     <span><?php echo esc_html($card['reviews'] > 0 ? sprintf('%d avis', $card['reviews']) : 'Sans avis'); ?></span>
-                                                <?php } else { ?>
-                                                    <strong>Avis clients</strong>
-                                                    <span>En cours de collecte</span>
-                                                <?php } ?>
+                                                </div>
+                                                <div class="rating-score"><?php echo esc_html(number_format((float) $card['rating'], 1, '.', '')); ?></div>
                                             </div>
-                                            <div class="rating-score"><?php echo esc_html($card['rating'] > 0 ? number_format((float) $card['rating'], 1, '.', '') : '--'); ?></div>
-                                        </div>
+                                        <?php } ?>
 
                                         <div class="price-area">
                                             <small>A partir de</small>
