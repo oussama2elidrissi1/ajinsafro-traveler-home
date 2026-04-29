@@ -431,7 +431,7 @@
   }
 
   function renderFeaturedCards() {
-    var featured = allItems.filter(function (item) { return item.popular; }).slice(0, 4);
+    var featured = allItems.filter(function (item) { return item.isPack && item.popular; }).slice(0, 4);
     if (!featured.length) {
       els.featuredGrid.innerHTML = '';
       return;
@@ -444,14 +444,13 @@
       ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.title) + '" loading="lazy">'
       : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#d9e9ff,#f4f8ff);color:#67809a;font-size:13px;font-weight:600;">Ajinsafro</div>';
 
-    var badge = item.badge || (item.isPack ? 'Pack' : 'À la une');
+    var badge = 'Pack';
     var priceHtml = item.price !== null
       ? '<div class="aj-featured-price"><small>À partir de</small>' + escapeHtml(formatPrice(item.price)) + '</div>'
       : '';
 
-    var ratingHtml = item.rating
-      ? '<div class="aj-rating"><strong>' + item.rating.toFixed(1) + '</strong><span>' + escapeHtml(item.reviews > 0 ? item.reviews.toLocaleString('fr-FR') + ' avis' : 'Ajinsafro') + '</span></div>'
-      : '';
+    var typeLabel = item.category || 'Hébergement';
+    var starsHtml = item.stars > 0 ? renderStars(item.stars) : '';
 
     return '' +
       '<article class="aj-featured-card">' +
@@ -463,12 +462,12 @@
         '<div class="aj-featured-content">' +
           '<div class="aj-inline-meta">' +
             '<span>' + escapeHtml(item.location || 'Maroc') + '</span>' +
-            (item.isPack ? '<span>' + escapeHtml(item.duration || 'Pack') + '</span>' : '') +
+            '<span>' + escapeHtml(typeLabel) + '</span>' +
           '</div>' +
           '<h3>' + escapeHtml(item.title) + '</h3>' +
-          '<div>' + renderStars(item.stars) + '</div>' +
-          ratingHtml +
-          '<a class="aj-featured-link" href="' + escapeHtml(item.url) + '">Voir l\'hébergement</a>' +
+          (starsHtml ? '<div>' + starsHtml + '</div>' : '') +
+          '<p style="margin:0;color:var(--aj-muted);font-size:13px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + escapeHtml(truncateText(item.description, 90)) + '</p>' +
+          '<a class="aj-featured-link" href="' + escapeHtml(item.url) + '">Voir le pack</a>' +
         '</div>' +
       '</article>';
   }

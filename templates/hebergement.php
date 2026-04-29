@@ -94,9 +94,9 @@ sort($types);
                         <div class="aj-section-head">
                             <div>
                                 <span class="aj-section-kicker">Sélection Ajinsafro</span>
-                                <h2 id="aj-featured-title">Séjours à la une</h2>
+                                <h2 id="aj-featured-title">Packs d'hébergement à la une</h2>
                             </div>
-                            <p>Des hébergements premium mis en avant pour inspirer votre prochain séjour.</p>
+                            <p>Des packs hébergement soigneusement sélectionnés avec services inclus pour un séjour sans souci.</p>
                         </div>
                         <div class="aj-featured-grid" id="ajhb-featured-grid"></div>
                     </section>
