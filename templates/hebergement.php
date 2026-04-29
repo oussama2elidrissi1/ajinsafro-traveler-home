@@ -120,16 +120,6 @@ $settings = ajth_get_settings();
                     </div>
                 </section>
 
-                <aside class="ad-col" aria-label="Promotions">
-                    <div class="ad-box">
-                        <strong>Evasion premium au bord de mer</strong>
-                        <button type="button">Decouvrir</button>
-                    </div>
-                    <div class="ad-box">
-                        <strong>Sejours selectionnes par Ajinsafro</strong>
-                        <button type="button">Reserver</button>
-                    </div>
-                </aside>
             </main>
 
             <button class="mobile-filter-btn" type="button" id="ajhb-open-filters">Filtres & tri</button>
