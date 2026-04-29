@@ -1,556 +1,747 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    var root = document.getElementById('aj-hebergement-booking');
-    if (!root) {
-        return;
+  var root = document.getElementById('aj-hebergement-booking');
+  if (!root) {
+    return;
+  }
+
+  var config = typeof window.ajthHebergementConfig === 'object' && window.ajthHebergementConfig
+    ? window.ajthHebergementConfig
+    : {};
+
+  var currency = config.currency || 'DH';
+  var strings = config.strings || {};
+
+  var amenityLabels = {
+    wifi: 'Wi-Fi',
+    pool: 'Piscine',
+    parking: 'Parking',
+    air_conditioning: 'Climatisation',
+    breakfast: 'Petit-déjeuner',
+    restaurant: 'Restaurant',
+    spa: 'Spa',
+    gym: 'Salle de sport',
+    sea_view: 'Vue mer',
+    family: 'Chambre familiale',
+    transfer: 'Transfert',
+    activity: 'Activité',
+    assistance: 'Assistance Ajinsafro',
+    half_board: 'Demi-pension',
+    full_board: 'Pension complète'
+  };
+
+  var packAmenityMap = {
+    hebergement: null,
+    breakfast: 'breakfast',
+    'petit-dejeuner': 'breakfast',
+    'petit-dejeuner-inclus': 'breakfast',
+    'demi-pension': 'half_board',
+    'pension-complete': 'full_board',
+    transfert: 'transfer',
+    'transfert-optionnel': 'transfer',
+    'activite-optionnelle': 'activity',
+    'offre-famille': 'family',
+    'conseils-locaux': 'assistance',
+    'guide-optionnel': 'assistance',
+    'assistance-ajinsafro': 'assistance',
+    'support-reservation': 'assistance'
+  };
+
+  function escapeHtml(value) {
+    return String(value === null || value === undefined ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function formatPrice(value) {
+    if (value === null || value === undefined || value === '' || Number.isNaN(Number(value))) {
+      return 'Sur demande';
+    }
+    return Number(value).toLocaleString('fr-FR') + ' ' + currency;
+  }
+
+  function renderStars(count) {
+    var c = Number(count || 0);
+    if (c <= 0) {
+      return '<span class="aj-star-line aj-star-line--empty">Type libre</span>';
+    }
+    var html = '<span class="aj-star-line" aria-label="' + c + ' étoiles">';
+    for (var i = 0; i < c; i++) {
+      html += '<span aria-hidden="true">★</span>';
+    }
+    html += '</span>';
+    return html;
+  }
+
+  function truncateText(value, maxLength) {
+    var text = String(value || '').replace(/\s+/g, ' ').trim();
+    if (!text || text.length <= maxLength) {
+      return text;
+    }
+    return text.slice(0, maxLength).replace(/[.,;:!?-]?\s+\S*$/, '').trim() + '...';
+  }
+
+  function normalizeItem(raw) {
+    var item = raw && typeof raw === 'object' ? raw : {};
+    var isPack = item.kind === 'pack';
+
+    var location = '';
+    if (isPack) {
+      location = [item.city, item.country].filter(Boolean).join(', ') || 'Maroc';
+    } else {
+      location = String(item.location || item.city || item.address || '');
     }
 
-    var config = typeof window.ajthHebergementConfig === 'object' && window.ajthHebergementConfig
-        ? window.ajthHebergementConfig
-        : {};
+    var amenities = [];
+    if (isPack && Array.isArray(item.includes)) {
+      item.includes.forEach(function (inc) {
+        var key = packAmenityMap[String(inc).toLowerCase().trim()];
+        if (key && !amenities.includes(key)) {
+          amenities.push(key);
+        }
+      });
+    } else if (Array.isArray(item.amenities)) {
+      amenities = item.amenities.filter(Boolean);
+    }
 
-    var strings = config.strings || {};
-    var currency = config.currency || 'DH';
+    var description = String(item.description || item.excerpt || item.short_description || '');
+    if (!description && isPack) {
+      description = 'Séjour Ajinsafro prêt à réserver avec les essentiels déjà inclus.';
+    } else if (!description) {
+      description = 'Hébergement Ajinsafro disponible dans notre catalogue.';
+    }
 
-    var amenityLabels = {
-        wifi: 'Wi-Fi gratuit',
-        pool: 'Piscine',
-        parking: 'Parking',
-        air_conditioning: 'Climatisation',
-        breakfast: 'Petit-dejeuner',
-        restaurant: 'Restaurant',
-        spa: 'Spa',
-        gym: 'Salle de sport',
-        sea_view: 'Vue mer',
-        family: 'Chambre familiale',
-        transfer: 'Transfert',
-        activity: 'Activite',
-        assistance: 'Assistance Ajinsafro',
-        half_board: 'Demi-pension',
-        full_board: 'Pension complete'
+    return {
+      isPack: isPack,
+      id: Number(item.id || 0),
+      title: String(item.title || item.name || ''),
+      url: String(item.url || '#'),
+      image: String(item.image || item.image_url || ''),
+      location: location,
+      category: String(isPack ? (item.typeLabel || 'Hôtel') : (item.category || 'Hôtel')),
+      type: String(isPack ? (item.type || 'hotel') : (item.type || 'hotel')),
+      stars: Number(isPack ? 0 : (item.stars || 0)),
+      price: item.price !== null && item.price !== undefined && item.price !== '' ? Number(item.price) : null,
+      oldPrice: item.oldPrice !== null && item.oldPrice !== undefined && item.oldPrice !== '' ? Number(item.oldPrice) : null,
+      description: description,
+      amenities: amenities,
+      popular: Boolean(item.popular || item.is_featured || item.featured),
+      available: item.available !== false,
+      discount: Number(item.discount || 0),
+      rating: item.rating !== null && item.rating !== undefined && item.rating !== '' ? Number(item.rating) : null,
+      reviews: Number(item.reviews || 0),
+      badge: String(isPack ? (item.badges && item.badges[0] ? item.badges[0] : '') : (item.badge || '')),
+      duration: String(isPack ? (item.duration || '') : ''),
+      boardLabel: String(isPack ? (item.pensionLabel || '') : (item.boardLabel || item.board || ''))
     };
+  }
 
-    var boardLabels = {
-        room_only: 'Sans repas',
-        breakfast: 'Petit-dejeuner inclus',
-        half_board: 'Demi-pension',
-        full_board: 'Pension complete',
-        all_inclusive: 'Tout inclus'
-    };
+  var rawHotels = Array.isArray(config.hotels) ? config.hotels : [];
+  var rawPacks = Array.isArray(config.packs) ? config.packs : [];
+  var allItems = rawHotels.map(normalizeItem).concat(rawPacks.map(normalizeItem));
 
-    function escapeHtml(value) {
-        return String(value === null || value === undefined ? '' : value)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
+  // Extract unique values for selects
+  var destinations = Array.from(new Set(allItems.map(function (i) { return i.location; }).filter(Boolean))).sort(function (a, b) { return a.localeCompare(b, 'fr', { sensitivity: 'base' }); });
+  var types = Array.from(new Set(allItems.map(function (i) { return i.category; }).filter(Boolean))).sort(function (a, b) { return a.localeCompare(b, 'fr', { sensitivity: 'base' }); });
+
+  var state = {
+    hasSearched: false,
+    destination: '',
+    date: '',
+    type: '',
+    stars: [],
+    nameQuery: '',
+    filterDestination: '',
+    filterType: '',
+    minPrice: '',
+    maxPrice: '',
+    popularOnly: false,
+    availableOnly: false,
+    promoOnly: false,
+    services: [],
+    sort: 'recommended'
+  };
+
+  var els = {
+    featuredGrid: root.querySelector('#ajhb-featured-grid'),
+    catalogSection: root.querySelector('#ajhb-catalog-section'),
+    resultsGrid: root.querySelector('#ajhb-results-grid'),
+    resultsCount: root.querySelector('#ajhb-count'),
+    activeFilters: root.querySelector('#ajhb-active-filters'),
+    emptyState: root.querySelector('#ajhb-empty-state'),
+    emptyReset: root.querySelector('#ajhb-empty-reset'),
+    sortSelect: root.querySelector('#ajhb-sort-select'),
+    searchForm: root.querySelector('#ajhb-search-form'),
+    heroDestination: root.querySelector('#ajhb-destination'),
+    heroDate: root.querySelector('#ajhb-date'),
+    heroType: root.querySelector('#ajhb-type'),
+    heroStars: root.querySelector('#ajhb-stars'),
+    filterName: root.querySelector('#ajhb-filter-name'),
+    filterDestination: root.querySelector('#ajhb-filter-destination'),
+    filterType: root.querySelector('#ajhb-filter-type'),
+    filterStars: root.querySelector('#ajhb-filter-stars'),
+    filterPriceMin: root.querySelector('#ajhb-filter-price-min'),
+    filterPriceMax: root.querySelector('#ajhb-filter-price-max'),
+    filterPopular: root.querySelector('#ajhb-filter-popular'),
+    filterAvailable: root.querySelector('#ajhb-filter-available'),
+    filterPromo: root.querySelector('#ajhb-filter-promo'),
+    filterWifi: root.querySelector('#ajhb-filter-wifi'),
+    filterPool: root.querySelector('#ajhb-filter-pool'),
+    filterParking: root.querySelector('#ajhb-filter-parking'),
+    filterBreakfast: root.querySelector('#ajhb-filter-breakfast'),
+    filterAc: root.querySelector('#ajhb-filter-ac'),
+    resetFilters: root.querySelector('#ajhb-reset-filters'),
+    mobileName: root.querySelector('#ajhb-mobile-name'),
+    mobileDestination: root.querySelector('#ajhb-mobile-destination'),
+    mobileType: root.querySelector('#ajhb-mobile-type'),
+    mobileStars: root.querySelector('#ajhb-mobile-stars'),
+    mobilePriceMin: root.querySelector('#ajhb-mobile-price-min'),
+    mobilePriceMax: root.querySelector('#ajhb-mobile-price-max'),
+    mobilePopular: root.querySelector('#ajhb-mobile-popular'),
+    mobileAvailable: root.querySelector('#ajhb-mobile-available'),
+    mobilePromo: root.querySelector('#ajhb-mobile-promo'),
+    mobileWifi: root.querySelector('#ajhb-mobile-wifi'),
+    mobilePool: root.querySelector('#ajhb-mobile-pool'),
+    mobileParking: root.querySelector('#ajhb-mobile-parking'),
+    mobileBreakfast: root.querySelector('#ajhb-mobile-breakfast'),
+    mobileAc: root.querySelector('#ajhb-mobile-ac'),
+    openMobileFilters: root.querySelector('#ajhb-open-filters'),
+    closeMobileFilters: root.querySelector('#ajhb-close-mobile-filters'),
+    applyMobileFilters: root.querySelector('#ajhb-apply-mobile-filters'),
+    resetMobileFilters: root.querySelector('#ajhb-reset-mobile-filters'),
+    mobilePanel: root.querySelector('#ajhb-mobile-panel'),
+    mobileBackdrop: root.querySelector('#ajhb-mobile-backdrop')
+  };
+
+  if (!els.featuredGrid) {
+    return;
+  }
+
+  // Hydrate selects with data-derived options
+  function fillSelect(select, values, placeholder) {
+    if (!select) return;
+    var options = ['<option value="">' + escapeHtml(placeholder) + '</option>'];
+    values.forEach(function (v) {
+      options.push('<option value="' + escapeHtml(v) + '">' + escapeHtml(v) + '</option>');
+    });
+    select.innerHTML = options.join('');
+  }
+
+  fillSelect(els.filterDestination, destinations, 'Toutes les destinations');
+  fillSelect(els.mobileDestination, destinations, 'Toutes les destinations');
+  fillSelect(els.filterType, types, 'Tous les types');
+  fillSelect(els.mobileType, types, 'Tous les types');
+
+  // Initialize from URL params
+  function initFromUrl() {
+    var params = new URLSearchParams(window.location.search);
+    var dest = params.get('destination') || '';
+    var date = params.get('date') || '';
+    var type = params.get('type') || '';
+    var stars = params.get('stars') || '';
+
+    if (dest || date || type || stars) {
+      state.hasSearched = true;
+      state.destination = dest;
+      state.date = date;
+      state.type = type;
+      if (stars) {
+        state.stars = [stars];
+      }
+    }
+  }
+
+  initFromUrl();
+
+  function syncAllControlsFromState() {
+    if (els.heroDestination) els.heroDestination.value = state.destination;
+    if (els.heroDate) els.heroDate.value = state.date;
+    if (els.heroType) els.heroType.value = state.type;
+    if (els.heroStars) els.heroStars.value = state.stars[0] || '';
+
+    if (els.filterName) els.filterName.value = state.nameQuery;
+    if (els.filterDestination) els.filterDestination.value = state.filterDestination;
+    if (els.filterType) els.filterType.value = state.filterType;
+    if (els.filterPriceMin) els.filterPriceMin.value = state.minPrice;
+    if (els.filterPriceMax) els.filterPriceMax.value = state.maxPrice;
+    if (els.filterPopular) els.filterPopular.checked = state.popularOnly;
+    if (els.filterAvailable) els.filterAvailable.checked = state.availableOnly;
+    if (els.filterPromo) els.filterPromo.checked = state.promoOnly;
+
+    if (els.filterStars) {
+      els.filterStars.querySelectorAll('input').forEach(function (input) {
+        input.checked = state.stars.includes(input.value);
+      });
     }
 
-    function formatPrice(value) {
-        if (value === null || value === undefined || value === '' || Number.isNaN(Number(value))) {
-            return 'Sur demande';
+    if (els.filterWifi) els.filterWifi.checked = state.services.includes('wifi');
+    if (els.filterPool) els.filterPool.checked = state.services.includes('pool');
+    if (els.filterParking) els.filterParking.checked = state.services.includes('parking');
+    if (els.filterBreakfast) els.filterBreakfast.checked = state.services.includes('breakfast');
+    if (els.filterAc) els.filterAc.checked = state.services.includes('air_conditioning');
+
+    if (els.sortSelect) els.sortSelect.value = state.sort;
+
+    syncMobileControls();
+  }
+
+  function syncMobileControls() {
+    if (els.mobileName) els.mobileName.value = state.nameQuery;
+    if (els.mobileDestination) els.mobileDestination.value = state.filterDestination;
+    if (els.mobileType) els.mobileType.value = state.filterType;
+    if (els.mobilePriceMin) els.mobilePriceMin.value = state.minPrice;
+    if (els.mobilePriceMax) els.mobilePriceMax.value = state.maxPrice;
+    if (els.mobilePopular) els.mobilePopular.checked = state.popularOnly;
+    if (els.mobileAvailable) els.mobileAvailable.checked = state.availableOnly;
+    if (els.mobilePromo) els.mobilePromo.checked = state.promoOnly;
+
+    if (els.mobileStars) {
+      els.mobileStars.querySelectorAll('input').forEach(function (input) {
+        input.checked = state.stars.includes(input.value);
+      });
+    }
+
+    if (els.mobileWifi) els.mobileWifi.checked = state.services.includes('wifi');
+    if (els.mobilePool) els.mobilePool.checked = state.services.includes('pool');
+    if (els.mobileParking) els.mobileParking.checked = state.services.includes('parking');
+    if (els.mobileBreakfast) els.mobileBreakfast.checked = state.services.includes('breakfast');
+    if (els.mobileAc) els.mobileAc.checked = state.services.includes('air_conditioning');
+  }
+
+  function readServicesFromContainer(container) {
+    var services = [];
+    var checks = [
+      { el: container.querySelector('[value="wifi"]'), key: 'wifi' },
+      { el: container.querySelector('[value="pool"]'), key: 'pool' },
+      { el: container.querySelector('[value="parking"]'), key: 'parking' },
+      { el: container.querySelector('[value="breakfast"]'), key: 'breakfast' },
+      { el: container.querySelector('[value="air_conditioning"]'), key: 'air_conditioning' }
+    ];
+    checks.forEach(function (c) {
+      if (c.el && c.el.checked) {
+        services.push(c.key);
+      }
+    });
+    return services;
+  }
+
+  function readStarsFromContainer(container) {
+    if (!container) return [];
+    var stars = [];
+    container.querySelectorAll('input[type="checkbox"]').forEach(function (input) {
+      if (input.checked) {
+        stars.push(input.value);
+      }
+    });
+    return stars;
+  }
+
+  function matchesFilters(item) {
+    var searchable = [item.title, item.location, item.category, item.type, item.description].join(' ').toLowerCase();
+
+    if (state.destination) {
+      var dest = state.destination.toLowerCase().trim();
+      if (searchable.indexOf(dest) === -1 && item.location.toLowerCase().indexOf(dest) === -1) {
+        return false;
+      }
+    }
+
+    if (state.filterDestination && item.location !== state.filterDestination) {
+      return false;
+    }
+
+    if (state.nameQuery) {
+      var q = state.nameQuery.toLowerCase().trim();
+      if (searchable.indexOf(q) === -1) {
+        return false;
+      }
+    }
+
+    if (state.type && item.type !== state.type && item.category !== state.type) {
+      return false;
+    }
+
+    if (state.filterType && item.category !== state.filterType && item.type !== state.filterType) {
+      return false;
+    }
+
+    if (state.stars.length) {
+      var starMatch = false;
+      for (var i = 0; i < state.stars.length; i++) {
+        if (String(item.stars) === String(state.stars[i])) {
+          starMatch = true;
+          break;
         }
-
-        return Number(value).toLocaleString('fr-FR') + ' ' + currency;
+      }
+      if (!starMatch) return false;
     }
 
-    function getRatingLabel(rating) {
-        if (rating === null || rating === undefined || rating === 0) return 'Ajinsafro';
-        if (rating >= 9) return 'Exceptionnel';
-        if (rating >= 8.5) return 'Excellent';
-        if (rating >= 8) return 'Tres bien';
-        if (rating >= 7) return 'Bien';
-        return 'Correct';
+    if (state.minPrice && (item.price === null || item.price < Number(state.minPrice))) {
+      return false;
+    }
+    if (state.maxPrice && (item.price === null || item.price > Number(state.maxPrice))) {
+      return false;
     }
 
-    function truncateText(value, maxLength) {
-        var text = String(value || '').replace(/\s+/g, ' ').trim();
+    if (state.popularOnly && !item.popular) {
+      return false;
+    }
+    if (state.availableOnly && !item.available) {
+      return false;
+    }
+    if (state.promoOnly && !(item.discount || item.oldPrice)) {
+      return false;
+    }
 
-        if (!text) {
-            return '';
+    if (state.services.length) {
+      for (var s = 0; s < state.services.length; s++) {
+        if (!item.amenities.includes(state.services[s])) {
+          return false;
         }
-
-        if (text.length <= maxLength) {
-            return text;
-        }
-
-        return text.slice(0, maxLength).replace(/[.,;:!?-]?\s+\S*$/, '').trim() + '...';
+      }
     }
 
-    function renderStarLine(stars) {
-        var count = Number(stars || 0);
-        var markup = '';
-        var index = 0;
+    return true;
+  }
 
-        if (count <= 0) {
-            return '<span class="hotel-stars hotel-stars--text">Type libre</span>';
-        }
+  function sortItems(list) {
+    var sorted = list.slice();
+    if (state.sort === 'price-asc') {
+      sorted.sort(function (a, b) { return (a.price || 0) - (b.price || 0); });
+    } else if (state.sort === 'price-desc') {
+      sorted.sort(function (a, b) { return (b.price || 0) - (a.price || 0); });
+    } else if (state.sort === 'rating-desc') {
+      sorted.sort(function (a, b) { return (b.rating || 0) - (a.rating || 0); });
+    } else if (state.sort === 'stars-desc') {
+      sorted.sort(function (a, b) { return (b.stars || 0) - (a.stars || 0); });
+    } else {
+      // recommended
+      sorted.sort(function (a, b) {
+        return (Number(!!b.popular) - Number(!!a.popular))
+          || ((b.rating || 0) - (a.rating || 0))
+          || ((b.stars || 0) - (a.stars || 0))
+          || ((a.price || 0) - (b.price || 0));
+      });
+    }
+    return sorted;
+  }
 
-        for (index = 0; index < count; index += 1) {
-            markup += '<span aria-hidden="true">&#9733;</span>';
-        }
+  function renderFeaturedCards() {
+    var featured = allItems.filter(function (item) { return item.popular; }).slice(0, 4);
+    if (!featured.length) {
+      els.featuredGrid.innerHTML = '';
+      return;
+    }
+    els.featuredGrid.innerHTML = featured.map(renderFeaturedCard).join('');
+  }
 
-        return '<span class="hotel-stars" aria-label="' + count + ' etoiles">' + markup + '</span>';
+  function renderFeaturedCard(item) {
+    var image = item.image
+      ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.title) + '" loading="lazy">'
+      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#d9e9ff,#f4f8ff);color:#67809a;font-size:13px;font-weight:600;">Ajinsafro</div>';
+
+    var badge = item.badge || (item.isPack ? 'Pack' : 'À la une');
+    var priceHtml = item.price !== null
+      ? '<div class="aj-featured-price"><small>À partir de</small>' + escapeHtml(formatPrice(item.price)) + '</div>'
+      : '';
+
+    var ratingHtml = item.rating
+      ? '<div class="aj-rating"><strong>' + item.rating.toFixed(1) + '</strong><span>' + escapeHtml(item.reviews > 0 ? item.reviews.toLocaleString('fr-FR') + ' avis' : 'Ajinsafro') + '</span></div>'
+      : '';
+
+    return '' +
+      '<article class="aj-featured-card">' +
+        '<div class="aj-featured-visual">' +
+          image +
+          '<span class="aj-badge">' + escapeHtml(badge) + '</span>' +
+          priceHtml +
+        '</div>' +
+        '<div class="aj-featured-content">' +
+          '<div class="aj-inline-meta">' +
+            '<span>' + escapeHtml(item.location || 'Maroc') + '</span>' +
+            (item.isPack ? '<span>' + escapeHtml(item.duration || 'Pack') + '</span>' : '') +
+          '</div>' +
+          '<h3>' + escapeHtml(item.title) + '</h3>' +
+          '<div>' + renderStars(item.stars) + '</div>' +
+          ratingHtml +
+          '<a class="aj-featured-link" href="' + escapeHtml(item.url) + '">Voir l\'hébergement</a>' +
+        '</div>' +
+      '</article>';
+  }
+
+  function renderResultCard(item) {
+    var image = item.image
+      ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.title) + '" loading="lazy">'
+      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#d9e9ff,#f4f8ff);color:#67809a;font-size:13px;font-weight:600;">Ajinsafro</div>';
+
+    var badge = item.badge || (item.isPack ? 'Pack' : '');
+    var categoryBadge = '<span class="aj-category-badge">' + escapeHtml(item.category) + '</span>';
+    var statusBadge = item.available
+      ? '<span class="aj-status-badge">Disponible</span>'
+      : '<span class="aj-status-badge aj-status-badge--unavailable">Complet</span>';
+
+    var facts = [];
+    if (item.boardLabel) facts.push(item.boardLabel);
+    item.amenities.slice(0, 3).forEach(function (a) {
+      var label = amenityLabels[a] || a;
+      if (label) facts.push(label);
+    });
+    var factsHtml = facts.length
+      ? '<div class="aj-result-facts">' + facts.map(function (f) { return '<span class="aj-result-fact">' + escapeHtml(f) + '</span>'; }).join('') + '</div>'
+      : '';
+
+    var priceHtml = '';
+    if (item.price !== null) {
+      priceHtml = '<div class="aj-result-price">' +
+        '<small>À partir de</small>' +
+        '<div>' +
+          (item.oldPrice ? '<span class="aj-old-price">' + escapeHtml(formatPrice(item.oldPrice)) + '</span>' : '') +
+          '<strong>' + escapeHtml(formatPrice(item.price)) + '</strong>' +
+        '</div>' +
+      '</div>';
+    } else {
+      priceHtml = '<div class="aj-result-price"><strong>Sur demande</strong></div>';
     }
 
-    function renderHighlights(items, limit) {
-        return (Array.isArray(items) ? items : [])
-            .filter(Boolean)
-            .slice(0, limit)
-            .map(function (item) {
-                return '<span class="hotel-highlight">' + escapeHtml(item) + '</span>';
-            })
-            .join('');
-    }
+    return '' +
+      '<article class="aj-result-card">' +
+        '<div class="aj-result-media">' +
+          image +
+          '<div class="aj-card-badges">' +
+            categoryBadge +
+            statusBadge +
+          '</div>' +
+        '</div>' +
+        '<div class="aj-result-body">' +
+          '<div class="aj-result-meta">' +
+            escapeHtml(item.location || 'Maroc') +
+            ' · ' + renderStars(item.stars) +
+            (item.rating ? ' · <span class="aj-rating"><strong>' + item.rating.toFixed(1) + '</strong></span>' : '') +
+          '</div>' +
+          '<h3><a href="' + escapeHtml(item.url) + '">' + escapeHtml(item.title) + '</a></h3>' +
+          '<p class="aj-result-desc">' + escapeHtml(truncateText(item.description, 140)) + '</p>' +
+          factsHtml +
+          '<div class="aj-result-footer">' +
+            priceHtml +
+            '<a class="aj-result-btn" href="' + escapeHtml(item.url) + '">Voir l\'hébergement</a>' +
+          '</div>' +
+        '</div>' +
+      '</article>';
+  }
 
-    function slugify(value) {
-        return String(value || '')
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-+|-+$/g, '');
-    }
-
-    function normalizeHotel(item) {
-        var hotel = item && typeof item === 'object' ? item : {};
-        var normalizedType = slugify(hotel.type || hotel.category || 'hotel');
-        var normalizedBoard = slugify(hotel.board || '');
-
-        return {
-            kind: 'hotel',
-            id: Number(hotel.id || 0),
-            name: String(hotel.name || hotel.title || ''),
-            location: String(hotel.location || ''),
-            type: normalizedType || 'hotel',
-            typeLabel: String(hotel.category || hotel.type || 'Hotel'),
-            stars: Number(hotel.stars || 0),
-            rating: hotel.rating !== null && hotel.rating !== undefined && hotel.rating !== '' ? Number(hotel.rating) : null,
-            reviews: Number(hotel.reviews || 0),
-            price: hotel.price !== null && hotel.price !== undefined && hotel.price !== '' ? Number(hotel.price) : null,
-            oldPrice: hotel.oldPrice !== null && hotel.oldPrice !== undefined && hotel.oldPrice !== '' ? Number(hotel.oldPrice) : null,
-            discount: Number(hotel.discount || 0),
-            image: String(hotel.image || hotel.image_url || ''),
-            amenities: Array.isArray(hotel.amenities) ? hotel.amenities : [],
-            board: normalizedBoard,
-            boardLabel: boardLabels[normalizedBoard] || String(hotel.board || 'Sans repas'),
-            description: String(hotel.description || hotel.excerpt || ''),
-            popular: !!hotel.popular,
-            available: hotel.available !== false,
-            url: String(hotel.url || '#')
-        };
-    }
-
-    var hotels = Array.isArray(config.hotels) ? config.hotels.map(normalizeHotel) : [];
-    var packs = Array.isArray(config.packs) ? config.packs : [];
-
-    var filterHTML = '\
-      <details class="accordion" open>\
-        <summary>Type d\\\'offre</summary>\
-        <div class="filter-body">\
-          <label class="check-row"><input type="checkbox" name="offerType" value="pack"> Packs hebergement</label>\
-          <label class="check-row"><input type="checkbox" name="offerType" value="hotel"> Hebergements a la carte</label>\
-        </div>\
-      </details>\
-      <details class="accordion" open>\
-        <summary>Recherche</summary>\
-        <div class="filter-body">\
-          <input class="filter-search" data-ajhb="nameFilter" type="text" placeholder="Nom, ville, quartier...">\
-        </div>\
-      </details>\
-      <details class="accordion" open>\
-        <summary>Budget</summary>\
-        <div class="filter-body">\
-          <div class="mini-inputs">\
-            <input data-ajhb="minPrice" type="number" placeholder="Min ' + currency + '">\
-            <input data-ajhb="maxPrice" type="number" placeholder="Max ' + currency + '">\
-          </div>\
-        </div>\
-      </details>\
-      <details class="accordion" open>\
-        <summary>Pension</summary>\
-        <div class="filter-body">\
-          <label class="check-row"><input type="checkbox" name="board" value="room_only"> Sans repas</label>\
-          <label class="check-row"><input type="checkbox" name="board" value="breakfast"> Petit-dejeuner</label>\
-          <label class="check-row"><input type="checkbox" name="board" value="half_board"> Demi-pension</label>\
-          <label class="check-row"><input type="checkbox" name="board" value="full_board"> Pension complete</label>\
-        </div>\
-      </details>\
-      <details class="accordion" open>\
-        <summary>Type</summary>\
-        <div class="filter-body">\
-          <label class="check-row"><input type="checkbox" name="type" value="hotel"> Hotel</label>\
-          <label class="check-row"><input type="checkbox" name="type" value="riad"> Riad</label>\
-          <label class="check-row"><input type="checkbox" name="type" value="apartment"> Appartement</label>\
-          <label class="check-row"><input type="checkbox" name="type" value="villa"> Villa</label>\
-          <label class="check-row"><input type="checkbox" name="type" value="guest-house"> Maison d\\\'hotes</label>\
-          <label class="check-row"><input type="checkbox" name="type" value="resort"> Resort</label>\
-        </div>\
-      </details>\
-      <details class="accordion" open>\
-        <summary>Disponibilite</summary>\
-        <div class="filter-body">\
-          <label class="check-row"><input type="checkbox" name="popular" value="true"> Selection Ajinsafro</label>\
-          <label class="check-row"><input type="checkbox" name="discount" value="true"> Promotions</label>\
-          <label class="check-row"><input type="checkbox" name="available" value="true"> Disponible uniquement</label>\
-        </div>\
-      </details>\
-      <details class="accordion" open>\
-        <summary>Note client</summary>\
-        <div class="filter-body">\
-          <label class="radio-row"><input type="radio" name="rating" value="" checked> Toutes</label>\
-          <label class="radio-row"><input type="radio" name="rating" value="9"> Exceptionnel 9+</label>\
-          <label class="radio-row"><input type="radio" name="rating" value="8"> Tres bien 8+</label>\
-          <label class="radio-row"><input type="radio" name="rating" value="7"> Bien 7+</label>\
-        </div>\
-      </details>';
-
-    var desktopFilters = root.querySelector('#ajhb-filters-content');
-    var mobileFilters = root.querySelector('#ajhb-mobile-filters-content');
-    var packList = root.querySelector('#ajhb-pack-list');
-    var hotelList = root.querySelector('#ajhb-hotel-list');
-    var packSection = root.querySelector('#ajhb-pack-section');
-    var staySection = root.querySelector('#ajhb-stay-section');
-    var packCountEl = root.querySelector('#ajhb-pack-count');
-    var stayCountEl = root.querySelector('#ajhb-stay-count');
-    var countEl = root.querySelector('#ajhb-count');
-    var emptyState = root.querySelector('#ajhb-empty-state');
-    var chipsEl = root.querySelector('#ajhb-active-chips');
-    var sortSelect = root.querySelector('#ajhb-sort-select');
-    var destinationInput = root.querySelector('#ajhb-destination');
-    var budgetInput = root.querySelector('#ajhb-budget');
-    var searchForm = root.querySelector('#ajhb-search-form');
-    var drawer = root.querySelector('#ajhb-mobile-drawer');
-    var backdrop = root.querySelector('#ajhb-drawer-backdrop');
-    var openFiltersBtn = root.querySelector('#ajhb-open-filters');
-    var closeFiltersBtn = root.querySelector('#ajhb-close-filters');
-    var applyMobileFiltersBtn = root.querySelector('#ajhb-apply-mobile-filters');
-
-    if (!desktopFilters || !mobileFilters || !packList || !hotelList || !packSection || !staySection || !packCountEl || !stayCountEl || !countEl || !emptyState || !chipsEl || !sortSelect || !destinationInput || !budgetInput || !searchForm || !drawer || !backdrop || !openFiltersBtn || !closeFiltersBtn || !applyMobileFiltersBtn) {
-        return;
-    }
-
-    desktopFilters.innerHTML = filterHTML;
-    mobileFilters.innerHTML = filterHTML;
-
-    function readFilters(container) {
-        var nameInput = container.querySelector('[data-ajhb="nameFilter"]');
-        var minPriceInput = container.querySelector('[data-ajhb="minPrice"]');
-        var maxPriceInput = container.querySelector('[data-ajhb="maxPrice"]');
-
-        return {
-            destination: destinationInput.value.trim().toLowerCase(),
-            budgetMax: Number(budgetInput.value || 0),
-            name: nameInput ? nameInput.value.trim().toLowerCase() : '',
-            minPrice: Number(minPriceInput ? minPriceInput.value : 0),
-            maxPrice: Number(maxPriceInput ? maxPriceInput.value : 0),
-            minRating: Number(((container.querySelector('input[name="rating"]:checked') || {}).value) || 0),
-            offerTypes: Array.prototype.slice.call(container.querySelectorAll('input[name="offerType"]:checked')).map(function (input) { return input.value; }),
-            boards: Array.prototype.slice.call(container.querySelectorAll('input[name="board"]:checked')).map(function (input) { return input.value; }),
-            propertyTypes: Array.prototype.slice.call(container.querySelectorAll('input[name="type"]:checked')).map(function (input) { return input.value; }),
-            popular: !!container.querySelector('input[name="popular"]:checked'),
-            discountOnly: !!container.querySelector('input[name="discount"]:checked'),
-            availableOnly: !!container.querySelector('input[name="available"]:checked')
-        };
-    }
-
-    function matchesOffer(item, filters) {
-        var searchable = [
-            item.title || item.name || '',
-            item.city || item.location || '',
-            item.description || '',
-            item.typeLabel || '',
-            item.pensionLabel || item.boardLabel || ''
-        ].join(' ').toLowerCase();
-
-        if (filters.destination && searchable.indexOf(filters.destination) === -1) return false;
-        if (filters.name && searchable.indexOf(filters.name) === -1) return false;
-        if (filters.offerTypes.length && filters.offerTypes.indexOf(item.kind) === -1) return false;
-        if (filters.minPrice && (item.price === null || item.price < filters.minPrice)) return false;
-        if (filters.maxPrice && (item.price === null || item.price > filters.maxPrice)) return false;
-        if (filters.budgetMax && (item.price === null || item.price > filters.budgetMax)) return false;
-        if (filters.minRating && item.kind === 'hotel' && (item.rating === null || item.rating < filters.minRating)) return false;
-        if (filters.boards.length) {
-            var boardValue = item.kind === 'pack' ? item.pension : item.board;
-            if (filters.boards.indexOf(boardValue) === -1) return false;
-        }
-        if (filters.propertyTypes.length && filters.propertyTypes.indexOf(item.type) === -1) return false;
-        if (filters.popular && !item.popular) return false;
-        if (filters.discountOnly && !(item.discount || item.oldPrice)) return false;
-        if (filters.availableOnly && !item.available) return false;
-
-        return true;
-    }
-
-    function sortItems(list, mode) {
-        var sorted = list.slice();
-
-        if (mode === 'price-asc') sorted.sort(function (a, b) { return (a.price || 0) - (b.price || 0); });
-        if (mode === 'price-desc') sorted.sort(function (a, b) { return (b.price || 0) - (a.price || 0); });
-        if (mode === 'rating-desc') sorted.sort(function (a, b) { return (b.rating || 0) - (a.rating || 0); });
-        if (mode === 'stars-desc') sorted.sort(function (a, b) { return (b.stars || 0) - (a.stars || 0); });
-        if (mode === 'discount-desc') sorted.sort(function (a, b) { return (b.discount || 0) - (a.discount || 0); });
-        if (mode === 'recommended') {
-            sorted.sort(function (a, b) {
-                return (Number(!!b.popular) - Number(!!a.popular))
-                    || ((b.rating || 0) - (a.rating || 0))
-                    || ((b.stars || 0) - (a.stars || 0))
-                    || ((a.price || 0) - (b.price || 0));
-            });
-        }
-
-        return sorted;
-    }
-
-    function renderPackCard(pack) {
-        var imageMarkup = pack.image
-            ? '<img src="' + escapeHtml(pack.image) + '" alt="' + escapeHtml(pack.title) + '" loading="lazy">'
-            : '<div class="photo-placeholder">Aucune photo</div>';
-        var packHighlights = renderHighlights([
-            pack.pensionLabel,
-            pack.typeLabel,
-            pack.highlights && pack.highlights[0] ? pack.highlights[0] : ''
-        ], 3);
-        var packDescription = truncateText(pack.description || 'Sejour Ajinsafro pret a reserver avec les essentiels deja inclus.', 108);
-        var packScore = pack.nights ? pack.nights + 'N' : 'Pack';
-        var packScoreLabel = pack.nights ? pack.nights + ' nuits' : 'Pack Ajinsafro';
-
-        return '' +
-            '<article class="hotel-card hotel-card--pack" data-id="' + escapeHtml(pack.id) + '">' +
-                '<div class="photo-wrap' + (pack.image ? '' : ' photo-wrap--placeholder') + '">' +
-                    '<a class="photo-link" href="' + escapeHtml(pack.url) + '">' + imageMarkup + '</a>' +
-                    '<div class="photo-badges">' +
-                        '<span class="photo-badge">Pack Ajinsafro</span>' +
-                        (pack.badges && pack.badges[0] ? '<span class="photo-badge photo-badge--type">' + escapeHtml(pack.badges[0]) + '</span>' : '') +
-                    '</div>' +
-                '</div>' +
-                '<div class="hotel-main">' +
-                    '<div class="meta meta--caps meta--compact"><span>Pack hebergement</span></div>' +
-                    '<h3><a href="' + escapeHtml(pack.url) + '">' + escapeHtml(pack.title) + '</a></h3>' +
-                    '<div class="hotel-stars-row"><span class="hotel-stars hotel-stars--text">' + escapeHtml(pack.duration || packScoreLabel) + '</span></div>' +
-                    '<div class="location location--plain"><span>' + escapeHtml(pack.city || pack.country || 'Maroc') + '</span></div>' +
-                    '<p class="description">' + escapeHtml(packDescription) + '</p>' +
-                    (packHighlights ? '<div class="hotel-highlights">' + packHighlights + '</div>' : '') +
-                '</div>' +
-                '<aside class="hotel-side">' +
-                    '<div class="rating-box">' +
-                        '<div class="rating-text"><strong>Pack Ajinsafro</strong><span>' + escapeHtml(packScoreLabel) + '</span></div>' +
-                        '<div class="rating-score">' + escapeHtml(packScore) + '</div>' +
-                    '</div>' +
-                    '<div class="price-area">' +
-                        '<small>A partir de</small>' +
-                        '<div>' + (pack.oldPrice ? '<span class="old-price">' + formatPrice(pack.oldPrice) + '</span>' : '') + '<span class="price">' + formatPrice(pack.price) + '</span></div>' +
-                        '<div class="tax">pour le sejour</div>' +
-                    '</div>' +
-                    '<div class="card-actions card-actions--single">' +
-                        '<a class="primary-btn" href="' + escapeHtml(pack.url) + '">Voir le pack</a>' +
-                    '</div>' +
-                '</aside>' +
-            '</article>';
-    }
-
-    function renderHotelCard(hotel) {
-        var imageUrl = hotel.image && hotel.image.trim() ? hotel.image : '';
-        var imageMarkup = imageUrl
-            ? '<img src="' + escapeHtml(imageUrl) + '" alt="' + escapeHtml(hotel.name || 'Hebergement Ajinsafro') + '" loading="lazy">'
-            : '<div class="photo-placeholder">Aucune photo</div>';
-        var stars = hotel.stars > 0 ? hotel.stars + ' etoiles' : 'Type libre';
-        var highlights = renderHighlights([
-            hotel.boardLabel,
-            amenityLabels[hotel.amenities[0]] || hotel.amenities[0] || '',
-            amenityLabels[hotel.amenities[1]] || hotel.amenities[1] || ''
-        ], 3);
-        var description = truncateText(hotel.description || 'Hebergement Ajinsafro disponible dans notre catalogue.', 118);
-        var ratingMarkup = hotel.rating
-            ? '<div class="rating-box"><div class="rating-text"><strong>' + getRatingLabel(hotel.rating) + '</strong><span>' + escapeHtml(hotel.reviews > 0 ? hotel.reviews.toLocaleString('fr-FR') + ' avis' : hotel.typeLabel) + '</span></div><div class="rating-score">' + hotel.rating.toFixed(1) + '</div></div>'
-            : '<div class="rating-box"><div class="rating-text"><strong>' + escapeHtml(hotel.typeLabel) + '</strong><span>' + escapeHtml(stars) + '</span></div><div class="rating-score">' + (hotel.stars > 0 ? hotel.stars : '-') + '</div></div>';
-
-        return '' +
-            '<article class="hotel-card" data-id="' + hotel.id + '">' +
-                '<div class="photo-wrap' + (imageUrl ? '' : ' photo-wrap--placeholder') + '">' +
-                    '<a class="photo-link" href="' + escapeHtml(hotel.url) + '">' + imageMarkup + '</a>' +
-                    '<div class="photo-badges">' +
-                        (hotel.discount ? '<span class="photo-badge photo-badge--promo">Promo ' + escapeHtml(String(hotel.discount)) + '%</span>' : (hotel.popular ? '<span class="photo-badge">' + escapeHtml(strings.recommended || 'Recommande') + '</span>' : '')) +
-                    '</div>' +
-                '</div>' +
-                '<div class="hotel-main">' +
-                    '<div class="meta meta--caps meta--compact"><span>Hebergement a la carte</span></div>' +
-                    '<h3><a href="' + escapeHtml(hotel.url) + '">' + escapeHtml(hotel.name) + '</a></h3>' +
-                    '<div class="hotel-stars-row">' + renderStarLine(hotel.stars) + '</div>' +
-                    '<div class="location location--plain"><span>' + escapeHtml(hotel.location || 'Localisation non renseignee') + '</span></div>' +
-                    '<p class="description">' + escapeHtml(description) + '</p>' +
-                    (highlights ? '<div class="hotel-highlights">' + highlights + '</div>' : '') +
-                '</div>' +
-                '<aside class="hotel-side">' +
-                    '<div>' + ratingMarkup + '</div>' +
-                    '<div class="price-area">' +
-                        '<small>' + (strings.from_price || 'A partir de') + '</small>' +
-                        '<div>' + (hotel.oldPrice ? '<span class="old-price">' + formatPrice(hotel.oldPrice) + '</span>' : '') + '<span class="price">' + formatPrice(hotel.price) + '</span></div>' +
-                        '<div class="tax">' + (strings.per_night || 'par nuit') + '</div>' +
-                    '</div>' +
-                    '<div class="card-actions card-actions--single">' +
-                        '<a class="primary-btn" href="' + escapeHtml(hotel.url) + '">Voir l\'hebergement</a>' +
-                    '</div>' +
-                '</aside>' +
-            '</article>';
-    }
-
-    function renderChips(filters) {
-        var chips = [];
-
-        if (filters.destination) chips.push('Destination: ' + filters.destination);
-        if (filters.name) chips.push('Recherche: ' + filters.name);
-        if (filters.minPrice) chips.push('Min ' + filters.minPrice + ' ' + currency);
-        if (filters.maxPrice) chips.push('Max ' + filters.maxPrice + ' ' + currency);
-        if (filters.budgetMax) chips.push('Budget max ' + filters.budgetMax + ' ' + currency);
-        filters.offerTypes.forEach(function (type) {
-            chips.push(type === 'pack' ? 'Packs hebergement' : 'Hebergements a la carte');
-        });
-        filters.boards.forEach(function (board) {
-            chips.push(boardLabels[board] || board);
-        });
-        filters.propertyTypes.forEach(function (type) {
-            chips.push('Type: ' + type);
-        });
-        if (filters.popular) chips.push('Selection Ajinsafro');
-        if (filters.discountOnly) chips.push('Promotions');
-        if (filters.availableOnly) chips.push('Disponible');
-        if (filters.minRating) chips.push('Note ' + filters.minRating + '+');
-
-        chipsEl.innerHTML = chips.map(function (label) {
-            return '<span class="chip">' + escapeHtml(label) + '<button type="button" data-ajhb-action="reset">x</button></span>';
-        }).join('');
-    }
-
-    function syncFilterValues(fromContainer, toContainer) {
-        Array.prototype.slice.call(fromContainer.querySelectorAll('input, select')).forEach(function (input) {
-            var selector = '';
-
-            if (input.dataset.ajhb) {
-                selector = '[data-ajhb="' + input.dataset.ajhb + '"]';
-            } else if (input.name) {
-                selector = input.type === 'radio' || input.type === 'checkbox'
-                    ? 'input[name="' + input.name + '"][value="' + input.value + '"]'
-                    : '[name="' + input.name + '"]';
-            }
-
-            if (!selector) {
-                return;
-            }
-
-            var target = toContainer.querySelector(selector);
-            if (!target) {
-                return;
-            }
-
-            if (input.type === 'checkbox' || input.type === 'radio') {
-                target.checked = input.checked;
-            } else {
-                target.value = input.value;
-            }
-        });
-    }
-
-    function applyFilters(sourceContainer) {
-        var filters = readFilters(sourceContainer || desktopFilters);
-        var sortedPacks = sortItems(packs.filter(function (item) { return matchesOffer(item, filters); }), sortSelect.value);
-        var sortedHotels = sortItems(hotels.filter(function (item) { return matchesOffer(item, filters); }), sortSelect.value);
-        var total = sortedPacks.length + sortedHotels.length;
-
-        if (sourceContainer === mobileFilters) {
-            syncFilterValues(mobileFilters, desktopFilters);
-        } else {
-            syncFilterValues(desktopFilters, mobileFilters);
-        }
-
-        packList.innerHTML = sortedPacks.map(renderPackCard).join('');
-        hotelList.innerHTML = sortedHotels.map(renderHotelCard).join('');
-
-        packCountEl.textContent = sortedPacks.length + ' pack' + (sortedPacks.length > 1 ? 's' : '');
-        stayCountEl.textContent = sortedHotels.length + ' hebergement' + (sortedHotels.length > 1 ? 's' : '');
-        countEl.textContent = String(total);
-
-        packSection.style.display = sortedPacks.length ? '' : 'none';
-        staySection.style.display = sortedHotels.length ? '' : 'none';
-        emptyState.style.display = total ? 'none' : 'block';
-
-        renderChips(filters);
-    }
-
-    function resetFilters() {
-        [desktopFilters, mobileFilters].forEach(function (container) {
-            Array.prototype.slice.call(container.querySelectorAll('input[type="text"], input[type="number"]')).forEach(function (input) {
-                input.value = '';
-            });
-            Array.prototype.slice.call(container.querySelectorAll('input[type="checkbox"]')).forEach(function (input) {
-                input.checked = false;
-            });
-            Array.prototype.slice.call(container.querySelectorAll('input[type="radio"]')).forEach(function (input) {
-                input.checked = input.value === '';
-            });
-        });
-
-        destinationInput.value = '';
-        budgetInput.value = '';
-        sortSelect.value = 'recommended';
-        applyFilters(desktopFilters);
-    }
-
-    function closeDrawer() {
-        drawer.classList.remove('active');
-        backdrop.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-
-    root.addEventListener('input', function (event) {
-        if (event.target.closest('#ajhb-filters-content')) {
-            applyFilters(desktopFilters);
-        }
+  function renderActiveFilterChips() {
+    var chips = [];
+    if (state.destination) chips.push('Destination: ' + state.destination);
+    if (state.filterDestination) chips.push(state.filterDestination);
+    if (state.nameQuery) chips.push('Recherche: ' + state.nameQuery);
+    if (state.type) chips.push('Type: ' + state.type);
+    if (state.filterType) chips.push('Type: ' + state.filterType);
+    state.stars.forEach(function (s) { chips.push(s + ' étoile' + (s > 1 ? 's' : '')); });
+    if (state.minPrice) chips.push('Min ' + state.minPrice + ' ' + currency);
+    if (state.maxPrice) chips.push('Max ' + state.maxPrice + ' ' + currency);
+    if (state.popularOnly) chips.push('Sélection Ajinsafro');
+    if (state.availableOnly) chips.push('Disponible');
+    if (state.promoOnly) chips.push('Promotions');
+    state.services.forEach(function (s) {
+      var label = amenityLabels[s] || s;
+      chips.push(label);
     });
 
-    root.addEventListener('change', function (event) {
-        if (event.target.closest('#ajhb-filters-content')) {
-            applyFilters(desktopFilters);
-        }
+    els.activeFilters.innerHTML = chips.map(function (label) {
+      return '<span class="aj-filter-chip">' + escapeHtml(label) + '<button type="button" data-ajhb-remove="all">×</button></span>';
+    }).join('');
+  }
 
-        if (event.target === sortSelect) {
-            applyFilters(desktopFilters);
-        }
-    });
+  function renderCatalog() {
+    if (!state.hasSearched) {
+      if (els.catalogSection) els.catalogSection.hidden = true;
+      return;
+    }
 
-    root.addEventListener('click', function (event) {
-        var resetTrigger = event.target.closest('[data-ajhb-action="reset"]');
-        if (resetTrigger) {
-            resetFilters();
-        }
-    });
+    if (els.catalogSection) els.catalogSection.hidden = false;
 
-    searchForm.addEventListener('submit', function (event) {
+    var filtered = allItems.filter(matchesFilters);
+    var sorted = sortItems(filtered);
+
+    if (els.resultsCount) els.resultsCount.textContent = String(sorted.length);
+    renderActiveFilterChips();
+
+    if (els.resultsGrid) {
+      els.resultsGrid.innerHTML = sorted.map(renderResultCard).join('');
+    }
+
+    if (els.emptyState) {
+      els.emptyState.hidden = sorted.length > 0;
+    }
+  }
+
+  function applyHeroSearch() {
+    state.hasSearched = true;
+    state.destination = els.heroDestination ? els.heroDestination.value.trim() : '';
+    state.date = els.heroDate ? els.heroDate.value : '';
+    state.type = els.heroType ? els.heroType.value : '';
+    var starsVal = els.heroStars ? els.heroStars.value : '';
+    state.stars = starsVal ? [starsVal] : [];
+    syncAllControlsFromState();
+    renderCatalog();
+  }
+
+  function applyDesktopFilters() {
+    state.nameQuery = els.filterName ? els.filterName.value.trim() : '';
+    state.filterDestination = els.filterDestination ? els.filterDestination.value : '';
+    state.filterType = els.filterType ? els.filterType.value : '';
+    state.stars = readStarsFromContainer(els.filterStars);
+    state.minPrice = els.filterPriceMin ? els.filterPriceMin.value : '';
+    state.maxPrice = els.filterPriceMax ? els.filterPriceMax.value : '';
+    state.popularOnly = els.filterPopular ? els.filterPopular.checked : false;
+    state.availableOnly = els.filterAvailable ? els.filterAvailable.checked : false;
+    state.promoOnly = els.filterPromo ? els.filterPromo.checked : false;
+    state.services = readServicesFromContainer(els.filterStars ? els.filterStars.parentElement.parentElement : null);
+    // Read services from the services group which is after availability group
+    // Actually services are in the same container, just find them
+    var filterCard = root.querySelector('#ajhb-desktop-filters .aj-filter-card');
+    if (filterCard) {
+      state.services = readServicesFromContainer(filterCard);
+    }
+    state.hasSearched = true;
+    syncAllControlsFromState();
+    renderCatalog();
+  }
+
+  function applyMobileFilters() {
+    state.nameQuery = els.mobileName ? els.mobileName.value.trim() : '';
+    state.filterDestination = els.mobileDestination ? els.mobileDestination.value : '';
+    state.filterType = els.mobileType ? els.mobileType.value : '';
+    state.stars = readStarsFromContainer(els.mobileStars);
+    state.minPrice = els.mobilePriceMin ? els.mobilePriceMin.value : '';
+    state.maxPrice = els.mobilePriceMax ? els.mobilePriceMax.value : '';
+    state.popularOnly = els.mobilePopular ? els.mobilePopular.checked : false;
+    state.availableOnly = els.mobileAvailable ? els.mobileAvailable.checked : false;
+    state.promoOnly = els.mobilePromo ? els.mobilePromo.checked : false;
+    var mobilePanel = els.mobilePanel;
+    if (mobilePanel) {
+      state.services = readServicesFromContainer(mobilePanel);
+    }
+    state.hasSearched = true;
+    syncAllControlsFromState();
+    renderCatalog();
+    closeMobileFilters();
+  }
+
+  function resetState() {
+    state.hasSearched = false;
+    state.destination = '';
+    state.date = '';
+    state.type = '';
+    state.stars = [];
+    state.nameQuery = '';
+    state.filterDestination = '';
+    state.filterType = '';
+    state.minPrice = '';
+    state.maxPrice = '';
+    state.popularOnly = false;
+    state.availableOnly = false;
+    state.promoOnly = false;
+    state.services = [];
+    state.sort = 'recommended';
+    syncAllControlsFromState();
+    renderCatalog();
+  }
+
+  function openMobileFilters() {
+    syncMobileControls();
+    if (els.mobilePanel) els.mobilePanel.classList.add('is-active');
+    if (els.mobileBackdrop) els.mobileBackdrop.classList.add('is-active');
+    document.body.classList.add('aj-mobile-filters-open');
+  }
+
+  function closeMobileFilters() {
+    if (els.mobilePanel) els.mobilePanel.classList.remove('is-active');
+    if (els.mobileBackdrop) els.mobileBackdrop.classList.remove('is-active');
+    document.body.classList.remove('aj-mobile-filters-open');
+  }
+
+  function bindEvents() {
+    if (els.searchForm) {
+      els.searchForm.addEventListener('submit', function (event) {
         event.preventDefault();
-        applyFilters(desktopFilters);
-    });
+        applyHeroSearch();
+      });
+    }
 
-    openFiltersBtn.addEventListener('click', function () {
-        syncFilterValues(desktopFilters, mobileFilters);
-        drawer.classList.add('active');
-        backdrop.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    });
+    if (els.sortSelect) {
+      els.sortSelect.addEventListener('change', function () {
+        state.sort = els.sortSelect.value;
+        renderCatalog();
+      });
+    }
 
-    closeFiltersBtn.addEventListener('click', closeDrawer);
-    backdrop.addEventListener('click', closeDrawer);
-    applyMobileFiltersBtn.addEventListener('click', function () {
-        applyFilters(mobileFilters);
-        closeDrawer();
-    });
+    if (els.resetFilters) {
+      els.resetFilters.addEventListener('click', resetState);
+    }
+    if (els.emptyReset) {
+      els.emptyReset.addEventListener('click', resetState);
+    }
 
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape' && drawer.classList.contains('active')) {
-            closeDrawer();
+    // Desktop filter listeners (input/change on the filters container)
+    var desktopFilters = root.querySelector('#ajhb-desktop-filters');
+    if (desktopFilters) {
+      desktopFilters.addEventListener('input', function (event) {
+        if (event.target.closest('.aj-filter-card')) {
+          applyDesktopFilters();
         }
-    });
+      });
+      desktopFilters.addEventListener('change', function (event) {
+        if (event.target.closest('.aj-filter-card')) {
+          applyDesktopFilters();
+        }
+      });
+    }
 
-    applyFilters(desktopFilters);
+    // Mobile panel listeners
+    if (els.openMobileFilters) {
+      els.openMobileFilters.addEventListener('click', openMobileFilters);
+    }
+    if (els.closeMobileFilters) {
+      els.closeMobileFilters.addEventListener('click', closeMobileFilters);
+    }
+    if (els.mobileBackdrop) {
+      els.mobileBackdrop.addEventListener('click', closeMobileFilters);
+    }
+    if (els.applyMobileFilters) {
+      els.applyMobileFilters.addEventListener('click', applyMobileFilters);
+    }
+    if (els.resetMobileFilters) {
+      els.resetMobileFilters.addEventListener('click', function () {
+        resetState();
+        closeMobileFilters();
+      });
+    }
+
+    // Active filter chips remove-all
+    if (els.activeFilters) {
+      els.activeFilters.addEventListener('click', function (event) {
+        if (event.target.closest('[data-ajhb-remove]')) {
+          resetState();
+        }
+      });
+    }
+
+    // Escape key
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && els.mobilePanel && els.mobilePanel.classList.contains('is-active')) {
+        closeMobileFilters();
+      }
+    });
+  }
+
+  // Initial render
+  syncAllControlsFromState();
+  renderFeaturedCards();
+  renderCatalog();
+  bindEvents();
 })();
