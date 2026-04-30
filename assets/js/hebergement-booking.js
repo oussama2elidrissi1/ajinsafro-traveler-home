@@ -233,6 +233,7 @@
 
   var state = {
     hasSearched: false,
+    selectedPackSlug: '',
     destination: '',
     date: '',
     type: '',
@@ -253,6 +254,8 @@
   var els = {
     featuredSection: root.querySelector('#ajhb-featured-section'),
     featuredGrid: root.querySelector('#ajhb-featured-grid'),
+    packDetailSection: root.querySelector('#ajhb-pack-detail-section'),
+    packDetail: root.querySelector('#ajhb-pack-detail'),
     catalogSection: root.querySelector('#ajhb-catalog-section'),
     resultsGrid: root.querySelector('#ajhb-results-grid'),
     resultsCount: root.querySelector('#ajhb-count'),
@@ -542,8 +545,10 @@
       ? '<div class="aj-featured-price"><small>A partir de</small>' + escapeHtml(formatPrice(item.price)) + '</div>'
       : '';
 
+    var isSelected = state.selectedPackSlug && state.selectedPackSlug === item.slug;
+
     return '' +
-      '<article class="aj-featured-card" data-pack-slug="' + escapeHtml(item.slug) + '">' +
+      '<article class="aj-featured-card' + (isSelected ? ' is-selected is-highlighted' : '') + '" data-pack-slug="' + escapeHtml(item.slug) + '">' +
         '<div class="aj-featured-visual">' +
           image +
           '<span class="aj-badge">Pack</span>' +
@@ -556,9 +561,121 @@
           '</div>' +
           '<h3>' + escapeHtml(item.title) + '</h3>' +
           '<p style="margin:0;color:var(--aj-muted);font-size:13px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + escapeHtml(truncateText(item.description, 90)) + '</p>' +
-          '<a class="aj-featured-link" href="' + escapeHtml(item.url) + '" data-open-pack>Voir le pack</a>' +
+          '<button type="button" class="aj-featured-link" data-open-pack data-pack-slug="' + escapeHtml(item.slug) + '">Voir le pack</button>' +
         '</div>' +
       '</article>';
+  }
+
+  function renderPackDetail(item) {
+    if (!els.packDetailSection || !els.packDetail) {
+      return;
+    }
+
+    if (!item) {
+      els.packDetailSection.hidden = true;
+      els.packDetail.innerHTML = '';
+      return;
+    }
+
+    var image = item.image
+      ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.title) + '" loading="eager">'
+      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#d9e9ff,#f4f8ff);color:#67809a;font-size:13px;font-weight:600;">Ajinsafro</div>';
+
+    var serviceLabels = (item.amenities || []).slice(0, 6).map(function (amenity) {
+      return amenityLabels[amenity] || amenity;
+    });
+
+    var includedHtml = serviceLabels.length
+      ? '<ul class="aj-pack-detail-list">' + serviceLabels.map(function (label) {
+          return '<li>' + escapeHtml(label) + '</li>';
+        }).join('') + '</ul>'
+      : '';
+
+    var description = item.description || item.excerpt || 'Pack hébergement prêt à réserver avec informations complètes.';
+    var price = item.price !== null ? formatPrice(item.price) : 'Sur demande';
+
+    els.packDetail.innerHTML = '' +
+      '<div class="aj-pack-detail-media">' +
+        image +
+      '</div>' +
+      '<div class="aj-pack-detail-body">' +
+        '<div class="aj-pack-detail-topline">' +
+          '<span class="aj-category-badge">Pack hébergement</span>' +
+          '<span class="aj-status-badge' + (item.available ? '' : ' aj-status-badge--unavailable') + '">' + escapeHtml(item.availabilityLabel) + '</span>' +
+          (item.duration ? '<span class="aj-category-badge">' + escapeHtml(item.duration) + '</span>' : '') +
+        '</div>' +
+        '<h3 class="aj-pack-detail-title">' + escapeHtml(item.title) + '</h3>' +
+        '<div class="aj-pack-detail-price"><small>À partir de</small> ' + escapeHtml(price) + '</div>' +
+        '<div class="aj-pack-detail-meta">' + escapeHtml(item.location || 'Maroc') + (item.boardLabel ? ' · ' + escapeHtml(item.boardLabel) : '') + '</div>' +
+        '<div class="aj-pack-detail-summary">' + escapeHtml(description) + '</div>' +
+        (includedHtml ? '<div><strong>Services inclus</strong></div>' + includedHtml : '') +
+        '<div class="aj-pack-detail-actions">' +
+          '<a class="aj-pack-reserve" href="' + escapeHtml(item.url) + '" target="_blank" rel="noopener">Réserver ce pack</a>' +
+          '<button type="button" class="aj-pack-secondary" data-clear-pack>Désélectionner</button>' +
+        '</div>' +
+      '</div>';
+
+    els.packDetailSection.hidden = false;
+  }
+
+  function getPackBySlug(slug) {
+    var normalized = String(slug || '').trim();
+    if (!normalized) {
+      return null;
+    }
+
+    var candidate = packItems.find(function (item) {
+      return item.slug === normalized;
+    });
+
+    if (candidate) {
+      return candidate;
+    }
+
+    var lower = normalized.toLowerCase();
+    return packItems.find(function (item) {
+      return String(item.slug || '').toLowerCase() === lower;
+    }) || null;
+  }
+
+  function clearSelectedPack() {
+    state.selectedPackSlug = '';
+    renderPackDetail(null);
+    renderFeaturedCards();
+  }
+
+  function selectPack(slug, options) {
+    var item = getPackBySlug(slug);
+    var opts = options || {};
+
+    state.selectedPackSlug = item ? item.slug : String(slug || '');
+    renderFeaturedCards();
+
+    if (!item) {
+      renderPackDetail(null);
+      if (!opts.silent) {
+        var container = root.querySelector('.aj-hebergement-container') || document.querySelector('main') || document.body;
+        if (container && !container.querySelector('.pack-not-found-alert')) {
+          var msg = document.createElement('div');
+          msg.className = 'pack-not-found-alert';
+          msg.innerHTML = 'Pack introuvable ou indisponible.';
+          container.prepend(msg);
+        }
+      }
+      return false;
+    }
+
+    renderPackDetail(item);
+
+    if (opts.scroll !== false) {
+      window.setTimeout(function () {
+        if (els.packDetailSection) {
+          els.packDetailSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    }
+
+    return true;
   }
 
   function renderResultCard(item) {
@@ -671,7 +788,7 @@
       return;
     }
 
-    if (els.featuredSection) els.featuredSection.hidden = true;
+    if (els.featuredSection) els.featuredSection.hidden = !state.selectedPackSlug;
     if (els.catalogSection) els.catalogSection.hidden = false;
 
     var results = sortItems(hotelItems.filter(matchesFilters));
@@ -755,6 +872,7 @@
 
   function resetState() {
     state.hasSearched = false;
+    state.selectedPackSlug = '';
     state.destination = '';
     state.date = '';
     state.type = '';
@@ -770,6 +888,7 @@
     state.services = [];
     state.sort = 'recommended';
     syncAllControls();
+    renderPackDetail(null);
     renderCatalog();
   }
 
@@ -859,6 +978,21 @@
       });
     }
 
+    root.addEventListener('click', function (event) {
+      var openTrigger = event.target.closest('[data-open-pack]');
+      if (openTrigger) {
+        event.preventDefault();
+        selectPack(openTrigger.getAttribute('data-pack-slug') || '', { scroll: true });
+        return;
+      }
+
+      var clearTrigger = event.target.closest('[data-clear-pack]');
+      if (clearTrigger) {
+        event.preventDefault();
+        clearSelectedPack();
+      }
+    });
+
     document.addEventListener('keydown', function (event) {
       if (event.key === 'Escape' && els.mobilePanel && els.mobilePanel.classList.contains('is-active')) {
         closeMobileFilters();
@@ -871,43 +1005,16 @@
   renderFeaturedCards();
   renderCatalog();
   bindEvents();
-  // Open pack from URL if present
   (function openPackFromUrl() {
     try {
       var params = new URLSearchParams(window.location.search || '');
       var packSlug = params.get('pack');
-      if (!packSlug) return;
+      if (!packSlug) {
+        return;
+      }
 
-      // Wait a bit for DOM to stabilise and rendering to finish
       setTimeout(function () {
-        // Ensure sections are visible so filters don't hide the pack
-        if (els.featuredSection) els.featuredSection.hidden = false;
-        if (els.catalogSection) els.catalogSection.hidden = false;
-
-        var selector = '[data-pack-slug="' + packSlug + '"]';
-        var card = document.querySelector(selector);
-        if (card) {
-          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          card.classList.add('is-highlighted');
-          var openBtn = card.querySelector('[data-open-pack]');
-          if (openBtn) {
-            openBtn.click();
-          } else {
-            var anchor = card.querySelector('a');
-            if (anchor) anchor.click();
-          }
-        } else {
-          var container = root.querySelector('.aj-hebergement-container') || document.querySelector('main') || document.body;
-          if (container) {
-            var existing = container.querySelector('.pack-not-found-alert');
-            if (!existing) {
-              var msg = document.createElement('div');
-              msg.className = 'pack-not-found-alert';
-              msg.innerHTML = 'Pack introuvable ou indisponible.';
-              container.prepend(msg);
-            }
-          }
-        }
+        selectPack(packSlug, { scroll: true });
       }, 500);
     } catch (e) {
       // Ignore errors silently

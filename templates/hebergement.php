@@ -95,6 +95,10 @@ sort($types);
                         </form>
                     </section>
 
+                    <section class="aj-pack-detail" id="ajhb-pack-detail-section" hidden>
+                        <div class="aj-pack-detail-inner" id="ajhb-pack-detail"></div>
+                    </section>
+
                     <section class="aj-featured" id="ajhb-featured-section" aria-labelledby="aj-featured-title">
                         <div class="aj-section-head">
                             <div>
