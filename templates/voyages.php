@@ -204,6 +204,11 @@ if (! function_exists('ajinsafro_get_tour_availability')) {
     }
 }
 
+add_filter('body_class', function ($classes) {
+    $classes[] = 'page-voyages-ajinsafro';
+    return $classes;
+});
+
 get_header();
 
 $settings = ajth_get_settings();
