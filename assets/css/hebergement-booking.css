@@ -521,6 +521,7 @@
 .aj-results-meta {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 14px;
 }
 
@@ -544,6 +545,45 @@
 
 .aj-sort-select:focus {
     border-color: var(--aj-blue);
+}
+
+.aj-view-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px;
+    border-radius: 999px;
+    background: #f6faff;
+    border: 1px solid rgba(13, 94, 168, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.aj-view-btn {
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(13, 94, 168, 0.18);
+    background: #fff;
+    color: var(--aj-blue-dark);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.aj-view-btn:hover {
+    border-color: rgba(247, 148, 29, 0.35);
+    transform: translateY(-1px);
+}
+
+.aj-view-btn.is-active {
+    background: linear-gradient(135deg, var(--aj-orange), var(--aj-orange-dark));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 10px 20px rgba(247, 148, 29, 0.18);
 }
 
 .aj-active-filters {
@@ -586,11 +626,20 @@
     gap: 16px;
 }
 
+.aj-hebergements-grid.is-grid-view {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
 .aj-result-card {
     display: flex;
     flex-direction: row;
     border-radius: 22px;
     overflow: hidden;
+    border: 1px solid rgba(13, 94, 168, 0.08);
+    background: #fff;
+    box-shadow: 0 12px 28px rgba(7, 59, 112, 0.06);
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
@@ -752,6 +801,54 @@
     transform: translateY(-1px);
 }
 
+.aj-hebergements-grid.is-grid-view .aj-result-card {
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.aj-hebergements-grid.is-grid-view .aj-result-media {
+    width: 100%;
+    min-width: 100%;
+    aspect-ratio: 16 / 10;
+}
+
+.aj-hebergements-grid.is-grid-view .aj-result-media .aj-card-badges {
+    justify-content: space-between;
+}
+
+.aj-hebergements-grid.is-grid-view .aj-result-body {
+    gap: 10px;
+    grid-template-rows: auto auto auto 1fr auto;
+}
+
+.aj-hebergements-grid.is-grid-view .aj-result-body h3 {
+    font-size: 1.08rem;
+}
+
+.aj-hebergements-grid.is-grid-view .aj-result-meta {
+    gap: 8px 12px;
+    font-size: 0.78rem;
+}
+
+.aj-hebergements-grid.is-grid-view .aj-result-desc {
+    -webkit-line-clamp: 2;
+    min-height: 2.7em;
+}
+
+.aj-hebergements-grid.is-grid-view .aj-result-footer {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.aj-hebergements-grid.is-grid-view .aj-result-price {
+    min-width: 0;
+}
+
+.aj-hebergements-grid.is-grid-view .aj-result-btn {
+    width: 100%;
+}
+
 /* Secondary CTA – Blue outline */
 .aj-card-secondary {
     background: var(--aj-blue-soft);
@@ -909,11 +1006,22 @@ body.aj-mobile-filters-open { overflow: hidden; }
     .aj-featured-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+@media (min-width: 1280px) {
+    .aj-catalog-layout { grid-template-columns: 290px minmax(0, 1fr); }
+    .aj-hebergements-grid.is-grid-view { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1480px) {
+    .aj-catalog-layout { grid-template-columns: 290px minmax(0, 1fr); }
+    .aj-hebergements-grid.is-grid-view { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
 @media (max-width: 1024px) {
     .aj-catalog-layout { grid-template-columns: 1fr; }
     .aj-filters { display: none; }
     .aj-mobile-filter-trigger { display: inline-flex; }
     .aj-result-media { width: 240px; min-width: 240px; }
+    .aj-hebergements-grid.is-grid-view { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 820px) {
@@ -930,6 +1038,8 @@ body.aj-mobile-filters-open { overflow: hidden; }
     .aj-card-actions { width: 100%; }
     .aj-card-actions a,
     .aj-result-btn { flex: 1 1 auto; }
+    .aj-hebergements-grid.is-grid-view { grid-template-columns: 1fr; }
+    .aj-view-toggle { order: 3; width: 100%; justify-content: flex-start; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -991,6 +1101,17 @@ body.aj-mobile-filters-open { overflow: hidden; }
 
 .page-hebergement-ajinsafro .aj-featured-price {
     color: #073B70 !important;
+}
+
+.page-hebergement-ajinsafro .aj-view-btn {
+    color: #073B70 !important;
+    border-color: rgba(13, 94, 168, 0.18) !important;
+}
+
+.page-hebergement-ajinsafro .aj-view-btn.is-active {
+    background: linear-gradient(135deg, #F7941D, #E67E00) !important;
+    color: #fff !important;
+    border-color: transparent !important;
 }
 
 .page-hebergement-ajinsafro .aj-result-card:hover,

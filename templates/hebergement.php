@@ -114,6 +114,16 @@ sort($types);
                             </div>
                             <div class="aj-results-meta">
                                 <strong><span id="ajhb-count">0</span> résultats</strong>
+                                <div class="aj-view-toggle" id="ajhb-view-toggle" role="group" aria-label="Mode d'affichage des résultats">
+                                    <button type="button" class="aj-view-btn is-active" id="ajhb-view-list" data-view="list" aria-pressed="true">
+                                        <span aria-hidden="true">☰</span>
+                                        <span>Liste</span>
+                                    </button>
+                                    <button type="button" class="aj-view-btn" id="ajhb-view-grid" data-view="grid" aria-pressed="false">
+                                        <span aria-hidden="true">▦</span>
+                                        <span>Grille</span>
+                                    </button>
+                                </div>
                                 <select id="ajhb-sort-select" class="aj-sort-select" aria-label="Trier les hébergements">
                                     <option value="recommended">Recommandés</option>
                                     <option value="price-asc">Prix croissant</option>
