@@ -95,7 +95,7 @@ sort($types);
                         </form>
                     </section>
 
-                    <section class="aj-featured" aria-labelledby="aj-featured-title">
+                    <section class="aj-featured" id="ajhb-featured-section" aria-labelledby="aj-featured-title">
                         <div class="aj-section-head">
                             <div>
                                 <span class="aj-section-kicker">Sélection Ajinsafro</span>
@@ -125,7 +125,7 @@ sort($types);
                         </div>
 
                         <div class="aj-catalog-layout">
-                            <aside class="aj-filters" aria-label="Filtres hébergements">
+                            <aside class="aj-filters" id="ajhb-desktop-filters" aria-label="Filtres hébergements">
                                 <div class="aj-filter-card">
                                     <div class="aj-filter-head">
                                         <h3>Filtrer</h3>
@@ -201,9 +201,9 @@ sort($types);
                                 <div class="aj-active-filters" id="ajhb-active-filters"></div>
                                 <div class="aj-hebergements-grid" id="ajhb-results-grid"></div>
                                 <div class="aj-empty-state" id="ajhb-empty-state" hidden>
-                                    <h3>Aucun hébergement ne correspond à votre recherche</h3>
-                                    <p>Essayez une autre destination, un autre type ou élargissez votre budget.</p>
-                                    <button id="ajhb-empty-reset" type="button">Voir tous les hébergements</button>
+                                    <h3>Aucun hébergement trouvé pour ces critères.</h3>
+                                    <p>Essayez une autre destination, un autre type d'hébergement ou réinitialisez les filtres.</p>
+                                    <button id="ajhb-empty-reset" type="button">Réinitialiser les filtres</button>
                                 </div>
                             </div>
                         </div>
