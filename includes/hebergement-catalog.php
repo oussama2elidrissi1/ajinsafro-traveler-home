@@ -393,6 +393,7 @@ if ( ! function_exists( 'ajth_get_accommodation_packages' ) ) {
 						'description'  => (string) ( $row['short_description'] ?? '' ),
 						'popular'      => ! empty( $row['is_featured'] ),
 						'available'    => ! isset( $row['is_active'] ) || ! empty( $row['is_active'] ),
+						'order'        => (int) ( $row['order'] ?? 0 ),
 						'url'          => '#',
 					);
 				},

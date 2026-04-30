@@ -136,8 +136,9 @@
       reviews: Number(item.reviews || 0),
       badge: String(isPack ? (item.badges && item.badges[0] ? item.badges[0] : '') : (item.badge || '')),
       duration: String(isPack ? (item.duration || '') : ''),
-      boardLabel: String(isPack ? (item.pensionLabel || '') : (item.boardLabel || item.board || ''))
-    };
+      boardLabel: String(isPack ? (item.pensionLabel || '') : (item.boardLabel || item.board || '')),
+      order: Number(item.order || 0)
+	    };
   }
 
   var rawHotels = Array.isArray(config.hotels) ? config.hotels : [];
@@ -429,9 +430,9 @@
     }
     return sorted;
   }
-
   function renderFeaturedCards() {
-    var featured = allItems.filter(function (item) { return item.isPack && item.popular; }).slice(0, 4);
+    var featured = allItems.filter(function (item) { return item.isPack && item.popular; });
+    featured.sort(function (a, b) { return (a.order || 99) - (b.order || 99); });
     if (!featured.length) {
       els.featuredGrid.innerHTML = '';
       return;
