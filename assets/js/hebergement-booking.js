@@ -116,6 +116,14 @@
     }).join(', ') || item.address || '';
   }
 
+  function resolveNavUrl(value, fallbackPath) {
+    var raw = String(value || '').trim();
+    if (raw && raw !== '#' && raw.toLowerCase() !== 'javascript:void(0)') {
+      return raw;
+    }
+    return fallbackPath || '/hebergement/';
+  }
+
   function normalizeItem(raw) {
     var item = raw && typeof raw === 'object' ? raw : {};
     var isPack = item.kind === 'pack';
@@ -147,7 +155,7 @@
       isPack: isPack,
       id: Number(item.id || 0),
       title: String(item.title || item.name || ''),
-      url: String(item.url || '#'),
+      url: resolveNavUrl(item.url, isPack ? '/hebergement/' : '/hebergement/'),
       image: String(item.image || item.image_url || ''),
       city: city,
       destination: destination,

@@ -451,6 +451,37 @@ if ( ! function_exists( 'ajth_map_package_include_to_key' ) ) {
 	}
 }
 
+if ( ! function_exists( 'ajth_get_accommodation_package_public_url' ) ) {
+	/**
+	 * Resolve a public URL for an accommodation package.
+	 *
+	 * If no dedicated detail page exists yet, fall back to the hebergement page
+	 * with a stable `pack` query parameter rather than `#`.
+	 *
+	 * @param array<string, mixed> $row Package payload.
+	 * @return string
+	 */
+	function ajth_get_accommodation_package_public_url( array $row ) {
+		foreach ( array( 'url', 'detail_url', 'permalink', 'link' ) as $key ) {
+			$value = trim( (string) ( $row[ $key ] ?? '' ) );
+			if ( '' !== $value && '#' !== $value ) {
+				return $value;
+			}
+		}
+
+		$base = function_exists( 'ajth_get_hebergement_page_url' )
+			? ajth_get_hebergement_page_url()
+			: home_url( '/hebergement/' );
+
+		$pack_key = trim( (string) ( $row['slug'] ?? '' ) );
+		if ( '' === $pack_key ) {
+			$pack_key = trim( (string) ( $row['id'] ?? '' ) );
+		}
+
+		return '' !== $pack_key ? add_query_arg( array( 'pack' => $pack_key ), $base ) : $base;
+	}
+}
+
 if ( ! function_exists( 'ajth_get_accommodation_packages' ) ) {
 	/**
 	 * Returns accommodation packages from Laravel.
@@ -470,6 +501,8 @@ if ( ! function_exists( 'ajth_get_accommodation_packages' ) ) {
 					$type_label    = (string) ( $row['accommodation_type'] ?? 'Hôtel' );
 					$badge         = trim( (string) ( $row['badge'] ?? '' ) );
 					$includes      = isset( $row['includes'] ) && is_array( $row['includes'] ) ? array_values( $row['includes'] ) : array();
+
+					$url = ajth_get_accommodation_package_public_url( $row );
 
 					return array(
 						'kind'         => 'pack',
@@ -502,7 +535,7 @@ if ( ! function_exists( 'ajth_get_accommodation_packages' ) ) {
 						'popular'      => ! empty( $row['is_featured'] ),
 						'available'    => ! isset( $row['is_active'] ) || ! empty( $row['is_active'] ),
 						'order'        => (int) ( $row['order'] ?? 0 ),
-						'url'          => '#',
+						'url'          => $url,
 					);
 				},
 				$rows
