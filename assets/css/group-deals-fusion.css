@@ -839,9 +839,16 @@
     box-shadow: 0 4px 12px rgba(0,0,0,.14);
 }
 
-.aj-groupdeals-fusion .ajgd-badge--orange { background: var(--aj-orange);      color: var(--aj-white); }
-.aj-groupdeals-fusion .ajgd-badge--green  { background: var(--aj-green);       color: var(--aj-white); }
-.aj-groupdeals-fusion .ajgd-badge--blue   { background: var(--aj-blue-light);  color: var(--aj-blue-dark); }
+.aj-groupdeals-fusion .ajgd-badge--orange     { background: var(--aj-orange);      color: var(--aj-white); }
+.aj-groupdeals-fusion .ajgd-badge--green      { background: var(--aj-green);       color: var(--aj-white); }
+.aj-groupdeals-fusion .ajgd-badge--blue      { background: var(--aj-blue-light);  color: var(--aj-blue-dark); }
+.aj-groupdeals-fusion .ajgd-badge--guaranteed { background: var(--aj-green);       color: var(--aj-white); }
+.aj-groupdeals-fusion .ajgd-badge--almost     { background: var(--aj-blue);        color: var(--aj-white); }
+.aj-groupdeals-fusion .ajgd-badge--progress    { background: #4AA3DF;               color: var(--aj-white); }
+.aj-groupdeals-fusion .ajgd-badge--request     { background: var(--aj-orange);      color: var(--aj-white); }
+.aj-groupdeals-fusion .ajgd-badge--full        { background: #C84B4B;               color: var(--aj-white); }
+.aj-groupdeals-fusion .ajgd-badge--last        { background: #D46A1E;               color: var(--aj-white); }
+.aj-groupdeals-fusion .ajgd-badge--promo       { background: var(--aj-orange);      color: var(--aj-white); }
 
 /* Card body */
 .aj-groupdeals-fusion .ajgd-card__body {
@@ -994,6 +1001,14 @@
     color: var(--aj-muted);
     font-size: 11px;
     font-weight: 700;
+}
+
+.aj-groupdeals-fusion .ajgd-card__group-hint {
+    display: block;
+    margin-top: 4px;
+    color: var(--aj-green);
+    font-size: 11px;
+    font-weight: 800;
 }
 
 .aj-groupdeals-fusion .ajgd-card__actions {
