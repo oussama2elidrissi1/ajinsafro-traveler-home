@@ -151,9 +151,19 @@
       description = 'Hebergement Ajinsafro disponible dans notre catalogue.';
     }
 
+    function makeSlug(value) {
+      return String(value || '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+
     var normalized = {
       isPack: isPack,
       id: Number(item.id || 0),
+      slug: isPack ? makeSlug(item.id || item.slug || item.name || item.title || '') : '',
       title: String(item.title || item.name || ''),
       url: resolveNavUrl(item.url, isPack ? '/hebergement/' : '/hebergement/'),
       image: String(item.image || item.image_url || ''),
@@ -533,7 +543,7 @@
       : '';
 
     return '' +
-      '<article class="aj-featured-card">' +
+      '<article class="aj-featured-card" data-pack-slug="' + escapeHtml(item.slug) + '">' +
         '<div class="aj-featured-visual">' +
           image +
           '<span class="aj-badge">Pack</span>' +
@@ -546,7 +556,7 @@
           '</div>' +
           '<h3>' + escapeHtml(item.title) + '</h3>' +
           '<p style="margin:0;color:var(--aj-muted);font-size:13px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + escapeHtml(truncateText(item.description, 90)) + '</p>' +
-          '<a class="aj-featured-link" href="' + escapeHtml(item.url) + '">Voir le pack</a>' +
+          '<a class="aj-featured-link" href="' + escapeHtml(item.url) + '" data-open-pack>Voir le pack</a>' +
         '</div>' +
       '</article>';
   }
@@ -861,4 +871,46 @@
   renderFeaturedCards();
   renderCatalog();
   bindEvents();
+  // Open pack from URL if present
+  (function openPackFromUrl() {
+    try {
+      var params = new URLSearchParams(window.location.search || '');
+      var packSlug = params.get('pack');
+      if (!packSlug) return;
+
+      // Wait a bit for DOM to stabilise and rendering to finish
+      setTimeout(function () {
+        // Ensure sections are visible so filters don't hide the pack
+        if (els.featuredSection) els.featuredSection.hidden = false;
+        if (els.catalogSection) els.catalogSection.hidden = false;
+
+        var selector = '[data-pack-slug="' + packSlug + '"]';
+        var card = document.querySelector(selector);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.classList.add('is-highlighted');
+          var openBtn = card.querySelector('[data-open-pack]');
+          if (openBtn) {
+            openBtn.click();
+          } else {
+            var anchor = card.querySelector('a');
+            if (anchor) anchor.click();
+          }
+        } else {
+          var container = root.querySelector('.aj-hebergement-container') || document.querySelector('main') || document.body;
+          if (container) {
+            var existing = container.querySelector('.pack-not-found-alert');
+            if (!existing) {
+              var msg = document.createElement('div');
+              msg.className = 'pack-not-found-alert';
+              msg.innerHTML = 'Pack introuvable ou indisponible.';
+              container.prepend(msg);
+            }
+          }
+        }
+      }, 500);
+    } catch (e) {
+      // Ignore errors silently
+    }
+  })();
 })();
