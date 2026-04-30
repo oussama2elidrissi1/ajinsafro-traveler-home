@@ -1,17 +1,17 @@
 .aj-activities-static {
-  --aj-blue: #0d5cab;
-  --aj-blue-dark: #083d79;
-  --aj-blue-soft: #edf5ff;
-  --aj-orange: #f28c28;
-  --aj-orange-dark: #dd7410;
-  --aj-orange-soft: #fff4e7;
-  --aj-green: #0f9f6e;
-  --aj-green-soft: #eafbf3;
-  --aj-text: #16324f;
-  --aj-muted: #67809a;
-  --aj-border: #dbe6f2;
+  --aj-blue: #0d5ea8;
+  --aj-blue-dark: #0a4c89;
+  --aj-blue-soft: #eaf4ff;
+  --aj-orange: #f7941d;
+  --aj-orange-dark: #e67e00;
+  --aj-orange-soft: #fff3e3;
+  --aj-green: #2bb673;
+  --aj-green-soft: #eaf8f1;
+  --aj-text: #18324a;
+  --aj-muted: #6b7c93;
+  --aj-border: #d9e4f0;
   --aj-surface: #ffffff;
-  --aj-surface-alt: #f5f9fd;
+  --aj-surface-alt: #f4f8fc;
   --aj-shadow: 0 22px 48px rgba(9, 53, 104, 0.10);
   --aj-radius-lg: 28px;
   --aj-radius-md: 20px;
@@ -192,7 +192,7 @@
   min-height: 52px;
   border: 0;
   border-radius: 16px;
-  background: linear-gradient(135deg, var(--aj-orange), #f7a548);
+  background: linear-gradient(135deg, var(--aj-orange), var(--aj-orange-dark));
   color: #fff;
   padding: 0 22px;
   font-weight: 700;
@@ -291,7 +291,7 @@
   position: absolute;
   top: 16px;
   left: 16px;
-  background: rgba(242, 140, 40, 0.95);
+  background: rgba(247, 148, 29, 0.96);
   color: #fff;
 }
 
@@ -370,7 +370,7 @@
 .aj-mobile-filter-trigger,
 .aj-empty-state button,
 .aj-mobile-panel-actions #aj-apply-mobile-filters {
-  background: linear-gradient(135deg, var(--aj-blue), var(--aj-blue-dark));
+  background: linear-gradient(135deg, var(--aj-orange), var(--aj-orange-dark));
   color: #fff;
   border: 0;
   font-weight: 700;
@@ -397,6 +397,7 @@
   border-radius: 24px;
   padding: 24px;
   background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(13, 94, 168, 0.10);
 }
 
 .aj-filter-head {
@@ -442,7 +443,7 @@
 .aj-check input {
   width: 18px;
   height: 18px;
-  accent-color: var(--aj-blue);
+  accent-color: var(--aj-orange);
 }
 
 .aj-section-head--catalog {
@@ -484,8 +485,8 @@
   min-height: 34px;
   border-radius: 999px;
   padding: 0 14px;
-  background: var(--aj-blue-soft);
-  color: var(--aj-blue-dark);
+  background: var(--aj-orange-soft);
+  color: var(--aj-orange-dark);
   font-size: 12px;
   font-weight: 700;
 }
@@ -520,7 +521,7 @@
 }
 
 .aj-category-badge {
-  background: rgba(13, 92, 171, 0.92);
+  background: rgba(13, 94, 168, 0.94);
   color: #fff;
 }
 
@@ -571,7 +572,7 @@
 }
 
 .aj-card-price strong {
-  color: var(--aj-blue-dark);
+  color: var(--aj-orange-dark);
   font-size: 1.45rem;
   line-height: 1;
 }
@@ -588,9 +589,9 @@
 
 .aj-card-actions .aj-card-secondary,
 .aj-mobile-panel-actions #aj-reset-mobile-filters {
-  background: var(--aj-orange-soft);
-  color: var(--aj-orange-dark);
-  border: 1px solid rgba(242, 140, 40, 0.30);
+  background: var(--aj-blue-soft);
+  color: var(--aj-blue-dark);
+  border: 1px solid rgba(13, 94, 168, 0.22);
   font-weight: 700;
 }
 
@@ -622,7 +623,7 @@
   bottom: 16px;
   z-index: 50;
   min-height: 52px;
-  box-shadow: 0 18px 36px rgba(8, 61, 121, 0.24);
+  box-shadow: 0 18px 36px rgba(10, 76, 137, 0.24);
 }
 
 .aj-mobile-backdrop {
