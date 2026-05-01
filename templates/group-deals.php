@@ -1030,48 +1030,82 @@ if ($current_group_deal_slug !== '' && ! empty($all_deals)) {
 
 <?php if ($current_group_deal) { ?>
 <!-- Modal: Je participe -->
-<div class="ajgd-modal-overlay" id="ajgd-modal-overlay" aria-hidden="true">
-    <div class="ajgd-modal" role="dialog" aria-modal="true" aria-labelledby="ajgd-modal-title">
-        <div class="ajgd-modal__head">
-            <h3 id="ajgd-modal-title">Rejoindre ce Group Deal</h3>
-            <button type="button" class="ajgd-modal__close" id="ajgd-modal-close" aria-label="Fermer">&#215;</button>
+<div class="gd-modal-overlay" id="ajgd-modal-overlay" aria-hidden="true">
+    <div class="gd-modal" role="dialog" aria-modal="true" aria-labelledby="ajgd-modal-title">
+        <!-- Formulaire -->
+        <div id="ajgd-modal-form-state">
+            <div class="gd-modal-header">
+                <div>
+                    <h2 id="ajgd-modal-title">Rejoindre ce Group Deal</h2>
+                    <p>Remplissez vos informations pour participer a cette offre de groupe.</p>
+                </div>
+                <button type="button" class="gd-modal-close" id="ajgd-modal-close" aria-label="Fermer">&times;</button>
+            </div>
+            <form class="gd-join-form" id="ajgd-participation-form">
+                <input type="hidden" name="deal_slug" id="ajgd-modal-slug" value="<?php echo esc_attr($cd_slug); ?>">
+                <div class="gd-form-grid">
+                    <div class="gd-form-group">
+                        <label for="ajgd-p-name">Nom complet <span class="gd-required">*</span></label>
+                        <input type="text" id="ajgd-p-name" name="full_name" placeholder="Votre nom et prenom">
+                        <span class="gd-field-error" id="ajgd-error-name"></span>
+                    </div>
+                    <div class="gd-form-group">
+                        <label for="ajgd-p-phone">Telephone <span class="gd-required">*</span></label>
+                        <input type="tel" id="ajgd-p-phone" name="phone" placeholder="Ex: 06 12 34 56 78">
+                        <span class="gd-field-error" id="ajgd-error-phone"></span>
+                    </div>
+                    <div class="gd-form-group">
+                        <label for="ajgd-p-email">Email</label>
+                        <input type="email" id="ajgd-p-email" name="email" placeholder="votre@email.com">
+                        <span class="gd-field-error" id="ajgd-error-email"></span>
+                    </div>
+                    <div class="gd-form-group">
+                        <label for="ajgd-p-count">Nombre de personnes <span class="gd-required">*</span></label>
+                        <input type="number" id="ajgd-p-count" name="participants_count" min="1" max="10000" value="1">
+                        <span class="gd-field-error" id="ajgd-error-count"></span>
+                    </div>
+                    <div class="gd-form-group full">
+                        <label for="ajgd-p-city">Ville</label>
+                        <input type="text" id="ajgd-p-city" name="city" placeholder="Votre ville">
+                        <span class="gd-field-error" id="ajgd-error-city"></span>
+                    </div>
+                    <div class="gd-form-group full">
+                        <label for="ajgd-p-remark">Remarque / Question</label>
+                        <textarea id="ajgd-p-remark" name="remark" rows="3" placeholder="Une remarque ou une question ?"></textarea>
+                        <span class="gd-field-error" id="ajgd-error-remark"></span>
+                    </div>
+                </div>
+                <label class="gd-checkbox">
+                    <input type="checkbox" id="ajgd-p-accept" name="accept_conditions">
+                    <span>J'accepte les conditions de participation. <span class="gd-required">*</span></span>
+                </label>
+                <span class="gd-field-error" id="ajgd-error-accept"></span>
+                <div class="gd-form-error" id="ajgd-modal-error" role="alert"></div>
+                <div class="gd-modal-actions">
+                    <button type="button" class="gd-btn-secondary" id="ajgd-modal-cancel">Annuler</button>
+                    <button type="submit" class="gd-btn-primary" id="ajgd-modal-submit">Envoyer ma participation</button>
+                </div>
+            </form>
         </div>
-        <form class="ajgd-modal__body" id="ajgd-participation-form">
-            <input type="hidden" name="deal_slug" id="ajgd-modal-slug" value="<?php echo esc_attr($cd_slug); ?>">
-            <div class="ajgd-field">
-                <label for="ajgd-p-name">Nom complet <span aria-label="obligatoire">*</span></label>
-                <input type="text" id="ajgd-p-name" name="full_name" required placeholder="Votre nom et prenom">
+        <!-- Succes -->
+        <div class="gd-modal-success" id="ajgd-modal-success" style="display:none;">
+            <div class="gd-modal-header" style="margin-bottom: 0;">
+                <div>
+                    <h2>Participation enregistree !</h2>
+                    <p>Votre demande de participation est enregistree. Nous vous contacterons bientot pour confirmer votre place.</p>
+                </div>
+                <button type="button" class="gd-modal-close" id="ajgd-modal-close-success" aria-label="Fermer">&times;</button>
             </div>
-            <div class="ajgd-field">
-                <label for="ajgd-p-phone">Telephone <span aria-label="obligatoire">*</span></label>
-                <input type="tel" id="ajgd-p-phone" name="phone" required placeholder="Ex: 06 12 34 56 78">
+            <div class="gd-success-body">
+                <div class="gd-success-icon">&#10003;</div>
+                <div class="gd-success-text" id="ajgd-success-message">Merci pour votre inscription.</div>
+                <div class="gd-success-stats" id="ajgd-success-stats"></div>
             </div>
-            <div class="ajgd-field">
-                <label for="ajgd-p-email">Email</label>
-                <input type="email" id="ajgd-p-email" name="email" placeholder="votre@email.com">
+            <div class="gd-modal-actions" style="margin-top: 0; padding-top: 20px;">
+                <button type="button" class="gd-btn-secondary" id="ajgd-modal-close-ok">Fermer</button>
+                <a class="gd-btn-primary" href="<?php echo esc_url($group_deals_url); ?>">Voir les autres offres</a>
             </div>
-            <div class="ajgd-field">
-                <label for="ajgd-p-count">Nombre de personnes <span aria-label="obligatoire">*</span></label>
-                <input type="number" id="ajgd-p-count" name="participants_count" required min="1" max="10000" value="1">
-            </div>
-            <div class="ajgd-field">
-                <label for="ajgd-p-city">Ville</label>
-                <input type="text" id="ajgd-p-city" name="city" placeholder="Votre ville">
-            </div>
-            <div class="ajgd-field">
-                <label for="ajgd-p-remark">Remarque / Question</label>
-                <textarea id="ajgd-p-remark" name="remark" rows="3" placeholder="Une remarque ou une question ?"></textarea>
-            </div>
-            <label class="ajgd-check">
-                <input type="checkbox" name="accept_conditions" required>
-                J'accepte les conditions de participation.
-            </label>
-            <div class="ajgd-modal__error" id="ajgd-modal-error" role="alert"></div>
-            <div class="ajgd-modal__foot">
-                <button type="button" class="ajgd-btn ajgd-btn--outline-blue" id="ajgd-modal-cancel">Annuler</button>
-                <button type="submit" class="ajgd-btn ajgd-btn--orange" id="ajgd-modal-submit">Envoyer ma participation</button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 <script>
