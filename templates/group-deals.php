@@ -490,6 +490,20 @@ if ($cta_devis_url === '') {
     $cta_devis_url = $_cp ? (string) get_permalink($_cp) : 'https://wa.me/212539323874';
 }
 $cta_is_external = strpos($cta_devis_url, 'wa.me') !== false || strpos($cta_devis_url, 'whatsapp') !== false;
+
+$current_group_deal_slug = function_exists('ajth_get_current_group_deal_slug')
+    ? ajth_get_current_group_deal_slug()
+    : '';
+$current_group_deal = null;
+
+if ($current_group_deal_slug !== '' && ! empty($all_deals)) {
+    foreach ($all_deals as $deal_row) {
+        if (($deal_row['slug'] ?? '') === $current_group_deal_slug) {
+            $current_group_deal = $deal_row;
+            break;
+        }
+    }
+}
 ?>
 
 <div class="aj-home-wrap">
@@ -497,6 +511,70 @@ $cta_is_external = strpos($cta_devis_url, 'wa.me') !== false || strpos($cta_devi
         <?php ajth_render_site_header($settings); ?>
 
         <div class="aj-groupdeals-fusion" id="aj-groupdeals-fusion">
+            <?php if ($current_group_deal) { ?>
+                <main class="ajgd-container" style="padding-top:2rem;padding-bottom:4rem;">
+                    <nav class="aj-activities-breadcrumb" aria-label="Fil d Ariane" style="margin-bottom:1.5rem;">
+                        <a href="<?php echo esc_url(home_url('/')); ?>">Accueil</a>
+                        <span>/</span>
+                        <a href="<?php echo esc_url($group_deals_url); ?>">Group Deals</a>
+                        <span>/</span>
+                        <span><?php echo esc_html($current_group_deal['title']); ?></span>
+                    </nav>
+
+                    <section class="ajgd-card" style="display:grid;gap:2rem;grid-template-columns:minmax(0,1.1fr) minmax(320px,0.9fr);padding:1.5rem;">
+                        <div>
+                            <div class="ajgd-card__media<?php echo strpos($current_group_deal['image_url'], 'fallback-voyage.svg') !== false ? ' is-fallback' : ''; ?>" style="height:420px;border-radius:24px;overflow:hidden;margin-bottom:1.5rem;">
+                                <img src="<?php echo esc_url($current_group_deal['image_url']); ?>" alt="<?php echo esc_attr($current_group_deal['title']); ?>" style="width:100%;height:100%;object-fit:cover;">
+                            </div>
+                            <div class="ajgd-card__badges" style="margin-bottom:1rem;">
+                                <span class="ajgd-badge ajgd-badge--<?php echo esc_attr($current_group_deal['status_class']); ?>"><?php echo esc_html($current_group_deal['status_label']); ?></span>
+                                <?php if (! empty($current_group_deal['is_featured'])) { ?><span class="ajgd-badge ajgd-badge--blue">Selection Ajinsafro</span><?php } ?>
+                                <?php if ((int) $current_group_deal['discount_percent'] > 0) { ?><span class="ajgd-badge ajgd-badge--orange">-<?php echo esc_html((string) $current_group_deal['discount_percent']); ?>%</span><?php } ?>
+                            </div>
+                            <h1 style="font-size:clamp(2rem,4vw,3.2rem);line-height:1.05;margin:0 0 1rem;color:#123b69;"><?php echo esc_html($current_group_deal['title']); ?></h1>
+                            <p style="margin:0 0 1rem;color:#475569;font-size:1rem;line-height:1.8;"><?php echo esc_html($current_group_deal['excerpt']); ?></p>
+                            <div class="aj-inline-meta" style="margin-bottom:1rem;">
+                                <?php if ($current_group_deal['destination'] !== '') { ?><span><?php echo esc_html($current_group_deal['destination']); ?></span><?php } ?>
+                                <?php if ($current_group_deal['country'] !== '') { ?><span><?php echo esc_html($current_group_deal['country']); ?></span><?php } ?>
+                                <?php if ($current_group_deal['duration'] !== '') { ?><span><?php echo esc_html($current_group_deal['duration']); ?></span><?php } ?>
+                            </div>
+                            <?php if (! empty($current_group_deal['services'])) { ?>
+                                <div class="ajgd-card__tags" style="margin-bottom:1.5rem;">
+                                    <?php foreach ($current_group_deal['services'] as $service_name) { ?><span><?php echo esc_html($service_name); ?></span><?php } ?>
+                                </div>
+                            <?php } ?>
+                            <a class="ajgd-btn ajgd-btn--outline-blue" href="<?php echo esc_url($group_deals_url); ?>">← Retour aux offres</a>
+                        </div>
+
+                        <aside>
+                            <div class="ajgd-card" style="padding:1.5rem;">
+                                <div class="ajgd-card__price" style="margin-bottom:1rem;">
+                                    <?php if ($current_group_deal['old_price_label'] !== '') { ?><del><?php echo esc_html($current_group_deal['old_price_label']); ?> DH</del><?php } ?>
+                                    <small>Prix actuel</small>
+                                    <strong><?php echo $current_group_deal['price_label'] !== '' ? esc_html($current_group_deal['price_label'] . ' DH') : 'Prix sur demande'; ?></strong>
+                                    <span>par personne</span>
+                                </div>
+                                <div class="ajgd-card__progress" style="margin-bottom:1.25rem;">
+                                    <div class="ajgd-card__progress-top">
+                                        <span><?php echo esc_html($current_group_deal['status_label']); ?></span>
+                                        <span><?php echo esc_html((string) $current_group_deal['current_people']); ?> / <?php echo esc_html((string) $current_group_deal['max_people']); ?></span>
+                                    </div>
+                                    <div class="ajgd-card__progress-bar"><span style="width:<?php echo esc_attr((string) $current_group_deal['progress_percent']); ?>%"></span></div>
+                                </div>
+                                <div style="display:grid;gap:.75rem;margin-bottom:1.5rem;color:#475569;font-size:.96rem;">
+                                    <div><strong style="color:#0f172a;">Participants:</strong> <?php echo esc_html((string) $current_group_deal['current_people']); ?> / <?php echo esc_html((string) $current_group_deal['max_people']); ?></div>
+                                    <div><strong style="color:#0f172a;">Seuil de depart:</strong> <?php echo esc_html((string) $current_group_deal['min_people']); ?> personnes</div>
+                                    <div><strong style="color:#0f172a;">Statut:</strong> <?php echo esc_html($current_group_deal['status_label']); ?></div>
+                                </div>
+                                <div class="ajgd-card__actions" style="display:flex;flex-direction:column;gap:.75rem;">
+                                    <a class="ajgd-btn ajgd-btn--orange" href="<?php echo esc_url($cta_devis_url); ?>" <?php if ($cta_is_external) { echo 'target="_blank" rel="noopener noreferrer"'; } ?>>Demander un devis</a>
+                                    <a class="ajgd-btn ajgd-btn--outline-blue" href="https://wa.me/?text=<?php echo rawurlencode('Rejoins-moi sur ce Group Deal Ajinsafro: ' . $current_group_deal['url']); ?>" target="_blank" rel="noopener">Partager l'offre</a>
+                                </div>
+                            </div>
+                        </aside>
+                    </section>
+                </main>
+            <?php } else { ?>
             <section class="ajgd-hero">
                 <div class="ajgd-container">
                     <div class="ajgd-hero-grid">
@@ -782,6 +860,7 @@ $cta_is_external = strpos($cta_devis_url, 'wa.me') !== false || strpos($cta_devi
                 include AJTH_DIR . 'parts/group-deals-filters.php';
                 ?>
             </aside>
+            <?php } ?>
         </div>
     </div>
 </div>
