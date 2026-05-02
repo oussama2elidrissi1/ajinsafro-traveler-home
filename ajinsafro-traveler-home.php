@@ -1142,6 +1142,7 @@ function ajth_is_hebergement_context()
 {
     return is_page('hebergement')
         || get_query_var('ajth_hebergement_pack')
+        || is_singular('st_hotel')
         || is_post_type_archive('st_hotel')
         || (is_search() && get_query_var('post_type') === 'st_hotel');
 }
