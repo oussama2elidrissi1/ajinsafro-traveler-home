@@ -277,6 +277,36 @@ $filtered_packages = array_values(
 
 					return substr( $abbr, 0, 2 );
 				};
+				$departure_status_badge = static function ( array $departure ) {
+					$status    = (string) ( $departure['status'] ?? '' );
+					$remaining = isset( $departure['remaining_places'] ) ? (int) $departure['remaining_places'] : (int) ( $departure['available_places'] ?? 0 );
+
+					if ( 'expired' === $status ) {
+						return array(
+							'label' => 'Expiree',
+							'class' => 'is-expired',
+						);
+					}
+
+					if ( 'full' === $status || $remaining <= 0 ) {
+						return array(
+							'label' => 'Complet',
+							'class' => 'is-full',
+						);
+					}
+
+					if ( $remaining > 0 && $remaining <= 8 ) {
+						return array(
+							'label' => 'Limite',
+							'class' => 'is-limited',
+						);
+					}
+
+					return array(
+						'label' => 'Publiee',
+						'class' => 'is-available',
+					);
+				};
 				?>
 				<section class="ajho-hero ajho-hero--detail" style="background-image:linear-gradient(120deg, rgba(8, 46, 85, 0.76), rgba(11, 77, 141, 0.72)), url('<?php echo esc_url( $hero_image ); ?>');">
 					<div class="ajho-container">
@@ -409,10 +439,11 @@ $filtered_packages = array_values(
 										</thead>
 										<tbody>
 											<?php foreach ( (array) ( $current_package['departures'] ?? array() ) as $departure ) : ?>
+												<?php $departure_badge = $departure_status_badge( (array) $departure ); ?>
 												<tr>
 													<td><?php echo esc_html( $format_date( $departure['departure_date'] ?? '' ) ); ?></td>
 													<td><?php echo esc_html( $format_date( $departure['return_date'] ?? '' ) ); ?></td>
-													<td><?php echo esc_html( $departure['status_label'] ?? 'A confirmer' ); ?></td>
+													<td><span class="ajho-status-pill <?php echo esc_attr( $departure_badge['class'] ); ?>"><?php echo esc_html( $departure_badge['label'] ); ?></span></td>
 													<td><?php echo esc_html( (string) ( $departure['remaining_places'] ?? 0 ) ); ?></td>
 													<td class="ajho-table__price"><?php echo esc_html( $format_price( $departure['price_from'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></td>
 												</tr>

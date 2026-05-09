@@ -10,6 +10,7 @@
   --ajho-line: #dbe7f1;
   --ajho-soft: #f4f8fb;
   --ajho-shadow: 0 18px 42px rgba(12, 44, 72, 0.09);
+  font-family: "Nunito", "Segoe UI", sans-serif;
   background: linear-gradient(180deg, #f6f9fc 0%, #edf4f9 100%);
   color: var(--ajho-ink);
 }
@@ -66,6 +67,8 @@
     radial-gradient(circle at top right, rgba(243, 122, 31, 0.2), transparent 30%),
     radial-gradient(circle at left bottom, rgba(255, 255, 255, 0.12), transparent 28%),
     linear-gradient(135deg, var(--ajho-blue-900), var(--ajho-blue-800));
+  border-radius: 0 0 34px 34px;
+  box-shadow: var(--ajho-shadow);
 }
 
 .page-hajj-omra-ajinsafro .ajho-hero--compact {
@@ -94,17 +97,19 @@
 .page-hajj-omra-ajinsafro .ajho-hero__copy h1 {
   margin: 0 0 14px;
   color: var(--ajho-white);
-  font-size: clamp(2rem, 4.3vw, 3.8rem);
-  line-height: 1.05;
+  font-size: clamp(2.4rem, 4.9vw, 3.95rem);
+  line-height: 1.03;
   letter-spacing: -0.04em;
+  font-weight: 900;
 }
 
 .page-hajj-omra-ajinsafro .ajho-hero__copy p {
   max-width: 760px;
   margin: 0;
   color: rgba(255, 255, 255, 0.9);
-  font-size: 1.06rem;
-  line-height: 1.9;
+  font-size: clamp(1.02rem, 2vw, 1.22rem);
+  line-height: 1.75;
+  font-weight: 700;
 }
 
 .page-hajj-omra-ajinsafro .ajho-back-link {
@@ -136,9 +141,9 @@
 }
 
 .page-hajj-omra-ajinsafro .ajho-chip--type {
-  background: rgba(255, 255, 255, 0.16);
-  color: var(--ajho-white);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: #dff2ff;
+  color: #073d6b;
+  border: 0;
 }
 
 .page-hajj-omra-ajinsafro .ajho-card .ajho-chip--type {
@@ -150,6 +155,7 @@
 .page-hajj-omra-ajinsafro .ajho-chip.is-available {
   background: #e9f8ef;
   color: #14753f;
+  box-shadow: 0 8px 18px rgba(24, 169, 87, 0.18);
 }
 
 .page-hajj-omra-ajinsafro .ajho-chip.is-limited {
@@ -351,7 +357,7 @@
 }
 
 .page-hajj-omra-ajinsafro .ajho-content {
-  padding: 32px 0 72px;
+  padding: 34px 0 72px;
 }
 
 .page-hajj-omra-ajinsafro .ajho-content--detail {
@@ -723,17 +729,49 @@
   font-size: 0.84rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  font-weight: 900;
 }
 
 .page-hajj-omra-ajinsafro .ajho-table td {
   color: #496173;
   font-size: 0.94rem;
-  font-weight: 600;
+  font-weight: 800;
 }
 
 .page-hajj-omra-ajinsafro .ajho-table__price {
   color: var(--ajho-orange-700);
   font-weight: 800;
+}
+
+.page-hajj-omra-ajinsafro .ajho-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 11px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.page-hajj-omra-ajinsafro .ajho-status-pill.is-available {
+  background: #e9f9ef;
+  color: #18a957;
+}
+
+.page-hajj-omra-ajinsafro .ajho-status-pill.is-limited {
+  background: #fff2dc;
+  color: #a95507;
+}
+
+.page-hajj-omra-ajinsafro .ajho-status-pill.is-full {
+  background: #fff0ee;
+  color: #b1372d;
+}
+
+.page-hajj-omra-ajinsafro .ajho-status-pill.is-expired {
+  background: #e9eef2;
+  color: #536575;
 }
 
 .page-hajj-omra-ajinsafro .ajho-program {
@@ -977,8 +1015,8 @@
 
 .page-hajj-omra-ajinsafro .ajho-gallery-wrap {
   display: grid;
-  grid-template-columns: 1.4fr 0.8fr;
-  gap: 18px;
+  grid-template-columns: 1.35fr 0.8fr;
+  gap: 16px;
   margin-top: 0;
   align-items: stretch;
 }
@@ -994,7 +1032,7 @@
 }
 
 .page-hajj-omra-ajinsafro .ajho-main-gallery {
-  min-height: 446px;
+  min-height: 385px;
 }
 
 .page-hajj-omra-ajinsafro .ajho-main-gallery::after,
@@ -1030,12 +1068,12 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  min-height: 446px;
+  gap: 16px;
+  min-height: 385px;
 }
 
 .page-hajj-omra-ajinsafro .ajho-thumb {
-  min-height: 214px;
+  min-height: 184px;
 }
 
 .page-hajj-omra-ajinsafro .ajho-thumb--fallback {
@@ -1044,8 +1082,8 @@
 
 .page-hajj-omra-ajinsafro .ajho-content-area {
   display: grid;
-  grid-template-columns: minmax(0, 1.85fr) minmax(360px, 1fr);
-  gap: 32px;
+  grid-template-columns: minmax(0, 1.35fr) minmax(330px, 0.65fr);
+  gap: 28px;
   align-items: start;
   margin-top: 24px;
 }
@@ -1058,8 +1096,8 @@
 
 .page-hajj-omra-ajinsafro .ajho-sidebar {
   position: sticky;
-  top: 110px;
-  min-width: 360px;
+  top: 105px;
+  min-width: 330px;
 }
 
 .page-hajj-omra-ajinsafro .ajho-card {
@@ -1118,18 +1156,22 @@
   border: 1px solid var(--ajho-line);
   border-radius: 18px;
   background: #fbfdff;
+  border-top-width: 5px;
 }
 
 .page-hajj-omra-ajinsafro .ajho-mini-box:nth-child(1) {
   border-color: rgba(28, 90, 160, 0.18);
+  border-top-color: var(--ajho-blue-800);
 }
 
 .page-hajj-omra-ajinsafro .ajho-mini-box:nth-child(2) {
   border-color: rgba(15, 154, 90, 0.18);
+  border-top-color: #18a957;
 }
 
 .page-hajj-omra-ajinsafro .ajho-mini-box:nth-child(3) {
   border-color: rgba(232, 97, 0, 0.18);
+  border-top-color: var(--ajho-orange-700);
 }
 
 .page-hajj-omra-ajinsafro .ajho-mini-box h4 {
@@ -1137,6 +1179,14 @@
   color: var(--ajho-blue-800);
   font-size: 1.05rem;
   font-weight: 800;
+}
+
+.page-hajj-omra-ajinsafro .ajho-mini-box:nth-child(2) h4 {
+  color: #18a957;
+}
+
+.page-hajj-omra-ajinsafro .ajho-mini-box:nth-child(3) h4 {
+  color: var(--ajho-orange-700);
 }
 
 .page-hajj-omra-ajinsafro .ajho-kv-list {
@@ -1204,30 +1254,30 @@
 
 .page-hajj-omra-ajinsafro .ajho-timeline-item {
   display: grid;
-  grid-template-columns: 90px 1fr 54px;
-  gap: 22px;
+  grid-template-columns: 82px 1fr 42px;
+  gap: 14px;
   align-items: center;
-  padding: 18px;
+  padding: 14px;
   border: 1px solid var(--ajho-line);
-  border-radius: 18px;
+  border-radius: 16px;
   background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
 }
 
 .page-hajj-omra-ajinsafro .ajho-day-badge {
-  padding: 14px 10px;
-  border-radius: 14px;
+  padding: 13px 8px;
+  border-radius: 12px;
   background: var(--ajho-blue-800);
   color: #fff;
   text-align: center;
-  font-size: 0.88rem;
-  font-weight: 800;
+  font-size: 0.82rem;
+  font-weight: 900;
 }
 
 .page-hajj-omra-ajinsafro .ajho-timeline-content h3 {
   margin: 0 0 4px;
   color: var(--ajho-blue-900);
-  font-size: 1.32rem;
-  font-weight: 800;
+  font-size: 1.12rem;
+  font-weight: 900;
 }
 
 .page-hajj-omra-ajinsafro .ajho-timeline-content small {
@@ -1239,7 +1289,8 @@
 
 .page-hajj-omra-ajinsafro .ajho-timeline-content p {
   color: #607385;
-  font-size: 0.9rem;
+  font-size: 0.84rem;
+  font-weight: 700;
 }
 
 .page-hajj-omra-ajinsafro .ajho-program__top--timeline {
@@ -1251,12 +1302,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: #edf4fb;
+  background: #eaf5ff;
   color: var(--ajho-blue-800);
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   border: 1px solid rgba(17, 79, 124, 0.12);
@@ -1266,6 +1317,41 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
+}
+
+.page-hajj-omra-ajinsafro .ajho-bottom-grid .ajho-card {
+  box-shadow: 0 10px 24px rgba(9, 47, 83, 0.07);
+}
+
+.page-hajj-omra-ajinsafro .ajho-bottom-grid .ajho-card:nth-child(1) {
+  background: #f1f8ff;
+  border-color: #b6ddfb;
+}
+
+.page-hajj-omra-ajinsafro .ajho-bottom-grid .ajho-card:nth-child(2) {
+  background: #fff6ed;
+  border-color: #ffd2ad;
+}
+
+.page-hajj-omra-ajinsafro .ajho-bottom-grid .ajho-card:nth-child(3) {
+  background: #f0fff5;
+  border-color: #bde7c9;
+}
+
+.page-hajj-omra-ajinsafro .ajho-bottom-grid .ajho-card:nth-child(4) {
+  background: #f8fbff;
+}
+
+.page-hajj-omra-ajinsafro .ajho-bottom-grid .ajho-card:nth-child(1) .ajho-card-title--small {
+  color: var(--ajho-blue-800);
+}
+
+.page-hajj-omra-ajinsafro .ajho-bottom-grid .ajho-card:nth-child(2) .ajho-card-title--small {
+  color: var(--ajho-orange-700);
+}
+
+.page-hajj-omra-ajinsafro .ajho-bottom-grid .ajho-card:nth-child(3) .ajho-card-title--small {
+  color: #18a957;
 }
 
 .page-hajj-omra-ajinsafro .ajho-offer-box h3 {
@@ -1314,8 +1400,9 @@
 .page-hajj-omra-ajinsafro .ajho-form-card h3 {
   margin-bottom: 14px;
   color: var(--ajho-blue-900);
-  font-size: 2rem;
-  line-height: 1.1;
+  font-size: 2.1rem;
+  line-height: 1;
+  font-weight: 900;
 }
 
 .page-hajj-omra-ajinsafro .ajho-form-card {
@@ -1332,7 +1419,7 @@
   margin-bottom: 6px;
   color: #4d6480;
   font-size: 0.82rem;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .page-hajj-omra-ajinsafro .ajho-form-card input,
@@ -1365,9 +1452,12 @@
 }
 
 .page-hajj-omra-ajinsafro .ajho-submit-note {
-  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
   color: #6f7d8b;
   font-size: 0.82rem;
+  font-weight: 700;
   line-height: 1.6;
 }
 
