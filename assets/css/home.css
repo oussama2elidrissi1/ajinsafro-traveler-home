@@ -5528,18 +5528,48 @@ body.ajinsafro-traveler-home-page {
 .aj-home-wrap.ajinsafro-plugin-zoom-shell {
     width: 100%;
     overflow-x: hidden;
-    box-sizing: border-box;
 }
 
 @media (min-width: 992px) {
+    /* Wrapper zoomé : 125% × zoom 80% = 100% visuel */
     .ajinsafro-plugin-page.ajinsafro-zoom-80 {
         zoom: 80%;
         width: 125%;
         max-width: 125%;
         box-sizing: border-box;
     }
+
+    /*
+     * Tous les containers internes : on supprime leur max-width fixe
+     * pour qu'ils remplissent la zone zoomée et apparaissent pleine largeur
+     * après application du zoom 80%.
+     */
+    .ajinsafro-plugin-page.ajinsafro-zoom-80 .aj-container,
+    .ajinsafro-plugin-page.ajinsafro-zoom-80 .aj-hebergement-container,
+    .ajinsafro-plugin-page.ajinsafro-zoom-80 .aj-activities-container,
+    .ajinsafro-plugin-page.ajinsafro-zoom-80 .ajgd-container,
+    .ajinsafro-plugin-page.ajinsafro-zoom-80 .container {
+        width: calc(100% - 32px);
+        max-width: none;
+        margin-left: auto;
+        margin-right: auto;
+        box-sizing: border-box;
+    }
+
+    /* Cards hébergement : 4 colonnes sur grand écran */
+    .ajinsafro-plugin-page.ajinsafro-zoom-80 .aj-hebergements-grid.is-grid-view {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
 }
 
+/* 3 colonnes sur laptop (992–1279px) */
+@media (min-width: 992px) and (max-width: 1279px) {
+    .ajinsafro-plugin-page.ajinsafro-zoom-80 .aj-hebergements-grid.is-grid-view {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Mobile / tablette : pas de zoom, largeur native */
 @media (max-width: 991px) {
     .ajinsafro-plugin-page.ajinsafro-zoom-80 {
         zoom: 100%;
