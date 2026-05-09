@@ -311,6 +311,7 @@ $filtered_packages = array_values(
 
 							<div class="ajho-hero__aside">
 								<div class="ajho-summary-card ajho-summary-card--hero ajho-price-card">
+									<div class="ajho-price-card__badge">Meilleur prix</div>
 									<div class="ajho-price-card__label">Prix a partir de</div>
 									<div class="ajho-price-card__value"><?php echo esc_html( $format_price( $current_package['price_from'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></div>
 									<ul class="ajho-price-list">
@@ -337,22 +338,22 @@ $filtered_packages = array_values(
 						<div class="ajho-alert is-error"><?php echo esc_html( $error_message ); ?></div>
 					<?php endif; ?>
 
-					<section class="ajho-gallery-wrap">
-						<div class="ajho-main-gallery">
-							<img src="<?php echo esc_url( $gallery[0] ); ?>" alt="<?php echo esc_attr( $current_package['title'] ?? 'Hajj & Omra' ); ?>" onerror="this.onerror=null;this.src='<?php echo esc_url( $fallback_image ); ?>';">
-							<div class="ajho-gallery-count">1 / <?php echo esc_html( (string) count( $gallery ) ); ?></div>
-						</div>
-						<div class="ajho-thumb-grid">
-							<?php foreach ( $thumb_gallery as $index => $image_url ) : ?>
-								<figure class="ajho-thumb<?php echo $image_url === $fallback_image ? ' ajho-thumb--fallback' : ''; ?>">
-									<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( ( $current_package['title'] ?? 'Hajj & Omra' ) . ' photo ' . ( $index + 2 ) ); ?>" loading="lazy" onerror="this.onerror=null;this.src='<?php echo esc_url( $fallback_image ); ?>';">
-								</figure>
-							<?php endforeach; ?>
-						</div>
-					</section>
-
 					<section class="ajho-content-area">
 						<div class="ajho-content-left">
+							<section class="ajho-gallery-wrap">
+								<div class="ajho-main-gallery">
+									<img src="<?php echo esc_url( $gallery[0] ); ?>" alt="<?php echo esc_attr( $current_package['title'] ?? 'Hajj & Omra' ); ?>" onerror="this.onerror=null;this.src='<?php echo esc_url( $fallback_image ); ?>';">
+									<div class="ajho-gallery-count">1 / <?php echo esc_html( (string) count( $gallery ) ); ?></div>
+								</div>
+								<div class="ajho-thumb-grid">
+									<?php foreach ( $thumb_gallery as $index => $image_url ) : ?>
+										<figure class="ajho-thumb<?php echo $image_url === $fallback_image ? ' ajho-thumb--fallback' : ''; ?>">
+											<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( ( $current_package['title'] ?? 'Hajj & Omra' ) . ' photo ' . ( $index + 2 ) ); ?>" loading="lazy" onerror="this.onerror=null;this.src='<?php echo esc_url( $fallback_image ); ?>';">
+										</figure>
+									<?php endforeach; ?>
+								</div>
+							</section>
+
 							<div class="ajho-card">
 								<div class="ajho-section-label">Presentation</div>
 								<h2 class="ajho-card-title">Votre offre Hajj & Omra</h2>
@@ -510,8 +511,8 @@ $filtered_packages = array_values(
 						</div>
 
 						<aside class="ajho-sidebar">
-							<div class="ajho-card ajho-offer-box">
-								<h3>Ajinsafro Hajj & Omra</h3>
+							<div class="ajho-card ajho-offer-box ajho-offer-box--featured">
+								<h3>Resume de l offre</h3>
 								<h2><?php echo esc_html( $current_package['title'] ?? '' ); ?></h2>
 								<div class="ajho-sidebar-price"><?php echo esc_html( $format_price( $current_package['price_from'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></div>
 								<div class="ajho-kv"><strong>Type</strong><span><?php echo esc_html( $current_package['type_label'] ?? 'Hajj & Omra' ); ?></span></div>
