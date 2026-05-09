@@ -306,16 +306,6 @@ function ajth_critical_header_css()
 }
 add_action('wp_head', 'ajth_critical_header_css', 1);
 
-/* ──────────────────────────────────────────────
- * Body class on plugin catalog pages
- * ────────────────────────────────────────────── */
-add_filter('body_class', function ($classes) {
-    if (function_exists('ajth_is_catalog_context') && ajth_is_catalog_context()) {
-        $classes[] = 'ajinsafro-traveler-home-page';
-    }
-    return $classes;
-});
-
 /* Preload main stylesheet and critical fonts so header renders correctly on first paint */
 function ajth_preload_styles()
 {

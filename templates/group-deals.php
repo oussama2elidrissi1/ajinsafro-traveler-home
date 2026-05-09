@@ -542,8 +542,8 @@ if ($current_group_deal_slug !== '' && ! empty($all_deals)) {
 }
 ?>
 
-<div class="aj-home-wrap ajinsafro-plugin-zoom-shell">
-    <div id="aj-home" class="aj-home aj-groupdeals-page ajinsafro-plugin-page ajinsafro-zoom-80">
+<div class="aj-home-wrap">
+    <div id="aj-home" class="aj-home aj-groupdeals-page">
         <?php ajth_render_site_header($settings); ?>
 
         <div class="aj-groupdeals-fusion" id="aj-groupdeals-fusion">
