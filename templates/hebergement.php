@@ -222,6 +222,16 @@ if (is_singular('st_hotel')) {
     if (empty($gallery_items)) {
         $gallery_items = array($fallback_image);
     }
+    $gallery_count = count($gallery_items);
+    $gallery_side_items = array_slice($gallery_items, 1, 4);
+    $hotel_description_html = '';
+    if ($hotel_content !== '') {
+        $hotel_description_html = apply_filters('the_content', $hotel_content);
+    } else {
+        $hotel_description_html = wpautop(esc_html($hotel_summary !== '' ? $hotel_summary : 'Ajinsafro vous accompagne pour préparer ce séjour avec les meilleures conditions de réservation disponibles.'));
+    }
+    $hotel_description_plain = trim(wp_strip_all_tags($hotel_content !== '' ? $hotel_content : $hotel_summary));
+    $hotel_description_is_long = strlen($hotel_description_plain) > 420;
 
     $amenities_raw = $meta_first($hotel_id, array('hotel_amenities', 'amenities', 'hotel_facilities'));
     $amenities = array_map($beautify_label, $split_list($amenities_raw));
@@ -352,22 +362,25 @@ if (is_singular('st_hotel')) {
                         </div>
                     </section>
 
-                    <section class="aj-hotel-gallery" aria-label="Galerie photos">
+                    <section class="aj-hotel-gallery<?php echo $gallery_count < 2 ? ' aj-hotel-gallery--single' : ''; ?>" aria-label="Galerie photos">
                         <div class="aj-hotel-gallery-main">
                             <img src="<?php echo esc_url($gallery_items[0]); ?>" alt="<?php echo esc_attr($hotel_title); ?>" onerror="this.onerror=null;this.src='<?php echo esc_url($fallback_image); ?>';">
                         </div>
+                        <?php if ($gallery_count > 1) { ?>
                         <div class="aj-hotel-gallery-side">
-                            <?php foreach (array_slice($gallery_items, 1, 4) as $index => $image_url) { ?>
+                            <?php foreach ($gallery_side_items as $index => $image_url) { ?>
                                 <figure class="aj-hotel-gallery-thumb">
                                     <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($hotel_title . ' photo ' . ($index + 2)); ?>" loading="lazy" onerror="this.onerror=null;this.src='<?php echo esc_url($fallback_image); ?>';">
                                 </figure>
                             <?php } ?>
-                            <?php if (count($gallery_items) < 2) { ?>
-                                <figure class="aj-hotel-gallery-thumb aj-hotel-gallery-thumb--placeholder">
-                                    <img src="<?php echo esc_url($fallback_image); ?>" alt="<?php echo esc_attr($hotel_title); ?>" loading="lazy">
+                            <?php for ($placeholder_index = count($gallery_side_items); $placeholder_index < 4; $placeholder_index++) { ?>
+                                <figure class="aj-hotel-gallery-thumb aj-hotel-gallery-thumb--placeholder" aria-hidden="true">
+                                    <span>Ajinsafro</span>
+                                    <small>Photos sur demande</small>
                                 </figure>
                             <?php } ?>
                         </div>
+                        <?php } ?>
                         <button type="button" class="aj-hotel-gallery-open" data-aj-gallery-open>Voir toutes les photos</button>
                     </section>
 
@@ -380,15 +393,12 @@ if (is_singular('st_hotel')) {
                                         <h2>À propos de cet hébergement</h2>
                                     </div>
                                 </div>
-                                <div class="aj-hotel-richtext">
-                                    <?php
-                                    if ($hotel_content !== '') {
-                                        echo apply_filters('the_content', $hotel_content);
-                                    } else {
-                                        echo wpautop(esc_html($hotel_summary !== '' ? $hotel_summary : 'Ajinsafro vous accompagne pour préparer ce séjour avec les meilleures conditions de réservation disponibles.'));
-                                    }
-                                    ?>
+                                <div class="aj-hotel-richtext<?php echo $hotel_description_is_long ? ' aj-hotel-richtext--clamped' : ''; ?>" data-aj-hotel-richtext>
+                                    <?php echo $hotel_description_html; ?>
                                 </div>
+                                <?php if ($hotel_description_is_long) { ?>
+                                <button type="button" class="aj-hotel-more" data-aj-hotel-richtext-toggle aria-expanded="false">Lire plus</button>
+                                <?php } ?>
                             </section>
 
                             <?php if (!empty($amenities)) { ?>
@@ -474,8 +484,9 @@ if (is_singular('st_hotel')) {
                                     </div>
                                 <?php } else { ?>
                                     <div class="aj-hotel-empty-card">
-                                        <strong>Configuration à finaliser</strong>
-                                        <p>Les chambres seront confirmées par votre conseiller Ajinsafro. Demandez un devis pour recevoir les disponibilités détaillées.</p>
+                                        <strong>Chambres à confirmer</strong>
+                                        <p>Les chambres seront confirmées par notre conseiller Ajinsafro. Demandez un devis pour recevoir les disponibilités détaillées.</p>
+                                        <a class="aj-pack-reserve aj-pack-reserve--block" href="<?php echo esc_url($whatsapp_url); ?>" target="_blank" rel="noopener">Demander un devis</a>
                                     </div>
                                 <?php } ?>
                             </section>
@@ -583,31 +594,41 @@ if (is_singular('st_hotel')) {
     (function () {
         var modal = document.querySelector('[data-aj-gallery-modal]');
         var openButton = document.querySelector('[data-aj-gallery-open]');
-        if (!modal || !openButton) {
-            return;
+        var richtext = document.querySelector('[data-aj-hotel-richtext]');
+        var richtextToggle = document.querySelector('[data-aj-hotel-richtext-toggle]');
+
+        if (modal && openButton) {
+            var closeButtons = modal.querySelectorAll('[data-aj-gallery-close]');
+            var toggle = function (open) {
+                modal.hidden = !open;
+                document.documentElement.classList.toggle('aj-gallery-open', open);
+            };
+
+            openButton.addEventListener('click', function () {
+                toggle(true);
+            });
+
+            closeButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    toggle(false);
+                });
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape' && !modal.hidden) {
+                    toggle(false);
+                }
+            });
         }
 
-        var closeButtons = modal.querySelectorAll('[data-aj-gallery-close]');
-        var toggle = function (open) {
-            modal.hidden = !open;
-            document.documentElement.classList.toggle('aj-gallery-open', open);
-        };
-
-        openButton.addEventListener('click', function () {
-            toggle(true);
-        });
-
-        closeButtons.forEach(function (button) {
-            button.addEventListener('click', function () {
-                toggle(false);
+        if (richtext && richtextToggle) {
+            richtextToggle.addEventListener('click', function () {
+                var expanded = richtext.classList.toggle('is-expanded');
+                richtext.classList.toggle('aj-hotel-richtext--clamped', !expanded);
+                richtextToggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                richtextToggle.textContent = expanded ? 'Lire moins' : 'Lire plus';
             });
-        });
-
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape' && !modal.hidden) {
-                toggle(false);
-            }
-        });
+        }
     })();
     </script>
     <?php
