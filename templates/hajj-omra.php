@@ -233,8 +233,23 @@ $filtered_packages = array_values(
 				$hero_image  = ! empty( $gallery[0] ) ? $gallery[0] : $fallback_image;
 				$share_url   = ! empty( $current_package['detail_url'] ) ? (string) $current_package['detail_url'] : ajth_get_hajj_omra_detail_url( $current_slug );
 				$share_title = trim( (string) ( $current_package['title'] ?? 'Hajj & Omra avec Ajinsafro' ) );
+				$offer_highlights = array_values( array_filter( array_slice( (array) ( $current_package['included_items'] ?? array() ), 0, 4 ) ) );
+				if ( empty( $offer_highlights ) ) {
+					if ( ! empty( $current_package['transport_included'] ) ) {
+						$offer_highlights[] = 'Transport inclus';
+					}
+					if ( ! empty( $current_package['visa_included'] ) ) {
+						$offer_highlights[] = 'Visa inclus';
+					}
+					if ( ! empty( $current_package['guidance_included'] ) ) {
+						$offer_highlights[] = 'Encadrement Ajinsafro';
+					}
+					if ( ! empty( $current_package['meal_plan_label'] ) ) {
+						$offer_highlights[] = (string) $current_package['meal_plan_label'];
+					}
+				}
 				?>
-				<section class="ajho-hero ajho-hero--detail" style="background-image:linear-gradient(120deg, rgba(7, 28, 47, 0.82), rgba(13, 53, 85, 0.76)), url('<?php echo esc_url( $hero_image ); ?>');">
+				<section class="ajho-hero ajho-hero--detail" style="background-image:linear-gradient(120deg, rgba(8, 46, 85, 0.88), rgba(11, 77, 141, 0.88)), url('<?php echo esc_url( $hero_image ); ?>');">
 					<div class="ajho-container">
 						<nav class="ajho-breadcrumb ajho-breadcrumb--light" aria-label="Fil d Ariane">
 							<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Accueil</a>
@@ -244,9 +259,8 @@ $filtered_packages = array_values(
 							<span><?php echo esc_html( $current_package['title'] ?? 'Offre' ); ?></span>
 						</nav>
 
-						<div class="ajho-hero__inner ajho-hero__inner--detail">
+						<div class="ajho-hero__inner ajho-hero__inner--detail ajho-hero__inner--source">
 							<div class="ajho-hero__copy">
-								<a class="ajho-back-link" href="<?php echo esc_url( $page_url ); ?>">Retour aux offres</a>
 								<div class="ajho-hero__badges">
 									<span class="ajho-chip ajho-chip--type"><?php echo esc_html( $current_package['type_label'] ?? 'Hajj & Omra' ); ?></span>
 									<span class="ajho-chip <?php echo esc_attr( $detail_status['class'] ); ?>"><?php echo esc_html( $detail_status['label'] ); ?></span>
@@ -267,18 +281,18 @@ $filtered_packages = array_values(
 							</div>
 
 							<div class="ajho-hero__aside">
-								<div class="ajho-summary-card ajho-summary-card--hero">
-									<span class="ajho-summary-card__label">Prix a partir de</span>
-									<div class="ajho-summary-card__price"><?php echo esc_html( $format_price( $current_package['price_from'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></div>
-									<ul class="ajho-summary-card__facts">
+								<div class="ajho-summary-card ajho-summary-card--hero ajho-price-card">
+									<div class="ajho-price-card__label">Prix a partir de</div>
+									<div class="ajho-price-card__value"><?php echo esc_html( $format_price( $current_package['price_from'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></div>
+									<ul class="ajho-price-list">
 										<li><strong>Prochain depart</strong><span><?php echo esc_html( $first_departure_label( $current_package ) ); ?></span></li>
 										<li><strong>Hotel Makkah</strong><span><?php echo esc_html( $current_package['makkah_hotel'] ?? 'A confirmer' ); ?></span></li>
 										<li><strong>Hotel Madinah</strong><span><?php echo esc_html( $current_package['madinah_hotel'] ?? 'A confirmer' ); ?></span></li>
 										<li><strong>Repas</strong><span><?php echo esc_html( $current_package['meal_plan_label'] ?? 'Selon offre' ); ?></span></li>
 									</ul>
-									<div class="ajho-summary-card__actions">
-										<a href="<?php echo esc_url( $whatsapp_link( $current_package ) ); ?>" class="ajho-btn ajho-btn--primary" target="_blank" rel="noopener">WhatsApp</a>
-										<button type="button" class="ajho-btn ajho-btn--secondary ajho-share-btn" data-ajho-share data-share-url="<?php echo esc_url( $share_url ); ?>" data-share-title="<?php echo esc_attr( $share_title ); ?>">Partager</button>
+									<div class="ajho-small-actions">
+										<a href="<?php echo esc_url( $whatsapp_link( $current_package ) ); ?>" class="ajho-small-btn ajho-small-btn--whatsapp" target="_blank" rel="noopener">WhatsApp</a>
+										<button type="button" class="ajho-small-btn ajho-small-btn--share ajho-share-btn" data-ajho-share data-share-url="<?php echo esc_url( $share_url ); ?>" data-share-title="<?php echo esc_attr( $share_title ); ?>">Partager</button>
 									</div>
 								</div>
 							</div>
@@ -294,80 +308,68 @@ $filtered_packages = array_values(
 						<div class="ajho-alert is-error"><?php echo esc_html( $error_message ); ?></div>
 					<?php endif; ?>
 
-					<section class="ajho-gallery-card">
-						<div class="ajho-gallery-card__main">
+					<section class="ajho-gallery-wrap">
+						<div class="ajho-main-gallery">
 							<img src="<?php echo esc_url( $gallery[0] ); ?>" alt="<?php echo esc_attr( $current_package['title'] ?? 'Hajj & Omra' ); ?>" onerror="this.onerror=null;this.src='<?php echo esc_url( $fallback_image ); ?>';">
+							<div class="ajho-gallery-count">1 / <?php echo esc_html( (string) count( $gallery ) ); ?></div>
 						</div>
-						<div class="ajho-gallery-card__side">
+						<div class="ajho-thumb-grid">
 							<?php foreach ( array_slice( $gallery, 1, 4 ) as $index => $image_url ) : ?>
-								<figure class="ajho-gallery-card__thumb">
+								<figure class="ajho-thumb">
 									<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( ( $current_package['title'] ?? 'Hajj & Omra' ) . ' photo ' . ( $index + 2 ) ); ?>" loading="lazy" onerror="this.onerror=null;this.src='<?php echo esc_url( $fallback_image ); ?>';">
 								</figure>
 							<?php endforeach; ?>
 							<?php for ( $thumb_index = count( array_slice( $gallery, 1, 4 ) ); $thumb_index < 4; $thumb_index++ ) : ?>
-								<figure class="ajho-gallery-card__thumb ajho-gallery-card__thumb--placeholder" aria-hidden="true">
+								<figure class="ajho-thumb ajho-thumb--placeholder" aria-hidden="true">
 									<span>Ajinsafro</span>
 								</figure>
 							<?php endfor; ?>
 						</div>
 					</section>
 
-					<div class="ajho-detail">
-						<div class="ajho-detail__main">
-							<section class="ajho-panel">
-								<div class="ajho-panel__head">
-									<span class="ajho-kicker">Presentation</span>
-									<h2>Votre offre Hajj & Omra</h2>
-								</div>
-								<div class="ajho-richtext">
-									<?php echo wpautop( esc_html( (string) ( $current_package['description'] ?? $current_package['short_description'] ?? '' ) ) ); ?>
-								</div>
-							</section>
+					<section class="ajho-content-area">
+						<div class="ajho-content-left">
+							<div class="ajho-card">
+								<div class="ajho-section-label">Presentation</div>
+								<h2 class="ajho-card-title">Votre offre Hajj & Omra</h2>
+								<p class="ajho-muted"><?php echo esc_html( (string) ( $current_package['description'] ?? $current_package['short_description'] ?? '' ) ); ?></p>
 
-							<section class="ajho-grid-two">
-								<div class="ajho-panel">
-									<div class="ajho-panel__head">
-										<span class="ajho-kicker">Hotels</span>
-										<h2>Sejour sur place</h2>
+								<div class="ajho-info-grid-3">
+									<div class="ajho-mini-box">
+										<h4>Hotels</h4>
+										<div class="ajho-kv-list">
+											<div class="ajho-kv"><strong>Makkah</strong><span><?php echo esc_html( $current_package['makkah_hotel'] ?? 'A confirmer' ); ?></span></div>
+											<div class="ajho-kv"><strong>Distance Haram</strong><span><?php echo esc_html( $current_package['makkah_haram_distance'] ?? 'A confirmer' ); ?></span></div>
+											<div class="ajho-kv"><strong>Madinah</strong><span><?php echo esc_html( $current_package['madinah_hotel'] ?? 'A confirmer' ); ?></span></div>
+											<div class="ajho-kv"><strong>Distance Haram</strong><span><?php echo esc_html( $current_package['madinah_haram_distance'] ?? 'A confirmer' ); ?></span></div>
+										</div>
 									</div>
-									<ul class="ajho-fact-list">
-										<li><strong>Makkah</strong><span><?php echo esc_html( $current_package['makkah_hotel'] ?? 'A confirmer' ); ?></span></li>
-										<li><strong>Distance Haram</strong><span><?php echo esc_html( $current_package['makkah_haram_distance'] ?? 'A confirmer' ); ?></span></li>
-										<li><strong>Madinah</strong><span><?php echo esc_html( $current_package['madinah_hotel'] ?? 'A confirmer' ); ?></span></li>
-										<li><strong>Distance Haram</strong><span><?php echo esc_html( $current_package['madinah_haram_distance'] ?? 'A confirmer' ); ?></span></li>
-									</ul>
-								</div>
-								<div class="ajho-panel">
-									<div class="ajho-panel__head">
-										<span class="ajho-kicker">Services inclus</span>
-										<h2>Services et accompagnement</h2>
+
+									<div class="ajho-mini-box">
+										<h4>Services inclus</h4>
+										<ul class="ajho-check-list">
+											<li><?php echo ! empty( $current_package['transport_included'] ) ? 'Transport inclus' : 'Transport non inclus'; ?></li>
+											<li><?php echo ! empty( $current_package['visa_included'] ) ? 'Visa inclus' : 'Visa non inclus'; ?></li>
+											<li><?php echo ! empty( $current_package['guidance_included'] ) ? 'Encadrement Ajinsafro' : 'Encadrement sur demande'; ?></li>
+											<li><?php echo esc_html( 'Type chambre : ' . ( $current_package['room_type'] ?? 'Selon disponibilite' ) ); ?></li>
+										</ul>
 									</div>
-									<ul class="ajho-fact-list">
-										<li><strong>Transport</strong><span><?php echo ! empty( $current_package['transport_included'] ) ? 'Inclus' : 'Non inclus' ; ?></span></li>
-										<li><strong>Visa</strong><span><?php echo ! empty( $current_package['visa_included'] ) ? 'Inclus' : 'Non inclus' ; ?></span></li>
-										<li><strong>Encadrement</strong><span><?php echo ! empty( $current_package['guidance_included'] ) ? 'Inclus' : 'Non inclus' ; ?></span></li>
-										<li><strong>Repas</strong><span><?php echo esc_html( $current_package['meal_plan_label'] ?? 'Selon offre' ); ?></span></li>
-									</ul>
-								</div>
-							</section>
 
-							<section class="ajho-panel">
-								<div class="ajho-panel__head">
-									<span class="ajho-kicker">Offre</span>
-									<h2>Ce que comprend l offre</h2>
+									<div class="ajho-mini-box">
+										<h4>Ce que comprend l offre</h4>
+										<ul class="ajho-check-list">
+											<?php foreach ( $offer_highlights as $highlight ) : ?>
+												<li><?php echo esc_html( $highlight ); ?></li>
+											<?php endforeach; ?>
+										</ul>
+									</div>
 								</div>
-								<div class="ajho-offer-grid">
-									<div class="ajho-offer-item"><strong>Destination</strong><span><?php echo esc_html( $current_package['destination'] ?? 'Arabie Saoudite' ); ?></span></div>
-									<div class="ajho-offer-item"><strong>Type de chambre</strong><span><?php echo esc_html( $current_package['room_type'] ?? 'Selon disponibilite' ); ?></span></div>
-									<div class="ajho-offer-item"><strong>Prix adulte</strong><span><?php echo esc_html( $format_price( $current_package['adult_price'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></span></div>
-									<div class="ajho-offer-item"><strong>Prix enfant</strong><span><?php echo esc_html( $format_price( $current_package['child_price'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></span></div>
-								</div>
-							</section>
+							</div>
 
-							<section class="ajho-panel">
+							<div class="ajho-card">
+								<div class="ajho-section-label">Departs</div>
+								<h2 class="ajho-card-title">Dates disponibles</h2>
 								<div class="ajho-panel__head">
-									<span class="ajho-kicker">Departs</span>
-									<h2>Dates disponibles</h2>
 								</div>
 								<div class="ajho-table-wrap">
 									<table class="ajho-table">
@@ -393,13 +395,11 @@ $filtered_packages = array_values(
 										</tbody>
 									</table>
 								</div>
-							</section>
+							</div>
 
-							<section class="ajho-panel">
-								<div class="ajho-panel__head">
-									<span class="ajho-kicker">Tarifs</span>
-									<h2>Prix par chambre</h2>
-								</div>
+							<div class="ajho-card">
+								<div class="ajho-section-label">Tarifs</div>
+								<h2 class="ajho-card-title">Prix par chambre</h2>
 								<div class="ajho-table-wrap">
 									<table class="ajho-table">
 										<thead>
@@ -420,24 +420,22 @@ $filtered_packages = array_values(
 										</tbody>
 									</table>
 								</div>
-							</section>
+							</div>
 
-							<section class="ajho-panel" id="programme-section">
-								<div class="ajho-panel__head">
-									<span class="ajho-kicker">Programme</span>
-									<h2>Jour par jour</h2>
-								</div>
-								<div class="ajho-program">
+							<div class="ajho-card" id="programme-section">
+								<div class="ajho-section-label">Programme</div>
+								<h2 class="ajho-card-title">Jour par jour</h2>
+								<div class="ajho-timeline">
 									<?php if ( ! empty( $current_package['program_days'] ) ) : ?>
 										<?php foreach ( (array) ( $current_package['program_days'] ?? array() ) as $program_day ) : ?>
-											<article class="ajho-program__item">
-												<div class="ajho-program__day">Jour <?php echo esc_html( (string) ( $program_day['day_number'] ?? '' ) ); ?></div>
-												<div class="ajho-program__body">
-													<div class="ajho-program__top">
+											<article class="ajho-timeline-item">
+												<div class="ajho-day-badge">Jour <?php echo esc_html( (string) ( $program_day['day_number'] ?? '' ) ); ?></div>
+												<div class="ajho-timeline-content">
+													<div class="ajho-program__top ajho-program__top--timeline">
 														<div>
 															<h3><?php echo esc_html( $program_day['title'] ?? 'Etape' ); ?></h3>
 															<?php if ( ! empty( $program_day['city'] ) ) : ?>
-																<p class="ajho-program__city"><?php echo esc_html( $program_day['city'] ); ?></p>
+																<small><?php echo esc_html( $program_day['city'] ); ?></small>
 															<?php endif; ?>
 														</div>
 														<?php if ( ! empty( $program_day['image_url'] ) ) : ?>
@@ -446,105 +444,79 @@ $filtered_packages = array_values(
 													</div>
 													<p><?php echo esc_html( $program_day['description'] ?? '' ); ?></p>
 												</div>
+												<div class="ajho-timeline-icon">+</div>
 											</article>
 										<?php endforeach; ?>
 									<?php else : ?>
 										<div class="ajho-program__empty">Le programme detaille sera confirme par nos equipes Ajinsafro apres validation de votre depart.</div>
 									<?php endif; ?>
 								</div>
-							</section>
+							</div>
 
-							<section class="ajho-grid-two">
-								<div class="ajho-panel">
-									<div class="ajho-panel__head">
-										<span class="ajho-kicker">Inclus</span>
-										<h2>Ce qui est inclus</h2>
-									</div>
-									<ul class="ajho-list">
+							<div class="ajho-bottom-grid">
+								<div class="ajho-card">
+									<div class="ajho-section-label">Inclus</div>
+									<h2 class="ajho-card-title ajho-card-title--small">Ce qui est inclus</h2>
+									<ul class="ajho-check-list">
 										<?php foreach ( (array) ( $current_package['included_items'] ?? array() ) as $item ) : ?>
 											<li><?php echo esc_html( $item ); ?></li>
 										<?php endforeach; ?>
 									</ul>
 								</div>
-								<div class="ajho-panel">
-									<div class="ajho-panel__head">
-										<span class="ajho-kicker">Exclusions</span>
-										<h2>Ce qui n est pas inclus</h2>
-									</div>
-									<ul class="ajho-list">
+								<div class="ajho-card">
+									<div class="ajho-section-label">Exclusions</div>
+									<h2 class="ajho-card-title ajho-card-title--small">Ce qui n est pas inclus</h2>
+									<ul class="ajho-x-list">
 										<?php foreach ( (array) ( $current_package['excluded_items'] ?? array() ) as $item ) : ?>
 											<li><?php echo esc_html( $item ); ?></li>
 										<?php endforeach; ?>
 									</ul>
 								</div>
-							</section>
-
-							<section class="ajho-grid-two">
-								<div class="ajho-panel">
-									<div class="ajho-panel__head">
-										<span class="ajho-kicker">Documents</span>
-										<h2>Documents necessaires</h2>
-									</div>
-									<div class="ajho-richtext">
-										<?php echo wpautop( esc_html( (string) ( $current_package['required_documents'] ?? '' ) ) ); ?>
-									</div>
+								<div class="ajho-card">
+									<div class="ajho-section-label">Documents</div>
+									<h2 class="ajho-card-title ajho-card-title--small">Documents necessaires</h2>
+									<p class="ajho-muted"><?php echo esc_html( (string) ( $current_package['required_documents'] ?? '' ) ); ?></p>
 								</div>
-								<div class="ajho-panel">
-									<div class="ajho-panel__head">
-										<span class="ajho-kicker">Conditions</span>
-										<h2>Conditions de reservation</h2>
-									</div>
-									<div class="ajho-richtext">
-										<?php echo wpautop( esc_html( (string) ( $current_package['booking_conditions'] ?? '' ) ) ); ?>
-									</div>
-								</div>
-							</section>
-						</div>
-
-						<aside class="ajho-detail__side">
-							<div class="ajho-summary-card">
-								<span class="ajho-summary-card__label">Ajinsafro Hajj & Omra</span>
-								<h2><?php echo esc_html( $current_package['title'] ?? '' ); ?></h2>
-								<div class="ajho-summary-card__price"><?php echo esc_html( $format_price( $current_package['price_from'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></div>
-								<ul class="ajho-summary-card__facts">
-									<li><strong>Type</strong><span><?php echo esc_html( $current_package['type_label'] ?? 'Hajj & Omra' ); ?></span></li>
-									<li><strong>Ville de depart</strong><span><?php echo esc_html( $current_package['departure_city'] ?? 'A confirmer' ); ?></span></li>
-									<li><strong>Date</strong><span><?php echo esc_html( $first_departure_label( $current_package ) ); ?></span></li>
-									<li><strong>Places restantes</strong><span><?php echo esc_html( (string) ( $current_package['remaining_places'] ?? 0 ) ); ?></span></li>
-								</ul>
-								<div class="ajho-summary-card__actions">
-									<a href="<?php echo esc_url( $whatsapp_link( $current_package ) ); ?>" class="ajho-btn ajho-btn--secondary" target="_blank" rel="noopener">WhatsApp</a>
-									<button type="button" class="ajho-btn ajho-btn--ghost ajho-share-btn" data-ajho-share data-share-url="<?php echo esc_url( $share_url ); ?>" data-share-title="<?php echo esc_attr( $share_title ); ?>">Partager cette offre</button>
+								<div class="ajho-card">
+									<div class="ajho-section-label">Conditions</div>
+									<h2 class="ajho-card-title ajho-card-title--small">Conditions de reservation</h2>
+									<p class="ajho-muted"><?php echo esc_html( (string) ( $current_package['booking_conditions'] ?? '' ) ); ?></p>
 								</div>
 							</div>
+						</div>
 
-							<div class="ajho-summary-card" id="reservation-form">
-								<div class="ajho-panel__head">
-									<span class="ajho-kicker">Reservation</span>
-									<h2>Demander une reservation</h2>
-								</div>
-								<form method="post" action="<?php echo esc_url( $current_package['detail_url'] ?? $page_url ); ?>" class="ajho-request-form">
+						<aside class="ajho-sidebar">
+							<div class="ajho-card ajho-offer-box">
+								<h3>Ajinsafro Hajj & Omra</h3>
+								<h2><?php echo esc_html( $current_package['title'] ?? '' ); ?></h2>
+								<div class="ajho-sidebar-price"><?php echo esc_html( $format_price( $current_package['price_from'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></div>
+								<div class="ajho-kv"><strong>Type</strong><span><?php echo esc_html( $current_package['type_label'] ?? 'Hajj & Omra' ); ?></span></div>
+								<div class="ajho-kv"><strong>Ville de depart</strong><span><?php echo esc_html( $current_package['departure_city'] ?? 'A confirmer' ); ?></span></div>
+								<div class="ajho-kv"><strong>Date</strong><span><?php echo esc_html( $first_departure_label( $current_package ) ); ?></span></div>
+								<div class="ajho-kv"><strong>Places restantes</strong><span><?php echo esc_html( (string) ( $current_package['remaining_places'] ?? 0 ) ); ?></span></div>
+							</div>
+
+							<div class="ajho-card ajho-form-card" id="reservation-form">
+								<div class="ajho-section-label">Reservation</div>
+								<h3>Demander une reservation</h3>
+								<form method="post" action="<?php echo esc_url( $current_package['detail_url'] ?? $page_url ); ?>" class="ajho-form-grid">
 									<?php wp_nonce_field( 'ajth_hajj_omra_booking_request', 'ajth_hajj_omra_nonce' ); ?>
 									<input type="hidden" name="ajth_hajj_omra_booking_request" value="1">
-									<label class="ajho-field">
-										<span>Offre selectionnee</span>
-										<input type="text" value="<?php echo esc_attr( $current_package['title'] ?? '' ); ?>" readonly>
-									</label>
-									<label class="ajho-field">
-										<span>Nom complet</span>
-										<input type="text" name="full_name" value="<?php echo esc_attr( wp_unslash( $_POST['full_name'] ?? '' ) ); ?>" required>
-									</label>
-									<label class="ajho-field">
-										<span>Telephone</span>
-										<input type="tel" name="phone" value="<?php echo esc_attr( wp_unslash( $_POST['phone'] ?? '' ) ); ?>" required>
-									</label>
-									<label class="ajho-field">
-										<span>Email</span>
-										<input type="email" name="email" value="<?php echo esc_attr( wp_unslash( $_POST['email'] ?? '' ) ); ?>" required>
-									</label>
-									<label class="ajho-field">
-										<span>Depart selectionne</span>
-										<select name="selected_departure_date">
+									<div class="ajho-field">
+										<label for="ajho-full-name">Nom complet</label>
+										<input id="ajho-full-name" type="text" name="full_name" value="<?php echo esc_attr( wp_unslash( $_POST['full_name'] ?? '' ) ); ?>" required>
+									</div>
+									<div class="ajho-field">
+										<label for="ajho-phone">Telephone</label>
+										<input id="ajho-phone" type="tel" name="phone" value="<?php echo esc_attr( wp_unslash( $_POST['phone'] ?? '' ) ); ?>" required>
+									</div>
+									<div class="ajho-field">
+										<label for="ajho-email">Email</label>
+										<input id="ajho-email" type="email" name="email" value="<?php echo esc_attr( wp_unslash( $_POST['email'] ?? '' ) ); ?>" required>
+									</div>
+									<div class="ajho-field">
+										<label for="ajho-departure">Depart selectionne</label>
+										<select id="ajho-departure" name="selected_departure_date">
 											<option value="">Choisir un depart</option>
 											<?php foreach ( (array) ( $current_package['departures'] ?? array() ) as $departure ) : ?>
 												<option value="<?php echo esc_attr( $departure['departure_date'] ?? '' ); ?>" <?php selected( $posted_departure, $departure['departure_date'] ?? '' ); ?>>
@@ -552,10 +524,10 @@ $filtered_packages = array_values(
 												</option>
 											<?php endforeach; ?>
 										</select>
-									</label>
-									<label class="ajho-field">
-										<span>Type de chambre</span>
-										<select name="room_type">
+									</div>
+									<div class="ajho-field">
+										<label for="ajho-room-type">Type de chambre</label>
+										<select id="ajho-room-type" name="room_type">
 											<option value="">Choisir une chambre</option>
 											<?php foreach ( (array) ( $current_package['room_prices'] ?? array() ) as $room_price ) : ?>
 												<option value="<?php echo esc_attr( $room_price['room_type'] ?? '' ); ?>" <?php selected( $posted_room_type, $room_price['room_type'] ?? '' ); ?>>
@@ -563,27 +535,27 @@ $filtered_packages = array_values(
 												</option>
 											<?php endforeach; ?>
 										</select>
-									</label>
-									<div class="ajho-request-form__cols">
-										<label class="ajho-field">
-											<span>Adultes</span>
-											<input type="number" min="1" name="adults" value="<?php echo esc_attr( wp_unslash( $_POST['adults'] ?? '1' ) ); ?>">
-										</label>
-										<label class="ajho-field">
-											<span>Enfants</span>
-											<input type="number" min="0" name="children" value="<?php echo esc_attr( wp_unslash( $_POST['children'] ?? '0' ) ); ?>">
-										</label>
 									</div>
-									<label class="ajho-field">
-										<span>Message</span>
-										<textarea name="message" rows="5" placeholder="Votre demande, vos preferences, vos questions..."><?php echo esc_textarea( wp_unslash( $_POST['message'] ?? '' ) ); ?></textarea>
-									</label>
-									<button type="submit" class="ajho-btn ajho-btn--primary">Envoyer la demande</button>
+									<div class="ajho-two-cols">
+										<div class="ajho-field">
+											<label for="ajho-adults">Adultes</label>
+											<input id="ajho-adults" type="number" min="1" name="adults" value="<?php echo esc_attr( wp_unslash( $_POST['adults'] ?? '1' ) ); ?>">
+										</div>
+										<div class="ajho-field">
+											<label for="ajho-children">Enfants</label>
+											<input id="ajho-children" type="number" min="0" name="children" value="<?php echo esc_attr( wp_unslash( $_POST['children'] ?? '0' ) ); ?>">
+										</div>
+									</div>
+									<div class="ajho-field">
+										<label for="ajho-message">Message</label>
+										<textarea id="ajho-message" name="message" rows="5" placeholder="Vos demandes, preferences, questions..."><?php echo esc_textarea( wp_unslash( $_POST['message'] ?? '' ) ); ?></textarea>
+									</div>
+									<button type="submit" class="ajho-btn ajho-btn--primary ajho-btn--full">Envoyer la demande</button>
 								</form>
+								<div class="ajho-submit-note">Reponse rapide garantie par notre equipe.<br>Vos donnees sont 100% confidentielles.</div>
 							</div>
 						</aside>
-					</div>
-				</div>
+					</section>
 			<?php else : ?>
 				<section class="ajho-hero">
 					<div class="ajho-container">
