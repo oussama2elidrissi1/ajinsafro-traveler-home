@@ -72,6 +72,13 @@
   padding-bottom: 40px;
 }
 
+.page-hajj-omra-ajinsafro .ajho-hero--detail {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding-bottom: 64px;
+}
+
 .page-hajj-omra-ajinsafro .ajho-hero__inner {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.7fr);
@@ -312,6 +319,10 @@
 .page-hajj-omra-ajinsafro .ajho-btn--ghost {
   background: #eef5fa;
   color: var(--ajho-blue-800);
+}
+
+.page-hajj-omra-ajinsafro button.ajho-btn {
+  font-family: inherit;
 }
 
 .page-hajj-omra-ajinsafro .ajho-content {
@@ -587,6 +598,12 @@
   gap: 18px;
 }
 
+.page-hajj-omra-ajinsafro .ajho-detail__side {
+  position: sticky;
+  top: 112px;
+  align-self: start;
+}
+
 .page-hajj-omra-ajinsafro .ajho-panel,
 .page-hajj-omra-ajinsafro .ajho-summary-card {
   padding: 24px;
@@ -651,6 +668,9 @@
 }
 
 .page-hajj-omra-ajinsafro .ajho-summary-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   margin-top: 18px;
 }
 
@@ -687,6 +707,14 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.page-hajj-omra-ajinsafro .ajho-program__empty {
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: var(--ajho-soft);
+  color: var(--ajho-muted);
+  line-height: 1.7;
 }
 
 .page-hajj-omra-ajinsafro .ajho-program__item {
@@ -765,6 +793,34 @@
   background: var(--ajho-orange-600);
 }
 
+.page-hajj-omra-ajinsafro .ajho-offer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.page-hajj-omra-ajinsafro .ajho-offer-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 15px;
+  border-radius: 18px;
+  background: var(--ajho-soft);
+}
+
+.page-hajj-omra-ajinsafro .ajho-offer-item strong {
+  color: var(--ajho-blue-800);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.page-hajj-omra-ajinsafro .ajho-offer-item span {
+  color: #456073;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
 .page-hajj-omra-ajinsafro .ajho-request-form {
   display: flex;
   flex-direction: column;
@@ -791,6 +847,10 @@
   .page-hajj-omra-ajinsafro .ajho-search-panel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .page-hajj-omra-ajinsafro .ajho-detail__side {
+    position: static;
+  }
 }
 
 @media (max-width: 767px) {
@@ -807,6 +867,7 @@
   .page-hajj-omra-ajinsafro .ajho-stats,
   .page-hajj-omra-ajinsafro .ajho-grid,
   .page-hajj-omra-ajinsafro .ajho-grid-two,
+  .page-hajj-omra-ajinsafro .ajho-offer-grid,
   .page-hajj-omra-ajinsafro .ajho-request-form__cols,
   .page-hajj-omra-ajinsafro .ajho-card__facts,
   .page-hajj-omra-ajinsafro .ajho-gallery-card__side,

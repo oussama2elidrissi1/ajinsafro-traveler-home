@@ -230,8 +230,11 @@ $filtered_packages = array_values(
 				if ( empty( $gallery ) ) {
 					$gallery[] = $fallback_image;
 				}
+				$hero_image  = ! empty( $gallery[0] ) ? $gallery[0] : $fallback_image;
+				$share_url   = ! empty( $current_package['detail_url'] ) ? (string) $current_package['detail_url'] : ajth_get_hajj_omra_detail_url( $current_slug );
+				$share_title = trim( (string) ( $current_package['title'] ?? 'Hajj & Omra avec Ajinsafro' ) );
 				?>
-				<section class="ajho-hero ajho-hero--detail">
+				<section class="ajho-hero ajho-hero--detail" style="background-image:linear-gradient(120deg, rgba(7, 28, 47, 0.82), rgba(13, 53, 85, 0.76)), url('<?php echo esc_url( $hero_image ); ?>');">
 					<div class="ajho-container">
 						<nav class="ajho-breadcrumb ajho-breadcrumb--light" aria-label="Fil d Ariane">
 							<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Accueil</a>
@@ -259,7 +262,7 @@ $filtered_packages = array_values(
 
 								<div class="ajho-hero__actions">
 									<a href="#reservation-form" class="ajho-btn ajho-btn--primary">Demander reservation</a>
-									<a href="<?php echo esc_url( $whatsapp_link( $current_package ) ); ?>" class="ajho-btn ajho-btn--secondary" target="_blank" rel="noopener">WhatsApp Ajinsafro</a>
+									<a href="#programme-section" class="ajho-btn ajho-btn--secondary">Voir le programme</a>
 								</div>
 							</div>
 
@@ -273,6 +276,10 @@ $filtered_packages = array_values(
 										<li><strong>Hotel Madinah</strong><span><?php echo esc_html( $current_package['madinah_hotel'] ?? 'A confirmer' ); ?></span></li>
 										<li><strong>Repas</strong><span><?php echo esc_html( $current_package['meal_plan_label'] ?? 'Selon offre' ); ?></span></li>
 									</ul>
+									<div class="ajho-summary-card__actions">
+										<a href="<?php echo esc_url( $whatsapp_link( $current_package ) ); ?>" class="ajho-btn ajho-btn--primary" target="_blank" rel="noopener">WhatsApp</a>
+										<button type="button" class="ajho-btn ajho-btn--secondary ajho-share-btn" data-ajho-share data-share-url="<?php echo esc_url( $share_url ); ?>" data-share-title="<?php echo esc_attr( $share_title ); ?>">Partager</button>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -332,15 +339,28 @@ $filtered_packages = array_values(
 								</div>
 								<div class="ajho-panel">
 									<div class="ajho-panel__head">
-										<span class="ajho-kicker">Services</span>
-										<h2>Ce que comprend l offre</h2>
+										<span class="ajho-kicker">Services inclus</span>
+										<h2>Services et accompagnement</h2>
 									</div>
 									<ul class="ajho-fact-list">
 										<li><strong>Transport</strong><span><?php echo ! empty( $current_package['transport_included'] ) ? 'Inclus' : 'Non inclus' ; ?></span></li>
 										<li><strong>Visa</strong><span><?php echo ! empty( $current_package['visa_included'] ) ? 'Inclus' : 'Non inclus' ; ?></span></li>
 										<li><strong>Encadrement</strong><span><?php echo ! empty( $current_package['guidance_included'] ) ? 'Inclus' : 'Non inclus' ; ?></span></li>
-										<li><strong>Type chambre</strong><span><?php echo esc_html( $current_package['room_type'] ?? 'Selon disponibilite' ); ?></span></li>
+										<li><strong>Repas</strong><span><?php echo esc_html( $current_package['meal_plan_label'] ?? 'Selon offre' ); ?></span></li>
 									</ul>
+								</div>
+							</section>
+
+							<section class="ajho-panel">
+								<div class="ajho-panel__head">
+									<span class="ajho-kicker">Offre</span>
+									<h2>Ce que comprend l offre</h2>
+								</div>
+								<div class="ajho-offer-grid">
+									<div class="ajho-offer-item"><strong>Destination</strong><span><?php echo esc_html( $current_package['destination'] ?? 'Arabie Saoudite' ); ?></span></div>
+									<div class="ajho-offer-item"><strong>Type de chambre</strong><span><?php echo esc_html( $current_package['room_type'] ?? 'Selon disponibilite' ); ?></span></div>
+									<div class="ajho-offer-item"><strong>Prix adulte</strong><span><?php echo esc_html( $format_price( $current_package['adult_price'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></span></div>
+									<div class="ajho-offer-item"><strong>Prix enfant</strong><span><?php echo esc_html( $format_price( $current_package['child_price'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></span></div>
 								</div>
 							</section>
 
@@ -402,31 +422,35 @@ $filtered_packages = array_values(
 								</div>
 							</section>
 
-							<section class="ajho-panel">
+							<section class="ajho-panel" id="programme-section">
 								<div class="ajho-panel__head">
 									<span class="ajho-kicker">Programme</span>
 									<h2>Jour par jour</h2>
 								</div>
 								<div class="ajho-program">
-									<?php foreach ( (array) ( $current_package['program_days'] ?? array() ) as $program_day ) : ?>
-										<article class="ajho-program__item">
-											<div class="ajho-program__day">Jour <?php echo esc_html( (string) ( $program_day['day_number'] ?? '' ) ); ?></div>
-											<div class="ajho-program__body">
-												<div class="ajho-program__top">
-													<div>
-														<h3><?php echo esc_html( $program_day['title'] ?? 'Etape' ); ?></h3>
-														<?php if ( ! empty( $program_day['city'] ) ) : ?>
-															<p class="ajho-program__city"><?php echo esc_html( $program_day['city'] ); ?></p>
+									<?php if ( ! empty( $current_package['program_days'] ) ) : ?>
+										<?php foreach ( (array) ( $current_package['program_days'] ?? array() ) as $program_day ) : ?>
+											<article class="ajho-program__item">
+												<div class="ajho-program__day">Jour <?php echo esc_html( (string) ( $program_day['day_number'] ?? '' ) ); ?></div>
+												<div class="ajho-program__body">
+													<div class="ajho-program__top">
+														<div>
+															<h3><?php echo esc_html( $program_day['title'] ?? 'Etape' ); ?></h3>
+															<?php if ( ! empty( $program_day['city'] ) ) : ?>
+																<p class="ajho-program__city"><?php echo esc_html( $program_day['city'] ); ?></p>
+															<?php endif; ?>
+														</div>
+														<?php if ( ! empty( $program_day['image_url'] ) ) : ?>
+															<img src="<?php echo esc_url( $program_day['image_url'] ); ?>" alt="<?php echo esc_attr( $program_day['title'] ?? 'Programme' ); ?>" loading="lazy" onerror="this.onerror=null;this.src='<?php echo esc_url( $fallback_image ); ?>';">
 														<?php endif; ?>
 													</div>
-													<?php if ( ! empty( $program_day['image_url'] ) ) : ?>
-														<img src="<?php echo esc_url( $program_day['image_url'] ); ?>" alt="<?php echo esc_attr( $program_day['title'] ?? 'Programme' ); ?>" loading="lazy" onerror="this.onerror=null;this.src='<?php echo esc_url( $fallback_image ); ?>';">
-													<?php endif; ?>
+													<p><?php echo esc_html( $program_day['description'] ?? '' ); ?></p>
 												</div>
-												<p><?php echo esc_html( $program_day['description'] ?? '' ); ?></p>
-											</div>
-										</article>
-									<?php endforeach; ?>
+											</article>
+										<?php endforeach; ?>
+									<?php else : ?>
+										<div class="ajho-program__empty">Le programme detaille sera confirme par nos equipes Ajinsafro apres validation de votre depart.</div>
+									<?php endif; ?>
 								</div>
 							</section>
 
@@ -490,6 +514,7 @@ $filtered_packages = array_values(
 								</ul>
 								<div class="ajho-summary-card__actions">
 									<a href="<?php echo esc_url( $whatsapp_link( $current_package ) ); ?>" class="ajho-btn ajho-btn--secondary" target="_blank" rel="noopener">WhatsApp</a>
+									<button type="button" class="ajho-btn ajho-btn--ghost ajho-share-btn" data-ajho-share data-share-url="<?php echo esc_url( $share_url ); ?>" data-share-title="<?php echo esc_attr( $share_title ); ?>">Partager cette offre</button>
 								</div>
 							</div>
 
@@ -702,5 +727,37 @@ $filtered_packages = array_values(
 		</main>
 	</div>
 </div>
+
+<?php if ( $current_package ) : ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('[data-ajho-share]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var url = button.getAttribute('data-share-url') || window.location.href;
+      var title = button.getAttribute('data-share-title') || document.title;
+
+      if (navigator.share) {
+        navigator.share({ title: title, url: url }).catch(function () {});
+        return;
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function () {
+          button.textContent = 'Lien copie';
+          window.setTimeout(function () {
+            button.textContent = button.classList.contains('ajho-btn--ghost') ? 'Partager cette offre' : 'Partager';
+          }, 1800);
+        }).catch(function () {
+          window.prompt('Copiez ce lien :', url);
+        });
+        return;
+      }
+
+      window.prompt('Copiez ce lien :', url);
+    });
+  });
+});
+</script>
+<?php endif; ?>
 
 <?php get_footer(); ?>
