@@ -74,7 +74,7 @@ if ( $offer ) {
 		}
 	}
 	?>
-	<div class="aj-home-wrap">
+	<div class="aj-home-wrap ajinsafro-plugin-page ajinsafro-zoom-80">
 		<div class="aj-home aj-activities-static-page">
 			<?php ajth_render_site_header( $settings ); ?>
 
@@ -242,7 +242,7 @@ if ( $offer ) {
 }
 ?>
 
-<div class="aj-home-wrap">
+<div class="aj-home-wrap ajinsafro-plugin-page ajinsafro-zoom-80">
 	<div id="aj-home" class="aj-home aj-activities-static-page">
 		<?php ajth_render_site_header( $settings ); ?>
 

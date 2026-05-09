@@ -320,7 +320,7 @@ if (is_singular('st_hotel')) {
     $map_link_url = 'https://www.google.com/maps/search/?api=1&query=' . $map_query;
     $whatsapp_url = 'https://wa.me/212660683464?text=' . rawurlencode(sprintf('Bonjour Ajinsafro, je souhaite recevoir un devis pour "%s" (%s).', $hotel_title, $hotel_permalink));
     ?>
-    <div class="aj-home-wrap">
+    <div class="aj-home-wrap ajinsafro-plugin-page ajinsafro-zoom-80">
         <div class="aj-home aj-hebergement-booking aj-hebergement-single">
             <?php ajth_render_site_header($settings); ?>
 
@@ -700,7 +700,7 @@ if ($current_pack) {
         }
     }
     ?>
-    <div class="aj-home-wrap">
+    <div class="aj-home-wrap ajinsafro-plugin-page ajinsafro-zoom-80">
         <div class="aj-home aj-hebergement-booking-page">
             <?php ajth_render_site_header($settings); ?>
 
@@ -873,7 +873,7 @@ if ($current_pack) {
 }
 ?>
 
-<div class="aj-home-wrap">
+<div class="aj-home-wrap ajinsafro-plugin-page ajinsafro-zoom-80">
     <div id="aj-home" class="aj-home aj-hebergement-booking-page">
         <?php ajth_render_site_header($settings); ?>
 
