@@ -391,6 +391,10 @@
 
 .aj-hotel-gallery-main {
     height: 100%;
+    aspect-ratio: 16 / 9;
+    min-height: 380px;
+    max-height: 460px;
+    background: #f3f7fb;
 }
 
 .aj-hotel-gallery-main img,
@@ -402,6 +406,12 @@
     object-fit: cover;
     object-position: center top;
     display: block;
+}
+
+.aj-hotel-gallery-main img {
+    object-fit: contain !important;
+    object-position: center center !important;
+    background: #f3f7fb;
 }
 
 .aj-hotel-gallery-side {
@@ -463,7 +473,8 @@
 }
 
 .aj-hotel-gallery--single .aj-hotel-gallery-main img {
-    object-position: center top;
+    object-fit: contain !important;
+    object-position: center center !important;
 }
 
 .aj-hotel-gallery--single .aj-hotel-gallery-side {
@@ -878,7 +889,8 @@
     }
 
     .aj-hotel-gallery-main {
-        min-height: 300px;
+        min-height: 360px;
+        max-height: 520px;
     }
 
     .aj-hotel-gallery-thumb {
@@ -925,6 +937,7 @@
 
     .aj-hotel-gallery-main {
         min-height: 260px;
+        max-height: 320px;
     }
 
     .aj-hotel-gallery-thumb {
