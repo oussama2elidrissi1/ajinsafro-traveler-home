@@ -5520,9 +5520,30 @@ body.aj-custom-footer [class*="footer"]:not(.aj-footer-v2):not(.aj-footer-v2 *):
     }
 }
 
-/* ── Zoom 80% pages plugin ── */
-.ajinsafro-plugin-page.ajinsafro-zoom-80 {
-    zoom: 80%;
-    width: 125%;
-    max-width: 125%;
+/* ── Zoom 80% pages plugin – desktop uniquement ── */
+body.ajinsafro-traveler-home-page {
+    overflow-x: hidden;
+}
+
+.aj-home-wrap.ajinsafro-plugin-zoom-shell {
+    width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+@media (min-width: 992px) {
+    .ajinsafro-plugin-page.ajinsafro-zoom-80 {
+        zoom: 80%;
+        width: 125%;
+        max-width: 125%;
+        box-sizing: border-box;
+    }
+}
+
+@media (max-width: 991px) {
+    .ajinsafro-plugin-page.ajinsafro-zoom-80 {
+        zoom: 100%;
+        width: 100%;
+        max-width: 100%;
+    }
 }

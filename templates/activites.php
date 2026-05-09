@@ -74,8 +74,8 @@ if ( $offer ) {
 		}
 	}
 	?>
-	<div class="aj-home-wrap ajinsafro-plugin-page ajinsafro-zoom-80">
-		<div class="aj-home aj-activities-static-page">
+	<div class="aj-home-wrap ajinsafro-plugin-zoom-shell">
+		<div class="aj-home aj-activities-static-page ajinsafro-plugin-page ajinsafro-zoom-80">
 			<?php ajth_render_site_header( $settings ); ?>
 
 			<main class="aj-activities-shell aj-activity-detail-shell">
@@ -242,8 +242,8 @@ if ( $offer ) {
 }
 ?>
 
-<div class="aj-home-wrap ajinsafro-plugin-page ajinsafro-zoom-80">
-	<div id="aj-home" class="aj-home aj-activities-static-page">
+<div class="aj-home-wrap ajinsafro-plugin-zoom-shell">
+	<div id="aj-home" class="aj-home aj-activities-static-page ajinsafro-plugin-page ajinsafro-zoom-80">
 		<?php ajth_render_site_header( $settings ); ?>
 
 		<div class="aj-activities-static" id="aj-activities-static">

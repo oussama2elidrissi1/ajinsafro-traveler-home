@@ -320,8 +320,8 @@ if (is_singular('st_hotel')) {
     $map_link_url = 'https://www.google.com/maps/search/?api=1&query=' . $map_query;
     $whatsapp_url = 'https://wa.me/212660683464?text=' . rawurlencode(sprintf('Bonjour Ajinsafro, je souhaite recevoir un devis pour "%s" (%s).', $hotel_title, $hotel_permalink));
     ?>
-    <div class="aj-home-wrap ajinsafro-plugin-page ajinsafro-zoom-80">
-        <div class="aj-home aj-hebergement-booking aj-hebergement-single">
+    <div class="aj-home-wrap ajinsafro-plugin-zoom-shell">
+        <div class="aj-home aj-hebergement-booking aj-hebergement-single ajinsafro-plugin-page ajinsafro-zoom-80">
             <?php ajth_render_site_header($settings); ?>
 
             <main class="aj-hebergement-shell aj-hebergement-single-shell">
@@ -700,8 +700,8 @@ if ($current_pack) {
         }
     }
     ?>
-    <div class="aj-home-wrap ajinsafro-plugin-page ajinsafro-zoom-80">
-        <div class="aj-home aj-hebergement-booking-page">
+    <div class="aj-home-wrap ajinsafro-plugin-zoom-shell">
+        <div class="aj-home aj-hebergement-booking-page ajinsafro-plugin-page ajinsafro-zoom-80">
             <?php ajth_render_site_header($settings); ?>
 
             <main class="aj-hebergement-shell aj-pack-page-shell">
@@ -873,8 +873,8 @@ if ($current_pack) {
 }
 ?>
 
-<div class="aj-home-wrap ajinsafro-plugin-page ajinsafro-zoom-80">
-    <div id="aj-home" class="aj-home aj-hebergement-booking-page">
+<div class="aj-home-wrap ajinsafro-plugin-zoom-shell">
+    <div id="aj-home" class="aj-home aj-hebergement-booking-page ajinsafro-plugin-page ajinsafro-zoom-80">
         <?php ajth_render_site_header($settings); ?>
 
         <div class="aj-hebergement-booking" id="aj-hebergement-booking">
