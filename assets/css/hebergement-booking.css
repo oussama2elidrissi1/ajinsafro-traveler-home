@@ -47,7 +47,7 @@
 .aj-hebergement-shell { width: 100%; }
 
 .aj-hebergement-container {
-    width: min(1200px, calc(100% - 28px));
+    width: min(1200px, calc(100% - 48px));
     margin: 0 auto;
 }
 
@@ -2240,7 +2240,7 @@ body.aj-mobile-filters-open { overflow: hidden; }
 
 @media (max-width: 640px) {
     .aj-hebergement-booking { padding: 18px 0 84px; }
-    .aj-hebergement-container { width: min(100% - 20px, 1280px); }
+    .aj-hebergement-container { width: calc(100% - 32px); }
     .aj-hero-search,
     .aj-filter-grid,
     .aj-card-actions { grid-template-columns: 1fr; }
@@ -2264,4 +2264,10 @@ body.aj-mobile-filters-open { overflow: hidden; }
     .aj-pack-hero-copy,
     .aj-pack-block,
     .aj-pack-summary-card { padding: 20px; }
+}
+
+@media (max-width: 767px) {
+    .aj-mobile-filter-trigger {
+        bottom: 80px;
+    }
 }

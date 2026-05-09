@@ -5519,3 +5519,9 @@ body.aj-custom-footer [class*="footer"]:not(.aj-footer-v2):not(.aj-footer-v2 *):
         padding: 14px;
     }
 }
+
+/* ── Plugin pages: horizontal scroll guard ── */
+.aj-home-wrap {
+    width: 100%;
+    overflow-x: hidden;
+}
