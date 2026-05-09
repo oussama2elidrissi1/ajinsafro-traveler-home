@@ -400,6 +400,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center top;
     display: block;
 }
 
@@ -459,6 +460,10 @@
 
 .aj-hotel-gallery--single .aj-hotel-gallery-main {
     min-height: 0;
+}
+
+.aj-hotel-gallery--single .aj-hotel-gallery-main img {
+    object-position: center top;
 }
 
 .aj-hotel-gallery--single .aj-hotel-gallery-side {

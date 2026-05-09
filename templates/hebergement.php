@@ -381,7 +381,9 @@ if (is_singular('st_hotel')) {
                             <?php } ?>
                         </div>
                         <?php } ?>
+                        <?php if ($gallery_count > 1) { ?>
                         <button type="button" class="aj-hotel-gallery-open" data-aj-gallery-open>Voir toutes les photos</button>
+                        <?php } ?>
                     </section>
 
                     <div class="aj-hotel-layout">
