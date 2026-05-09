@@ -233,6 +233,10 @@ $filtered_packages = array_values(
 				$hero_image  = ! empty( $gallery[0] ) ? $gallery[0] : $fallback_image;
 				$share_url   = ! empty( $current_package['detail_url'] ) ? (string) $current_package['detail_url'] : ajth_get_hajj_omra_detail_url( $current_slug );
 				$share_title = trim( (string) ( $current_package['title'] ?? 'Hajj & Omra avec Ajinsafro' ) );
+				$thumb_gallery = array_slice( $gallery, 1, 4 );
+				while ( count( $thumb_gallery ) < 4 ) {
+					$thumb_gallery[] = $fallback_image;
+				}
 				$offer_highlights = array_values( array_filter( array_slice( (array) ( $current_package['included_items'] ?? array() ), 0, 4 ) ) );
 				if ( empty( $offer_highlights ) ) {
 					if ( ! empty( $current_package['transport_included'] ) ) {
@@ -248,8 +252,33 @@ $filtered_packages = array_values(
 						$offer_highlights[] = (string) $current_package['meal_plan_label'];
 					}
 				}
+				$timeline_icon = static function ( array $program_day ) {
+					$source = trim( (string) ( $program_day['city'] ?? $program_day['title'] ?? '' ) );
+					if ( '' === $source ) {
+						return 'AJ';
+					}
+
+					$words = preg_split( '/\s+/', $source ) ?: array();
+					$abbr  = '';
+					foreach ( $words as $word ) {
+						$word = trim( (string) $word );
+						if ( '' === $word ) {
+							continue;
+						}
+						$abbr .= strtoupper( substr( $word, 0, 1 ) );
+						if ( strlen( $abbr ) >= 2 ) {
+							break;
+						}
+					}
+
+					if ( '' === $abbr ) {
+						$abbr = strtoupper( substr( $source, 0, 2 ) );
+					}
+
+					return substr( $abbr, 0, 2 );
+				};
 				?>
-				<section class="ajho-hero ajho-hero--detail" style="background-image:linear-gradient(120deg, rgba(8, 46, 85, 0.88), rgba(11, 77, 141, 0.88)), url('<?php echo esc_url( $hero_image ); ?>');">
+				<section class="ajho-hero ajho-hero--detail" style="background-image:linear-gradient(120deg, rgba(8, 46, 85, 0.76), rgba(11, 77, 141, 0.72)), url('<?php echo esc_url( $hero_image ); ?>');">
 					<div class="ajho-container">
 						<nav class="ajho-breadcrumb ajho-breadcrumb--light" aria-label="Fil d Ariane">
 							<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Accueil</a>
@@ -314,16 +343,11 @@ $filtered_packages = array_values(
 							<div class="ajho-gallery-count">1 / <?php echo esc_html( (string) count( $gallery ) ); ?></div>
 						</div>
 						<div class="ajho-thumb-grid">
-							<?php foreach ( array_slice( $gallery, 1, 4 ) as $index => $image_url ) : ?>
-								<figure class="ajho-thumb">
+							<?php foreach ( $thumb_gallery as $index => $image_url ) : ?>
+								<figure class="ajho-thumb<?php echo $image_url === $fallback_image ? ' ajho-thumb--fallback' : ''; ?>">
 									<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( ( $current_package['title'] ?? 'Hajj & Omra' ) . ' photo ' . ( $index + 2 ) ); ?>" loading="lazy" onerror="this.onerror=null;this.src='<?php echo esc_url( $fallback_image ); ?>';">
 								</figure>
 							<?php endforeach; ?>
-							<?php for ( $thumb_index = count( array_slice( $gallery, 1, 4 ) ); $thumb_index < 4; $thumb_index++ ) : ?>
-								<figure class="ajho-thumb ajho-thumb--placeholder" aria-hidden="true">
-									<span>Ajinsafro</span>
-								</figure>
-							<?php endfor; ?>
 						</div>
 					</section>
 
@@ -389,7 +413,7 @@ $filtered_packages = array_values(
 													<td><?php echo esc_html( $format_date( $departure['return_date'] ?? '' ) ); ?></td>
 													<td><?php echo esc_html( $departure['status_label'] ?? 'A confirmer' ); ?></td>
 													<td><?php echo esc_html( (string) ( $departure['remaining_places'] ?? 0 ) ); ?></td>
-													<td><?php echo esc_html( $format_price( $departure['price_from'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></td>
+													<td class="ajho-table__price"><?php echo esc_html( $format_price( $departure['price_from'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></td>
 												</tr>
 											<?php endforeach; ?>
 										</tbody>
@@ -413,7 +437,7 @@ $filtered_packages = array_values(
 											<?php foreach ( (array) ( $current_package['room_prices'] ?? array() ) as $room_price ) : ?>
 												<tr>
 													<td><?php echo esc_html( $room_price['room_type_label'] ?? $room_price['room_type'] ?? 'Chambre' ); ?></td>
-													<td><?php echo esc_html( $format_price( $room_price['price'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></td>
+													<td class="ajho-table__price"><?php echo esc_html( $format_price( $room_price['price'] ?? null, $current_package['currency'] ?? 'DH' ) ); ?></td>
 													<td><?php echo esc_html( (string) ( $room_price['stock'] ?? 0 ) ); ?></td>
 												</tr>
 											<?php endforeach; ?>
@@ -444,7 +468,7 @@ $filtered_packages = array_values(
 													</div>
 													<p><?php echo esc_html( $program_day['description'] ?? '' ); ?></p>
 												</div>
-												<div class="ajho-timeline-icon">+</div>
+												<div class="ajho-timeline-icon"><?php echo esc_html( $timeline_icon( $program_day ) ); ?></div>
 											</article>
 										<?php endforeach; ?>
 									<?php else : ?>
