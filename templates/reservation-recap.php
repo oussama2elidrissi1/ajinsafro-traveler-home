@@ -343,6 +343,12 @@ get_header();
                 </aside>
             </div>
         </div>
+
+        <!-- Success message (shown after submit if account modal unavailable) -->
+        <div class="ajtb-success-card" id="ajtb-success-message" hidden>
+            <h2><?php echo esc_html__('Votre demande de reservation a ete envoyee.', 'ajinsafro-traveler-home'); ?></h2>
+            <p><?php echo esc_html__('Un conseiller Ajinsafro va vous contacter pour finaliser votre dossier.', 'ajinsafro-traveler-home'); ?></p>
+        </div>
     </main>
 
     <!-- Mobile sticky bar -->
