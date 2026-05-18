@@ -743,72 +743,136 @@
   background: #f8fbff;
 }
 
-/* Modal fallback styles */
-#ajtb-confirm-modal .modal-content {
-  border-radius: 18px;
+/* Custom confirm modal */
+.ajtb-confirm-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.ajtb-confirm-modal[hidden] {
+  display: none !important;
+}
+
+.ajtb-confirm-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 59, 104, 0.45);
+}
+
+.ajtb-confirm-box {
+  position: relative;
+  background: #fff;
   border: 1px solid var(--ajtb-border);
-  box-shadow: var(--ajtb-shadow);
+  border-radius: var(--ajtb-radius);
+  box-shadow: 0 24px 60px rgba(7, 59, 104, 0.18);
+  padding: 24px 26px 22px;
+  width: 100%;
+  max-width: 460px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
 }
 
-#ajtb-confirm-modal .modal-header {
-  border-bottom: 1px solid #edf4fb;
-  padding: 18px 22px;
-}
-
-#ajtb-confirm-modal .modal-title {
-  font-size: 18px;
+.ajtb-confirm-box__title {
+  margin: 0 0 18px;
+  font-size: 20px;
   font-weight: 800;
   color: #08264b;
 }
 
-#ajtb-confirm-modal .modal-body {
-  padding: 18px 22px;
+.ajtb-confirm-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-top: 22px !important;
+  padding-top: 18px !important;
+  border-top: 1px solid #e5edf7 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
-#ajtb-confirm-modal .modal-footer {
-  border-top: 1px solid #edf4fb;
-  padding: 14px 22px 18px;
+.ajtb-confirm-actions button,
+.ajtb-confirm-actions a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 42px !important;
+  padding: 0 18px !important;
+  border-radius: 12px !important;
+  font-weight: 800 !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  font-family: inherit;
+}
+
+.ajtb-btn-cancel {
+  background: #f1f5f9 !important;
+  color: #0f2742 !important;
+  border: 1px solid #d8e4f2 !important;
+}
+
+.ajtb-btn-submit {
+  background: #006fe6 !important;
+  color: #ffffff !important;
+  border: 1px solid #006fe6 !important;
+  box-shadow: 0 6px 16px rgba(0, 107, 230, 0.25) !important;
+}
+
+.ajtb-btn-submit:disabled {
+  opacity: .65 !important;
+  cursor: not-allowed !important;
+}
+
+.ajtb-creds {
+  border: 1px solid var(--ajtb-border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: #fbfdff;
+  margin: 12px 0 0;
+}
+
+.ajtb-creds__row {
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-#ajtb-confirm-modal .modal-footer .btn {
-  min-height: 42px;
-  padding: 0 18px;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eef4fb;
 }
 
-#ajtb-confirm-modal .modal-footer .btn-outline-secondary {
-  background: #f1f5f9;
-  color: #0f2742;
-  border: 1px solid #d8e4f2;
+.ajtb-creds__row:last-child {
+  border-bottom: none;
 }
 
-#ajtb-confirm-modal .modal-footer .btn-outline-secondary:hover {
-  background: #e2e8f0;
+.ajtb-creds__label {
+  font-size: 12px;
+  color: var(--ajtb-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-#ajtb-confirm-modal .modal-footer .btn-primary {
-  background: linear-gradient(135deg, #0087ff, #005eea);
-  color: #fff;
-  border: none;
-  box-shadow: 0 6px 16px rgba(0, 107, 230, 0.25);
+.ajtb-creds__hint {
+  font-size: 12px;
+  color: var(--ajtb-muted);
+  margin: 8px 0 0;
 }
 
-#ajtb-confirm-modal .modal-footer .btn-primary:disabled {
-  opacity: .55;
-  cursor: not-allowed;
-}
-
-#ajtb-confirm-modal .modal-footer .btn-primary:hover:not(:disabled) {
-  opacity: .92;
+.ajtb-btn-copy {
+  background: #f5faff;
+  border: 1px solid var(--ajtb-border);
+  color: var(--ajtb-blue);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 /* Success page / message */
