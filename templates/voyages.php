@@ -141,16 +141,18 @@ if (! function_exists('ajinsafro_get_tour_next_departure')) {
         $departures = isset($context['departure_index'][$post_id]) && is_array($context['departure_index'][$post_id])
             ? $context['departure_index'][$post_id]
             : [];
-        $min_date = $today;
-        if ($date_filter !== '' && $date_filter > $min_date) {
-            $min_date = $date_filter;
-        }
-
         foreach ($departures as $row) {
             if (empty($row['is_active'])) {
                 continue;
             }
-            if (($row['date'] ?? '') < $min_date) {
+            $row_date = (string) ($row['date'] ?? '');
+            if ($row_date === '') {
+                continue;
+            }
+            if ($date_filter !== '' && $row_date !== $date_filter) {
+                continue;
+            }
+            if ($date_filter === '' && $row_date < $today) {
                 continue;
             }
 
@@ -265,6 +267,21 @@ $get_int_alias = static function (array $keys) use ($get_int): int {
     return 0;
 };
 
+$normalize_date_filter = static function (string $value): string {
+    $value = trim($value);
+    if ($value === '') {
+        return '';
+    }
+    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+        return $value;
+    }
+    if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $value, $matches)) {
+        return $matches[3] . '-' . $matches[2] . '-' . $matches[1];
+    }
+
+    return '';
+};
+
 $search_text = $get_text('s');
 $location_name = $get_text('location_name');
 $keyword = $location_name !== '' ? $location_name : $search_text;
@@ -273,7 +290,7 @@ $tag_slug = $get_text('tag');
 $tour_type_slug = $get_text('tour_type');
 $location_id = $get_int('location_id');
 $dest = $get_text_alias(['destination', 'dest']);
-$depart_date = $get_text_alias(['date_depart', 'depart_date']);
+$depart_date = $normalize_date_filter($get_text_alias(['date_depart', 'departure_date', 'depart_date']));
 $duration_min = $get_int('duration_min');
 $duration_max = $get_int('duration_max');
 $price_min = $get_int_alias(['budget_min', 'price_min']);
