@@ -115,6 +115,11 @@ if (! function_exists('ajinsafro_get_tour_price')) {
             $price_source = 'meta:regular';
         }
 
+        if ($regular_price > 0 && $price_from !== null && $price_from > 0 && $price_from < ($regular_price * 0.5)) {
+            $price_from = $regular_price;
+            $price_source = 'meta:regular:deposit-guard';
+        }
+
         $price_reference = $regular_price > 0 ? $regular_price : null;
         if ($price_reference !== null && $price_from !== null && $price_reference <= $price_from) {
             $price_reference = null;
