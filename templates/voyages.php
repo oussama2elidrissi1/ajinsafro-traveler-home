@@ -1218,7 +1218,7 @@ $rating_label = static function (float $rating): string {
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="search-field">
+                        <div class="search-field search-field--date">
                             <label for="ajvb-depart-date">Date de depart</label>
                             <input id="ajvb-depart-date" name="date_depart" type="date" value="<?php echo esc_attr($depart_date); ?>">
                         </div>
