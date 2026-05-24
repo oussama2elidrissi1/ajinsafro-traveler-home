@@ -105,7 +105,11 @@
 
         function closeAll(except) {
             root.querySelectorAll('[data-aj-popover]').forEach(function (popover) {
-                if (popover !== except) popover.hidden = true;
+                if (popover !== except) {
+                    popover.hidden = true;
+                    var owner = popover.closest('[data-aj-date-picker], [data-aj-guests]');
+                    if (owner) owner.classList.remove('aj-search-field--open');
+                }
             });
         }
 
@@ -145,6 +149,7 @@
                 var willOpen = popover.hidden;
                 closeAll(popover);
                 popover.hidden = !willOpen;
+                picker.classList.toggle('aj-search-field--open', willOpen);
                 if (willOpen) {
                     var firstInput = popover.querySelector('input[type="date"]');
                     if (firstInput) firstInput.focus();
@@ -203,6 +208,7 @@
                 var willOpen = popover.hidden;
                 closeAll(popover);
                 popover.hidden = !willOpen;
+                block.classList.toggle('aj-search-field--open', willOpen);
             });
 
             block.addEventListener('click', function (event) {
