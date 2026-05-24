@@ -994,10 +994,18 @@ foreach ($post_ids as $post_id) {
         $card_badge = 'Selection Ajinsafro';
     }
 
+    $card_permalink = get_permalink($post_id);
+    if ($depart_date !== '' && $selected_departure !== null) {
+        $card_permalink = add_query_arg([
+            'date_depart' => $depart_date,
+            'departure_date' => $depart_date,
+        ], $card_permalink);
+    }
+
     $cards[] = [
         'id' => $post_id,
         'title' => $title,
-        'permalink' => get_permalink($post_id),
+        'permalink' => $card_permalink,
         'image_html' => $image_html,
         'image_is_fallback' => $image_is_fallback,
         'excerpt' => get_the_excerpt($post_id) !== ''
