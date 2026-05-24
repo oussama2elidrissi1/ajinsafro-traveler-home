@@ -1980,11 +1980,6 @@ body.aj-has-bg-pattern::after {
     width: 380px;
 }
 
-.aj-search-date-popover--single {
-    grid-template-columns: 1fr;
-    width: 240px;
-}
-
 .aj-search-date-popover label,
 .aj-search-class {
     display: grid;

@@ -139,6 +139,20 @@
         }
 
         root.querySelectorAll('[data-aj-date-picker]').forEach(function (picker) {
+            var nativeDate = picker.querySelector('[data-aj-native-date]');
+            if (nativeDate) {
+                picker.addEventListener('click', function (event) {
+                    if (event.target === nativeDate) return;
+                    event.preventDefault();
+                    if (typeof nativeDate.showPicker === 'function') {
+                        nativeDate.showPicker();
+                    } else {
+                        nativeDate.focus();
+                    }
+                });
+                return;
+            }
+
             var display = picker.querySelector('[data-aj-date-display]');
             var popover = picker.querySelector('[data-aj-popover]');
             if (!display || !popover) return;
