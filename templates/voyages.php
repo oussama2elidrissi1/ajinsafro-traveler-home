@@ -87,7 +87,6 @@ if (! function_exists('ajinsafro_get_tour_price')) {
             $meta_float($meta, 'base_price'),
         ], static fn ($value) => $value > 0);
 
-        $sale_price = $meta_float($meta, 'sale_price');
         $regular_price = ! empty($regular_candidates) ? min($regular_candidates) : 0.0;
         $min_departure_price = null;
 
@@ -108,9 +107,6 @@ if (! function_exists('ajinsafro_get_tour_price')) {
         } elseif ($next_departure !== null && ($next_departure['price'] ?? null) !== null && (float) $next_departure['price'] > 0) {
             $price_from = (float) $next_departure['price'];
             $price_source = (string) ($next_departure['price_source'] ?? 'departure:next');
-        } elseif ($sale_price > 0) {
-            $price_from = $sale_price;
-            $price_source = 'meta:sale_price';
         } elseif ($min_departure_price !== null && $min_departure_price > 0) {
             $price_from = $min_departure_price;
             $price_source = 'departure:min';
@@ -562,7 +558,7 @@ if (! empty($post_ids)) {
             }
         }
         $price_column = '';
-        foreach (['specific_price', 'price_override', 'adult_price', 'price'] as $candidate_column) {
+        foreach (['price_from', 'specific_price', 'price_override', 'adult_price', 'price', 'base_price'] as $candidate_column) {
             if (in_array($candidate_column, $columns, true)) {
                 $price_column = $candidate_column;
                 break;
@@ -659,7 +655,7 @@ if (! empty($post_ids)) {
 
         if ($date_column !== '' && $tour_column !== '') {
             $select_parts = ['id', "{$tour_column} AS tour_post_id", "{$date_column} AS departure_date"];
-            foreach (['wp_travel_date_id', 'status', 'total_capacity', 'reserved_capacity', 'available_capacity', 'base_price', 'sale_price'] as $candidate_column) {
+            foreach (['wp_travel_date_id', 'status', 'total_capacity', 'reserved_capacity', 'available_capacity', 'price_from', 'adult_price', 'specific_price', 'price_override', 'price', 'base_price', 'sale_price'] as $candidate_column) {
                 if (in_array($candidate_column, $columns, true)) {
                     $select_parts[] = $candidate_column;
                 }
@@ -679,12 +675,12 @@ if (! empty($post_ids)) {
 
                 $price = null;
                 $price_source = '';
-                if (isset($row['sale_price']) && $row['sale_price'] !== '' && $row['sale_price'] !== null && (float) $row['sale_price'] > 0) {
-                    $price = (float) $row['sale_price'];
-                    $price_source = 'departures:sale_price';
-                } elseif (isset($row['base_price']) && $row['base_price'] !== '' && $row['base_price'] !== null && (float) $row['base_price'] > 0) {
-                    $price = (float) $row['base_price'];
-                    $price_source = 'departures:base_price';
+                foreach (['price_from', 'adult_price', 'specific_price', 'price_override', 'price', 'base_price'] as $price_candidate) {
+                    if (isset($row[$price_candidate]) && $row[$price_candidate] !== '' && $row[$price_candidate] !== null && (float) $row[$price_candidate] > 0) {
+                        $price = (float) $row[$price_candidate];
+                        $price_source = 'departures:' . $price_candidate;
+                        break;
+                    }
                 }
 
                 $status_raw = isset($row['status']) ? trim((string) $row['status']) : '';
