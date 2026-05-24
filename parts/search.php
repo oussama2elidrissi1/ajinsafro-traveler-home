@@ -59,13 +59,11 @@ $transfert_page_url = function_exists( 'ajth_get_transfert_page_url' )
                     <div class="aj-search-field aj-search-field--date" data-aj-date-picker>
                         <div class="aj-search-field__icon aj-search-field__icon--blue"><i class="far fa-calendar-alt"></i></div>
                         <div class="aj-search-field__content">
-                            <span class="aj-search-field__label">Départ - Retour</span>
-                            <input type="text" class="aj-search-field__input" placeholder="Ajouter des dates" readonly data-aj-date-display>
-                            <input type="hidden" name="start" data-aj-date-start>
-                            <input type="hidden" name="end" data-aj-date-end>
-                            <div class="aj-search-popover aj-search-date-popover" data-aj-popover hidden>
+                            <span class="aj-search-field__label">Date de départ</span>
+                            <input type="text" class="aj-search-field__input" placeholder="Date de départ" readonly data-aj-date-display>
+                            <input type="hidden" name="date_depart" data-aj-date-start>
+                            <div class="aj-search-popover aj-search-date-popover aj-search-date-popover--single" data-aj-popover hidden>
                                 <label><span>Départ</span><input type="date" data-aj-date-input="start"></label>
-                                <label><span>Retour</span><input type="date" data-aj-date-input="end"></label>
                                 <button type="button" class="aj-search-popover__done" data-aj-popover-close>Valider</button>
                             </div>
                         </div>
