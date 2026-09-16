@@ -111,11 +111,15 @@ $find_next_departure = static function ( array $package ) {
 	return null;
 };
 
-$whatsapp_link = static function ( array $package ) {
-	$title = trim( (string) ( $package['title'] ?? ajth_ho_t('Hajj & Omra') ) );
-	$url   = trim( (string) ( $package['detail_url'] ?? '' ) );
+// Numero general de l'agence : utilise quand l'offre n'en definit pas.
+$default_whatsapp = '212660683464';
 
-	return 'https://wa.me/212660683464?text=' . rawurlencode( sprintf( 'Bonjour Ajinsafro, je souhaite recevoir plus d informations sur l offre "%s" %s', $title, $url !== '' ? '(' . $url . ')' : '' ) );
+$whatsapp_link = static function ( array $package ) use ( $default_whatsapp ) {
+	$title  = trim( (string) ( $package['title'] ?? ajth_ho_t('Hajj & Omra') ) );
+	$url    = trim( (string) ( $package['detail_url'] ?? '' ) );
+	$number = preg_replace( '/[^0-9]/', '', (string) ( $package['whatsapp_phone'] ?? '' ) );
+
+	return 'https://wa.me/' . ( '' !== $number ? $number : $default_whatsapp ) . '?text=' . rawurlencode( sprintf( 'Bonjour Ajinsafro, je souhaite recevoir plus d informations sur l offre "%s" %s', $title, $url !== '' ? '(' . $url . ')' : '' ) );
 };
 
 $has_active_filters = '' !== $filter_type || '' !== $filter_city || $filter_budget > 0 || '' !== $filter_date || $hide_full || 'date' !== $filter_sort;
