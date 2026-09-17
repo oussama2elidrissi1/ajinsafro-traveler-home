@@ -307,7 +307,7 @@ if ( $offer ) {
 					<section class="aj-featured" aria-labelledby="aj-featured-title">
 						<div class="aj-section-head">
 							<div>
-								<span class="aj-section-kicker">Selection Ajinsafro</span>
+								<span class="aj-section-kicker">Sélection Ajinsafro</span>
 								<h2 id="aj-featured-title">Activites a la une</h2>
 							</div>
 							<p>Des experiences premium mises en avant pour inspirer le prochain depart.</p>

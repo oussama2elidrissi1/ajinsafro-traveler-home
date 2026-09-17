@@ -1201,3 +1201,221 @@
 .page-hajj-omra-ajinsafro .ajho-field > span { font-size: 12px; font-weight: 600; color: #2e4c66; }
 
 .page-hajj-omra-ajinsafro .ajho-switch { min-height: 44px; }
+
+/* ── §4b Group Deals : haut de page ────────────────────────────────────── */
+
+/* Le bandeau devient une carte posee sur le fond, sans trame ni degrade. */
+.aj-groupdeals-fusion .ajgd-hero {
+  background: none;
+  padding: clamp(14px, 2vw, 20px) 0 0;
+}
+
+.aj-groupdeals-fusion .ajgd-hero::before { display: none; }
+
+.aj-groupdeals-fusion .ajgd-hero-grid {
+  background: var(--brand-dark);
+  border-radius: 20px;
+  padding: clamp(22px, 3.4vw, 44px);
+  gap: clamp(20px, 3vw, 44px);
+  align-items: center;
+}
+
+.aj-groupdeals-fusion .ajgd-eyebrow {
+  background: none;
+  padding: 0;
+  font-family: ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #f5b06a;
+}
+
+.aj-groupdeals-fusion .ajgd-hero-title {
+  font-size: clamp(27px, 3.6vw, 44px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.aj-groupdeals-fusion .ajgd-hero-sub {
+  font-size: clamp(14.5px, 1.4vw, 16.5px);
+  line-height: 1.6;
+  color: #c6dcf0;
+  max-width: 54ch;
+}
+
+/* Les quatre reperes remplacent la photo et ses vignettes flottantes. */
+.aj-groupdeals-fusion .ajgd-hero-visual {
+  position: static;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 520px) {
+  .aj-groupdeals-fusion .ajgd-hero-visual { grid-template-columns: minmax(0, 1fr); }
+}
+
+.aj-groupdeals-fusion .ajgd-hero-photo { display: none; }
+
+.aj-groupdeals-fusion .ajgd-float-card {
+  position: static;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: none;
+  color: #fff;
+  gap: 0;
+  animation: none;
+  transform: none;
+}
+
+.aj-groupdeals-fusion .ajgd-float-card .ajgd-fi { display: none; }
+
+/* Le chiffre passe au-dessus de son libelle, comme la maquette. */
+.aj-groupdeals-fusion .ajgd-float-card > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 5px;
+  min-width: 0;
+}
+
+.aj-groupdeals-fusion .ajgd-float-card strong {
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.aj-groupdeals-fusion .ajgd-float-card small {
+  font-size: 13px;
+  font-weight: 400;
+  color: #c6dcf0;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* « Comment ca marche » : carte blanche, pastille numerotee carree. */
+.aj-groupdeals-fusion .ajgd-how { padding-block: clamp(24px, 3vw, 40px) 0; background: none; }
+
+.aj-groupdeals-fusion .ajgd-section-hd h2 {
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.aj-groupdeals-fusion .ajgd-section-hd h2::after { display: none; }
+
+.aj-groupdeals-fusion .ajgd-how-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: clamp(14px, 1.8vw, 20px);
+}
+
+.aj-groupdeals-fusion .ajgd-how-card {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  box-shadow: none;
+}
+
+.aj-groupdeals-fusion .ajgd-how-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--brand);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.aj-groupdeals-fusion .ajgd-how-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0;
+}
+
+.aj-groupdeals-fusion .ajgd-how-card p {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--body);
+  margin: 0;
+}
+
+/* Bandeau de resultats et pastilles de comptage. */
+.aj-groupdeals-fusion .ajgd-results-head {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: none;
+}
+
+.aj-groupdeals-fusion .ajgd-results-head h2 {
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.aj-groupdeals-fusion .ajgd-result-count { font-size: 13.5px; color: var(--body); }
+
+.aj-groupdeals-fusion .ajgd-stat-pill {
+  background: var(--line-soft);
+  color: var(--body);
+  border: 1px solid var(--line);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.aj-groupdeals-fusion .ajgd-sort-wrap select {
+  border: 1px solid #cfdcea;
+  border-radius: 9px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  color: var(--ink);
+  background: var(--surface);
+}
+
+/* Blocs « pourquoi nous choisir » alignes sur les memes cartes. */
+.aj-groupdeals-fusion .ajgd-benefit {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+}
+
+.aj-groupdeals-fusion .ajgd-benefit h3 { font-size: 16px; font-weight: 600; color: var(--ink); }
+.aj-groupdeals-fusion .ajgd-benefit p { font-size: 13.5px; line-height: 1.55; color: var(--body); }
+
+/* Appel final : carte blanche sur le fond de page, sans halo. */
+.aj-groupdeals-fusion .ajgd-final-cta {
+  background: none;
+  border-top: 0;
+  padding: clamp(24px, 3vw, 40px) 0;
+}
+
+.aj-groupdeals-fusion .ajgd-cta-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: none;
+}
+
+.aj-groupdeals-fusion .ajgd-cta-box h2 {
+  font-size: clamp(19px, 2.2vw, 26px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.aj-groupdeals-fusion .ajgd-cta-box p { font-size: 14.5px; line-height: 1.55; color: var(--body); }
+.aj-groupdeals-fusion .ajgd-cta-deco { display: none; }
+
+@media (max-width: 860px) {
+  .aj-groupdeals-fusion .ajgd-hero-grid { grid-template-columns: minmax(0, 1fr); }
+}

@@ -1008,7 +1008,7 @@ foreach ($post_ids as $post_id) {
     } elseif (! empty($tag_names)) {
         $card_badge = (string) $tag_names[0];
     } elseif (strtolower($meta_value($meta, 'is_featured')) === 'on') {
-        $card_badge = 'Selection Ajinsafro';
+        $card_badge = 'Sélection Ajinsafro';
     }
 
     $card_permalink = get_permalink($post_id);
