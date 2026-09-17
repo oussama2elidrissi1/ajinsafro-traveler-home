@@ -258,7 +258,7 @@ if ( $offer ) {
 					<section class="aj-hero">
 						<div class="aj-hero-copy">
 							<span class="aj-eyebrow">Marketplace d experiences Ajinsafro</span>
-							<h1>Activites et experiences dans le monde</h1>
+							<h1>Activités et expériences dans le monde</h1>
 							<p>Decouvrez les meilleures activites selectionnees par Ajinsafro au Maroc et a l international.</p>
 						</div>
 
@@ -402,7 +402,7 @@ if ( $offer ) {
 								<div class="aj-active-filters" id="aj-active-filters"></div>
 								<div class="aj-activities-grid" id="aj-activities-grid"></div>
 								<div class="aj-empty-state" id="aj-empty-state" hidden>
-									<h3>Aucune activite ne correspond a votre recherche</h3>
+									<h3>Aucune activité ne correspond a votre recherche</h3>
 									<p>Essayez un autre pays, une autre ville ou elargissez votre budget.</p>
 									<button id="aj-empty-reset" type="button">Voir toutes les activites</button>
 								</div>

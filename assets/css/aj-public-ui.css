@@ -11,6 +11,8 @@
  *   §2  Regles transverses (champs, cibles tactiles, RTL, 360 px)
  *   §3  Voyages
  *   §4  Group Deals
+ *   §5  Hebergement et Activites (cartes .aj-result-* et .aj-featured-*)
+ *   §6  Hajj & Omra
  */
 
 /* ── §0 Jetons ─────────────────────────────────────────────────────────── */
@@ -653,3 +655,549 @@
 /* Etats vides : meme traitement que les autres catalogues. */
 .aj-groupdeals-fusion .ajgd-empty-state h3 { color: var(--ink); font-size: 16px; font-weight: 600; }
 .aj-groupdeals-fusion .ajgd-empty-state p { color: var(--body); font-size: 13.5px; line-height: 1.55; }
+
+/* ── §5 Hebergement et Activites ───────────────────────────────────────── */
+
+.page-hebergement-ajinsafro .aj-hebergements-grid.is-grid-view,
+.page-activites-ajinsafro .aj-activities-grid,
+.page-hebergement-ajinsafro .aj-featured-grid,
+.page-activites-ajinsafro .aj-featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  align-items: stretch;
+}
+
+.page-hebergement-ajinsafro .aj-result-card,
+.page-activites-ajinsafro .aj-result-card,
+.page-hebergement-ajinsafro .aj-featured-card,
+.page-activites-ajinsafro .aj-featured-card {
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  box-shadow: none;
+}
+
+.page-hebergement-ajinsafro .aj-result-card:hover,
+.page-activites-ajinsafro .aj-result-card:hover,
+.page-hebergement-ajinsafro .aj-featured-card:hover,
+.page-activites-ajinsafro .aj-featured-card:hover {
+  transform: none;
+  border-color: #b9cfe6;
+  box-shadow: none;
+}
+
+/* En grille, la carte s'empile : la photo garde son gabarit 16/10. */
+.page-hebergement-ajinsafro .is-grid-view .aj-result-card,
+.page-activites-ajinsafro .aj-result-card {
+  flex-direction: column;
+}
+
+.page-hebergement-ajinsafro .is-grid-view .aj-result-media,
+.page-activites-ajinsafro .aj-result-media {
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 16 / 10;
+}
+
+.page-hebergement-ajinsafro .aj-result-body,
+.page-activites-ajinsafro .aj-result-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 16px;
+  flex: 1;
+}
+
+/* Correctif 3 : voile et deux badges, un par coin. */
+.page-hebergement-ajinsafro .aj-result-media::after,
+.page-activites-ajinsafro .aj-result-media::after,
+.page-hebergement-ajinsafro .aj-featured-visual::after,
+.page-activites-ajinsafro .aj-featured-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: var(--aj-scrim);
+}
+
+.page-hebergement-ajinsafro .aj-result-media .aj-card-badges,
+.page-activites-ajinsafro .aj-result-media .aj-card-badges {
+  left: 10px;
+  right: 10px;
+  top: 10px;
+  z-index: 2;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.page-hebergement-ajinsafro .aj-category-badge,
+.page-activites-ajinsafro .aj-category-badge,
+.page-hebergement-ajinsafro .aj-badge,
+.page-activites-ajinsafro .aj-badge {
+  background: rgba(9, 30, 52, 0.72);
+  color: #fff;
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: none;
+  z-index: 2;
+}
+
+.page-hebergement-ajinsafro .aj-status-badge,
+.page-activites-ajinsafro .aj-status-badge {
+  background: var(--ok);
+  color: #fff;
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: none;
+  z-index: 2;
+}
+
+.page-hebergement-ajinsafro .aj-status-badge--unavailable,
+.page-activites-ajinsafro .aj-status-badge--unavailable { background: var(--neutral); }
+.page-hebergement-ajinsafro .aj-status-badge--limited,
+.page-activites-ajinsafro .aj-status-badge--limited { background: var(--warn); }
+
+/* Correctif 5 : substitut de visuel, jamais d'alt visible. */
+.page-hebergement-ajinsafro .aj-media-empty,
+.page-activites-ajinsafro .aj-media-empty {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--aj-hatch);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-hebergement-ajinsafro .aj-media-empty span,
+.page-activites-ajinsafro .aj-media-empty span,
+.page-hebergement-ajinsafro .aj-pack-hero-fallback,
+.page-activites-ajinsafro .aj-pack-hero-fallback {
+  font-family: ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #2e4c66;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 7px;
+  padding: 6px 11px;
+}
+
+.page-hebergement-ajinsafro .aj-pack-hero-fallback,
+.page-activites-ajinsafro .aj-pack-hero-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--aj-hatch);
+  border-radius: 0;
+  padding: 0;
+  font-size: 0;
+}
+
+.page-hebergement-ajinsafro .aj-pack-hero-fallback::before,
+.page-activites-ajinsafro .aj-pack-hero-fallback::before {
+  content: "VISUEL À VENIR";
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 7px;
+  padding: 6px 11px;
+}
+
+/* Correctif 1 et 8 : titre et description a deux lignes, hierarchie unifiee. */
+.page-hebergement-ajinsafro .aj-result-body h3,
+.page-activites-ajinsafro .aj-result-body h3,
+.page-hebergement-ajinsafro .aj-featured-content h3,
+.page-activites-ajinsafro .aj-featured-content h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.page-hebergement-ajinsafro .aj-result-body h3 a,
+.page-activites-ajinsafro .aj-result-body h3 a,
+.page-hebergement-ajinsafro .aj-featured-title-link,
+.page-activites-ajinsafro .aj-featured-title-link { color: inherit; }
+
+.page-hebergement-ajinsafro .aj-result-desc,
+.page-activites-ajinsafro .aj-result-desc,
+.page-hebergement-ajinsafro .aj-featured-content p,
+.page-activites-ajinsafro .aj-featured-content p {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--body);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.page-hebergement-ajinsafro .aj-result-meta,
+.page-activites-ajinsafro .aj-result-meta,
+.page-hebergement-ajinsafro .aj-inline-meta,
+.page-activites-ajinsafro .aj-inline-meta {
+  font-size: 12.5px;
+  color: var(--body);
+}
+
+/* Deux reperes maximum par carte. */
+.page-hebergement-ajinsafro .aj-result-fact:nth-of-type(n + 3),
+.page-activites-ajinsafro .aj-result-fact:nth-of-type(n + 3) { display: none; }
+
+.page-hebergement-ajinsafro .aj-result-fact,
+.page-activites-ajinsafro .aj-result-fact {
+  background: var(--line-soft);
+  border: 1px solid var(--line);
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Correctif : la pastille de prix quitte la photo pour le pied de carte. */
+.page-hebergement-ajinsafro .aj-featured-price,
+.page-activites-ajinsafro .aj-featured-price {
+  position: static;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  color: var(--ink);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.page-hebergement-ajinsafro .aj-featured-price small,
+.page-activites-ajinsafro .aj-featured-price small,
+.page-hebergement-ajinsafro .aj-result-price small,
+.page-activites-ajinsafro .aj-result-price small {
+  display: inline;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--body);
+}
+
+.page-hebergement-ajinsafro .aj-result-footer,
+.page-activites-ajinsafro .aj-result-footer,
+.page-hebergement-ajinsafro .aj-featured-footer,
+.page-activites-ajinsafro .aj-featured-footer {
+  margin-top: auto;
+  padding-top: 13px;
+  border-top: 1px solid var(--line-soft);
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.page-hebergement-ajinsafro .aj-result-price strong,
+.page-activites-ajinsafro .aj-result-price strong {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.page-hebergement-ajinsafro .aj-result-price .aj-old-price,
+.page-activites-ajinsafro .aj-result-price .aj-old-price {
+  color: var(--meta);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Correctif 4 : action principale en bleu de marque. */
+.page-hebergement-ajinsafro .aj-result-btn,
+.page-activites-ajinsafro .aj-result-btn,
+.page-hebergement-ajinsafro .aj-card-primary,
+.page-activites-ajinsafro .aj-card-primary,
+.page-hebergement-ajinsafro .aj-pack-reserve,
+.page-activites-ajinsafro .aj-pack-reserve {
+  background: var(--brand);
+  color: #fff;
+  border: 1.5px solid var(--brand);
+  box-shadow: none;
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 44px;
+}
+
+.page-hebergement-ajinsafro .aj-result-btn:hover,
+.page-activites-ajinsafro .aj-result-btn:hover,
+.page-hebergement-ajinsafro .aj-card-primary:hover,
+.page-activites-ajinsafro .aj-card-primary:hover,
+.page-hebergement-ajinsafro .aj-pack-reserve:hover,
+.page-activites-ajinsafro .aj-pack-reserve:hover {
+  background: var(--brand-dark);
+  border-color: var(--brand-dark);
+  color: #fff;
+  filter: none;
+  transform: none;
+}
+
+.page-hebergement-ajinsafro .aj-card-secondary,
+.page-activites-ajinsafro .aj-card-secondary,
+.page-hebergement-ajinsafro .aj-pack-secondary,
+.page-activites-ajinsafro .aj-pack-secondary,
+.page-hebergement-ajinsafro .aj-featured-link,
+.page-activites-ajinsafro .aj-featured-link {
+  background: var(--surface);
+  border: 1.5px solid var(--brand);
+  color: var(--brand);
+  box-shadow: none;
+  font-weight: 600;
+}
+
+/* Correctif 7 : etat vide assume plutot qu'un catalogue de demonstration. */
+.page-hebergement-ajinsafro .aj-empty-state,
+.page-activites-ajinsafro .aj-empty-state,
+.page-hebergement-ajinsafro .aj-hotel-empty-card {
+  background: var(--surface);
+  border: 1px dashed #b9cfe6;
+  border-radius: 15px;
+  padding: clamp(20px, 2.6vw, 30px);
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  align-items: flex-start;
+  text-align: start;
+}
+
+.page-hebergement-ajinsafro .aj-empty-state h3,
+.page-activites-ajinsafro .aj-empty-state h3,
+.page-hebergement-ajinsafro .aj-hotel-empty-card strong {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.page-hebergement-ajinsafro .aj-empty-state p,
+.page-activites-ajinsafro .aj-empty-state p,
+.page-hebergement-ajinsafro .aj-hotel-empty-card p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--body);
+  max-width: 56ch;
+}
+
+.page-hebergement-ajinsafro .aj-empty-state button,
+.page-activites-ajinsafro .aj-empty-state button {
+  background: var(--brand);
+  color: #fff;
+  border: 0;
+  border-radius: 9px;
+  padding: 11px 16px;
+  min-height: 44px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── §6 Hajj & Omra ────────────────────────────────────────────────────── */
+
+/* Correctif 5 : la photo passe au gabarit 16/9 du pelerinage. */
+.page-hajj-omra-ajinsafro .ajho-card__media { aspect-ratio: 16 / 9; }
+
+.page-hajj-omra-ajinsafro .ajho-card__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: var(--aj-scrim);
+}
+
+.page-hajj-omra-ajinsafro .ajho-card__media.is-empty { background: var(--aj-hatch); }
+.page-hajj-omra-ajinsafro .ajho-card__media.is-empty img { display: none; }
+
+.page-hajj-omra-ajinsafro .ajho-card__media.is-empty::before {
+  content: "VISUEL À VENIR";
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #2e4c66;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 7px;
+  padding: 6px 11px;
+}
+
+.page-hajj-omra-ajinsafro .ajho-card__badges { z-index: 2; }
+
+/* Correctif 8 : titre 17 px, description a deux lignes, prix en tete de pied. */
+.page-hajj-omra-ajinsafro .ajho-card__body h3 {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.28;
+  color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.page-hajj-omra-ajinsafro .ajho-card__body > p {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--body);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Les trois reperes sont regroupes sur un fond calme, comme la maquette. */
+.page-hajj-omra-ajinsafro .ajho-card__facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px;
+  background: #f6f9fc;
+  border: 0;
+  border-radius: 11px;
+}
+
+.page-hajj-omra-ajinsafro .ajho-card__facts span {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--body);
+}
+
+.page-hajj-omra-ajinsafro .ajho-card__facts b {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.page-hajj-omra-ajinsafro .ajho-card__hotels dt { color: var(--body); }
+.page-hajj-omra-ajinsafro .ajho-card__hotels dd { color: var(--ink); font-size: 13.5px; }
+
+/* Jauge : 8 px, teintee, toujours doublee du chiffre en clair. */
+.page-hajj-omra-ajinsafro .ajho-meter { height: 8px; background: #e2ecf5; }
+.page-hajj-omra-ajinsafro .ajho-meter span { background: var(--ok); }
+.page-hajj-omra-ajinsafro .is-sold-out .ajho-meter span { background: var(--neutral); }
+.page-hajj-omra-ajinsafro .ajho-card__meter.is-warn .ajho-meter span { background: var(--warn); }
+
+.page-hajj-omra-ajinsafro .ajho-card__seats { font-size: 13px; color: var(--body); }
+.page-hajj-omra-ajinsafro .ajho-card__seats .is-available { color: var(--ok); }
+.page-hajj-omra-ajinsafro .ajho-card__seats .is-limited { color: var(--warn); }
+.page-hajj-omra-ajinsafro .ajho-card__seats .is-full { color: var(--neutral); }
+
+/* Correctif 8 : prix 19 px/600, precede de « des ». */
+.page-hajj-omra-ajinsafro .ajho-card__footer {
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.page-hajj-omra-ajinsafro .ajho-card__actions { flex: none; }
+
+.page-hajj-omra-ajinsafro .ajho-card__price small {
+  display: inline;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--body);
+}
+
+.page-hajj-omra-ajinsafro .ajho-card__price strong {
+  font-family: inherit;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+/* Correctif 4 : l'action principale quitte l'orange pour le bleu de marque. */
+.page-hajj-omra-ajinsafro .ajho-btn--primary {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+  min-height: 44px;
+}
+
+.page-hajj-omra-ajinsafro .ajho-btn--primary:hover {
+  background: var(--brand-dark);
+  border-color: var(--brand-dark);
+  color: #fff;
+}
+
+.page-hajj-omra-ajinsafro .ajho-btn--ghost {
+  background: var(--surface);
+  border: 1.5px solid var(--brand);
+  color: var(--brand);
+  min-height: 44px;
+}
+
+.page-hajj-omra-ajinsafro .ajho-btn--gold {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+
+.page-hajj-omra-ajinsafro .ajho-tab.is-active {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+
+.page-hajj-omra-ajinsafro .ajho-chip.is-limited { background: var(--warn); }
+.page-hajj-omra-ajinsafro .ajho-chip.is-full,
+.page-hajj-omra-ajinsafro .ajho-chip.is-expired { background: var(--neutral); }
+.page-hajj-omra-ajinsafro .ajho-chip.is-available { background: var(--ok); }
+
+/* Textes arabes : bloc dedie, jamais melange a un paragraphe francais. */
+.page-hajj-omra-ajinsafro .ajho-ar {
+  display: block;
+  direction: rtl;
+  text-align: right;
+  font-family: "Noto Naskh Arabic", "Segoe UI", serif;
+  line-height: 1.8;
+}
+
+.page-hajj-omra-ajinsafro p.ajho-ar,
+.page-hajj-omra-ajinsafro .ajho-card__body > .ajho-ar {
+  background: #f6f9fc;
+  border-radius: 11px;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+/* Champs de la barre de filtres, au gabarit commun. */
+.page-hajj-omra-ajinsafro .ajho-field select,
+.page-hajj-omra-ajinsafro .ajho-field input[type="date"] {
+  border: 1px solid #cfdcea;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.page-hajj-omra-ajinsafro .ajho-field > span { font-size: 12px; font-weight: 600; color: #2e4c66; }
+
+.page-hajj-omra-ajinsafro .ajho-switch { min-height: 44px; }
