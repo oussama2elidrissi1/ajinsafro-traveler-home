@@ -1909,8 +1909,9 @@ body.aj-mobile-filters-open { overflow: hidden; }
    Body-class overrides — win against any theme/plugin CSS
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* Aplat navy : le degrade et ses halos brouillaient le contraste du bandeau. */
 .page-hebergement-ajinsafro .aj-hero {
-    background: linear-gradient(135deg, #073B70 0%, #0D5EA8 55%, #1783D3 100%) !important;
+    background: var(--brand-dark, #0d3767) !important;
 }
 
 .page-hebergement-ajinsafro .aj-search-button {

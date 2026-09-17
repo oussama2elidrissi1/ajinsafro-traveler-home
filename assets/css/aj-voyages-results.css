@@ -1084,8 +1084,10 @@ body.aj-voyages-drawer-open { overflow: hidden; }
    Body-class overrides — win against any theme/plugin CSS
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* Le bandeau devient une carte navy posee sur le fond : l'aplat est porte par
+   .hero .container, le conteneur exterieur ne peint plus rien. */
 .page-voyages-ajinsafro .aj-voyages-booking .hero {
-    background: linear-gradient(135deg, #073B70 0%, #0D5EA8 55%, #1783D3 100%) !important;
+    background: none !important;
 }
 
 /* Action principale : blanc sur orange plafonnait a 2,6:1, on passe au bleu de
@@ -1164,7 +1166,7 @@ body.aj-voyages-drawer-open { overflow: hidden; }
 }
 
 .page-voyages-ajinsafro .aj-voyages-booking .search-panel {
-    border-color: rgba(247, 148, 29, 0.45) !important;
+    border-color: transparent !important;
 }
 
 .page-voyages-ajinsafro .aj-voyages-booking .aj-voyages-pagination .current {
