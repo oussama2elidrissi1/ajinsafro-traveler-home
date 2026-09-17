@@ -544,6 +544,9 @@
 .aj-groupdeals-fusion .ajgd-card__dest,
 .aj-groupdeals-fusion .ajgd-card__meta {
   font-size: 12.5px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--body);
 }
 
@@ -584,6 +587,12 @@
 }
 
 /* Barre de remplissage : 8 px, teinte selon l'etat, chiffre toujours en clair. */
+.aj-groupdeals-fusion .ajgd-card__progress {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
 .aj-groupdeals-fusion .ajgd-card__progress-bar {
   height: 8px;
   background: #e2ecf5;
@@ -656,15 +665,32 @@
 
 .aj-groupdeals-fusion .ajgd-btn:hover { transform: none; }
 
+/* L'orange ne porte que du brun tres fonce : jamais de blanc dessus. */
 .aj-groupdeals-fusion .ajgd-btn--orange {
-  background: var(--brand);
-  color: #fff;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
   box-shadow: none;
 }
 
 .aj-groupdeals-fusion .ajgd-btn--orange:hover {
-  background: var(--brand-dark);
+  background: #e07310;
+  color: var(--accent-ink);
   box-shadow: none;
+}
+
+/* Dans les cartes et l'appel final, l'action principale passe au bleu de marque. */
+.aj-groupdeals-fusion .ajgd-card .ajgd-btn--orange,
+.aj-groupdeals-fusion .ajgd-final-cta .ajgd-btn--orange {
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+}
+
+.aj-groupdeals-fusion .ajgd-card .ajgd-btn--orange:hover,
+.aj-groupdeals-fusion .ajgd-final-cta .ajgd-btn--orange:hover {
+  background: var(--brand-dark);
+  color: #fff;
 }
 
 .aj-groupdeals-fusion .ajgd-btn--outline-blue {
@@ -681,14 +707,45 @@
   cursor: default;
 }
 
-/* Bandeau d'appel : l'orange reste possible avec le brun fonce. */
-.aj-groupdeals-fusion .ajgd-btn--lg.ajgd-btn--orange {
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-weight: 700;
+
+/* Panneau de recherche : meme gabarit que les autres catalogues. */
+.aj-groupdeals-fusion .ajgd-search-box {
+  border: 0;
+  border-radius: 16px;
+  box-shadow: none;
 }
 
-.aj-groupdeals-fusion .ajgd-btn--lg.ajgd-btn--orange:hover { background: #e07310; color: var(--accent-ink); }
+.aj-groupdeals-fusion .ajgd-search-btn {
+  background: var(--brand);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: 44px;
+  box-shadow: none;
+}
+
+.aj-groupdeals-fusion .ajgd-search-btn:hover {
+  background: var(--brand-dark);
+  box-shadow: none;
+}
+
+/* Encart conseils : carte sobre, plus de degrade tricolore. */
+.aj-groupdeals-fusion .ajgd-promo-card {
+  background: var(--line-soft);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  box-shadow: none;
+}
+
+.aj-groupdeals-fusion .ajgd-promo-eyebrow {
+  font-family: ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c2570a;
+}
 
 /* Etats vides : meme traitement que les autres catalogues. */
 .aj-groupdeals-fusion .ajgd-empty-state h3 { color: var(--ink); font-size: 16px; font-weight: 600; }
@@ -1453,6 +1510,16 @@
 
 .aj-groupdeals-fusion .ajgd-cta-box p { font-size: 14.5px; line-height: 1.55; color: var(--body); }
 .aj-groupdeals-fusion .ajgd-cta-deco { display: none; }
+
+/* Le texte prend la place restante pour que les deux actions tiennent cote a cote. */
+.aj-groupdeals-fusion .ajgd-cta-content {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.aj-groupdeals-fusion .ajgd-cta-box > .ajgd-btn {
+  flex: none;
+}
 
 @media (max-width: 860px) {
   .aj-groupdeals-fusion .ajgd-hero-grid { grid-template-columns: minmax(0, 1fr); }

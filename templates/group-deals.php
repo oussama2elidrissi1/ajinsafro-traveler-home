@@ -820,9 +820,9 @@ if ($current_group_deal_slug !== '' && ! empty($all_deals)) {
                         <h2>Comment ça marche&nbsp;?</h2>
                     </div>
                     <div class="ajgd-how-grid">
-                        <article class="ajgd-how-card"><div class="ajgd-how-icon">&#8595;</div><div><h3>Des tarifs dégressifs</h3><p>Le prix par personne évolue en fonction du nombre total de participants. Plus le groupe se remplit, plus le tarif devient avantageux.</p></div></article>
-                        <article class="ajgd-how-card"><div class="ajgd-how-icon">&#10003;</div><div><h3>Départ confirmé</h3><p>Le voyage est confirmé dès que le nombre minimum de participants requis est atteint. Vous etes informe a chaque etape.</p></div></article>
-                        <article class="ajgd-how-card"><div class="ajgd-how-icon">&#128200;</div><div><h3>Suivi en temps réel</h3><p>Consultez à tout moment le niveau de remplissage du groupe, les places restantes et l'evolution du tarif propose.</p></div></article>
+                        <article class="ajgd-how-card"><div class="ajgd-how-icon">1</div><div><h3>Des tarifs dégressifs</h3><p>Le prix par personne évolue en fonction du nombre total de participants. Plus le groupe se remplit, plus le tarif devient avantageux.</p></div></article>
+                        <article class="ajgd-how-card"><div class="ajgd-how-icon">2</div><div><h3>Départ confirmé</h3><p>Le voyage est confirmé dès que le nombre minimum de participants requis est atteint. Vous etes informe a chaque etape.</p></div></article>
+                        <article class="ajgd-how-card"><div class="ajgd-how-icon">3</div><div><h3>Suivi en temps réel</h3><p>Consultez à tout moment le niveau de remplissage du groupe, les places restantes et l'evolution du tarif propose.</p></div></article>
                     </div>
                 </div>
             </section>
@@ -848,7 +848,7 @@ if ($current_group_deal_slug !== '' && ! empty($all_deals)) {
                     <div class="ajgd-results-head">
                         <div class="ajgd-results-topline">
                             <div>
-                                <h2><?php echo esc_html(number_format_i18n($found_posts)); ?> offres groupe trouvees</h2>
+                                <h2><?php echo esc_html(number_format_i18n($found_posts)); ?> offres groupe trouvées</h2>
                                 <div class="ajgd-result-count">
                                     <?php echo $min_price_found !== null
                                         ? esc_html('dès ' . number_format_i18n((int) $min_price_found) . ' DH par personne')
