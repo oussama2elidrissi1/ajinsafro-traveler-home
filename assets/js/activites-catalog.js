@@ -187,7 +187,7 @@
     fillSelect(els.filterCountry, countries, 'Tous les pays');
     fillSelect(els.mobileCountry, countries, 'Tous les pays');
 
-    fillSelect(els.heroCategory, categories, 'Toutes les categories');
+    fillSelect(els.heroCategory, categories, 'Toutes les catégories');
     renderCategoryCheckboxes(els.filterCategories, 'aj-filter-cat');
     renderCategoryCheckboxes(els.mobileCategories, 'aj-mobile-cat');
 
@@ -653,8 +653,8 @@
     if (state.maxPrice) chips.push(`Max ${state.maxPrice} DH`);
     if (state.duration) chips.push(durationLabel(state.duration));
     if (state.promoOnly) chips.push('Promotions');
-    if (state.availableToday) chips.push('Disponible aujourd hui');
-    if (state.instantBooking) chips.push('Reservation instantanee');
+    if (state.availableToday) chips.push('Disponible aujourd’hui');
+    if (state.instantBooking) chips.push('Réservation instantanée');
     if (state.withGuide) chips.push('Avec guide');
     if (state.transportIncluded) chips.push('Transport inclus');
 

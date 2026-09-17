@@ -497,7 +497,7 @@ if ($promo_only) {
 if ($guaranteed_only) {
     $args = $current_args;
     unset($args['guaranteed']);
-    $active_chips[] = ['label' => 'Departs garantis', 'url' => $build_url($args)];
+    $active_chips[] = ['label' => 'Départs garantis', 'url' => $build_url($args)];
 }
 foreach ($selected_services as $service_slug) {
     if (! isset($available_services[$service_slug])) {
@@ -514,7 +514,7 @@ foreach ($selected_services as $service_slug) {
 $sort_labels = [
     'recommended' => 'Recommandees',
     'price_asc' => 'Prix croissant',
-    'price_desc' => 'Prix decroissant',
+    'price_desc' => 'Prix décroissant',
     'discount_desc' => 'Reduction la plus forte',
     'newest' => 'Plus recentes',
 ];
@@ -836,7 +836,7 @@ if ($current_group_deal_slug !== '' && ! empty($all_deals)) {
                     </div>
                     <div class="ajgd-filter-title">
                         <h2>Filtrer par</h2>
-                        <a class="ajgd-clear-link" href="<?php echo esc_url($group_deals_url); ?>">Reinitialiser</a>
+                        <a class="ajgd-clear-link" href="<?php echo esc_url($group_deals_url); ?>">Réinitialiser</a>
                     </div>
                     <?php
                     $group_deals_filter_prefix = 'ajgd-desktop';
@@ -990,7 +990,7 @@ if ($current_group_deal_slug !== '' && ! empty($all_deals)) {
                         <div class="ajgd-benefit"><span class="ajgd-benefit-icon">&#128176;</span><div><h3>Tarifs négociés</h3><p>Profitez de tarifs avantageux grâce à la force du voyage en groupe.</p></div></div>
                         <div class="ajgd-benefit"><span class="ajgd-benefit-icon">&#128736;</span><div><h3>Accompagnement Ajinsafro</h3><p>Notre equipe vous accompagne avant, pendant et apres votre reservation.</p></div></div>
                         <div class="ajgd-benefit"><span class="ajgd-benefit-icon">&#128100;</span><div><h3>Offres adaptees a chaque profil</h3><p>Familles, amis, couples, groupes prives ou voyageurs individuels : chacun trouve l'offre qui lui convient.</p></div></div>
-                        <div class="ajgd-benefit"><span class="ajgd-benefit-icon">&#128179;</span><div><h3>Reservation simple et flexible</h3><p>Une experience de reservation claire, rapide et pensee pour faciliter votre inscription.</p></div></div>
+                        <div class="ajgd-benefit"><span class="ajgd-benefit-icon">&#128179;</span><div><h3>Réservation simple et flexible</h3><p>Une experience de reservation claire, rapide et pensee pour faciliter votre inscription.</p></div></div>
                     </div>
                 </div>
             </section>
@@ -1012,8 +1012,8 @@ if ($current_group_deal_slug !== '' && ! empty($all_deals)) {
                     <div class="ajgd-cta-box">
                         <div class="ajgd-cta-deco" aria-hidden="true"></div>
                         <div class="ajgd-cta-content">
-                            <h2>Pret a organiser votre prochain voyage en groupe ?</h2>
-                            <p>Decouvrez nos offres disponibles ou demandez un accompagnement personnalise pour votre projet de voyage en groupe.</p>
+                            <h2>Prêt à organiser votre prochain voyage en groupe ?</h2>
+                            <p>Découvrez nos offres disponibles ou demandez un accompagnement personnalisé pour votre projet de voyage en groupe.</p>
                         </div>
                         <a class="ajgd-btn ajgd-btn--orange ajgd-btn--lg" href="#ajgd-offres">Voir les offres</a>
                         <a class="ajgd-btn ajgd-btn--outline-blue ajgd-btn--lg" href="<?php echo esc_url($cta_devis_url); ?>" <?php if ($cta_is_external) { echo 'target="_blank" rel="noopener noreferrer"'; } ?>>Demander un devis groupe</a>

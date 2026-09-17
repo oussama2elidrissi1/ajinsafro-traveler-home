@@ -170,7 +170,7 @@
 
 .aj-field input,
 .aj-field select,
-.aj-filter-group input,
+.aj-filter-group input:not([type="checkbox"]):not([type="radio"]),
 .aj-filter-group select {
     width: 100%;
     min-height: 52px;
@@ -2008,7 +2008,7 @@ body.aj-mobile-filters-open { overflow: hidden; }
 }
 
 .page-hebergement-ajinsafro .aj-section-head h2 {
-    color: #073B70 !important;
+    color: #0d2137 !important;
 }
 
 .page-hebergement-ajinsafro .aj-mobile-filter-trigger,

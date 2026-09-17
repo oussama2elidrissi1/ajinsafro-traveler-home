@@ -924,11 +924,11 @@ foreach ($post_ids as $post_id) {
     $service_chips = [];
     $service_keywords = [
         'Vol inclus' => ['vol', 'flight'],
-        'Hotel inclus' => ['hotel', 'hebergement', 'riad', 'resort'],
+        'Hôtel inclus' => ['hotel', 'hebergement', 'riad', 'resort'],
         'Transfert' => ['transfert', 'transfer', 'navette'],
         'Guide' => ['guide', 'accompagne'],
         'Visa' => ['visa'],
-        'Activites' => ['activite', 'excursion', 'visite'],
+        'Activités' => ['activite', 'excursion', 'visite'],
         'Low cost' => ['low cost', 'economique', 'budget'],
         'Premium' => ['premium', 'luxe', 'vip'],
         'Famille' => ['famille', 'family'],
@@ -1156,7 +1156,7 @@ if ($dest !== '') {
     $active_filters[] = ['label' => 'Destination: ' . $dest, 'url' => $build_url(['destination' => ''])];
 }
 if ($depart_date !== '') {
-    $active_filters[] = ['label' => 'Depart: ' . $format_date($depart_date), 'url' => $build_url(['date_depart' => ''])];
+    $active_filters[] = ['label' => 'Départ : ' . $format_date($depart_date), 'url' => $build_url(['date_depart' => ''])];
 }
 if ($price_min > 0 || $price_max > 0) {
     $budget_label = 'Budget';
@@ -1170,7 +1170,7 @@ if ($price_min > 0 || $price_max > 0) {
     $active_filters[] = ['label' => $budget_label, 'url' => $build_url(['budget_min' => '', 'budget_max' => ''])];
 }
 if ($duration_min > 0 || $duration_max > 0) {
-    $duration_filter_label = 'Duree';
+    $duration_filter_label = 'Durée';
     if ($duration_min > 0 && $duration_max > 0) {
         $duration_filter_label .= ': ' . $duration_min . '-' . $duration_max . ' j';
     } elseif ($duration_min > 0) {
@@ -1199,10 +1199,10 @@ if ($available_only) {
 $sort_options = [
     'recommended' => 'Recommandes',
     'price_asc' => 'Prix croissant',
-    'price_desc' => 'Prix decroissant',
-    'duration_asc' => 'Duree courte',
-    'duration_desc' => 'Duree longue',
-    'departure_soonest' => 'Departs les plus proches',
+    'price_desc' => 'Prix décroissant',
+    'duration_asc' => 'Durée courte',
+    'duration_desc' => 'Durée longue',
+    'departure_soonest' => 'Départs les plus proches',
 ];
 
 $rating_label = static function (float $rating): string {
@@ -1454,7 +1454,7 @@ $rating_label = static function (float $rating): string {
                         <div class="empty-state" style="display:block;">
                             <h3>Aucun voyage trouve</h3>
                             <p>Essayez de modifier votre budget, vos dates ou votre destination.</p>
-                            <a class="primary-btn" href="<?php echo esc_url($voyages_page_url); ?>">Reinitialiser les filtres</a>
+                            <a class="primary-btn" href="<?php echo esc_url($voyages_page_url); ?>">Réinitialiser les filtres</a>
                         </div>
                     <?php } ?>
                 </section>
