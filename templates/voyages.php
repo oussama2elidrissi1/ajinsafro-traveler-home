@@ -1118,9 +1118,9 @@ foreach ($cards as $card) {
     }
 }
 
-$results_target = $dest !== '' ? $dest : ($keyword !== '' ? $keyword : 'votre selection');
-$results_headline = sprintf('%d voyages trouves', $total_results);
-if ($results_target !== 'votre selection') {
+$results_target = $dest !== '' ? $dest : ($keyword !== '' ? $keyword : 'votre sélection');
+$results_headline = sprintf('%d voyages trouvés', $total_results);
+if ($results_target !== 'votre sélection') {
     $results_headline .= ' pour ' . $results_target;
 }
 
@@ -1227,8 +1227,9 @@ $rating_label = static function (float $rating): string {
         <div class="aj-voyages-booking ajinsafro-page-container" id="aj-voyages-booking">
             <section class="hero">
                 <div class="container">
-                    <h1 class="hero-title">Voyages, sejours et circuits</h1>
-                    <p class="hero-subtitle">Comparez nos offres, choisissez votre destination et reservez votre prochain voyage avec Ajinsafro.</p>
+                    <span class="hero-eyebrow">Sélection Ajinsafro</span>
+                    <h1 class="hero-title">Voyages, séjours et circuits</h1>
+                    <p class="hero-subtitle">Comparez nos offres, choisissez votre destination et réservez votre prochain départ avec un conseiller Ajinsafro.</p>
 
                     <form class="search-panel" method="get" action="<?php echo esc_url($voyages_page_url); ?>">
                         <input type="hidden" name="sort" value="<?php echo esc_attr($sort); ?>">
@@ -1279,7 +1280,7 @@ $rating_label = static function (float $rating): string {
                                 <h2><?php echo esc_html($results_headline); ?></h2>
                                 <div class="result-count">
                                     <?php if ($min_price_found !== null) { ?>
-                                        A partir de <?php echo esc_html($format_price($min_price_found)); ?> DH par personne
+                                        À partir de <?php echo esc_html($format_price($min_price_found)); ?> DH par personne
                                     <?php } else { ?>
                                         Tarifs disponibles sur demande
                                     <?php } ?>
