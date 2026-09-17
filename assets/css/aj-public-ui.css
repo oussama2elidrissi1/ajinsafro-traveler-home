@@ -10,6 +10,7 @@
  *   §1  Primitives partagees (visuel manquant, jauge, etat vide)
  *   §2  Regles transverses (champs, cibles tactiles, RTL, 360 px)
  *   §3  Voyages
+ *   §4  Group Deals
  */
 
 /* ── §0 Jetons ─────────────────────────────────────────────────────────── */
@@ -402,3 +403,253 @@
   .aj-voyages-booking .card-actions { grid-template-columns: 1fr; }
   .aj-voyages-booking .photo-badges { flex-wrap: wrap; }
 }
+
+/* ── §4 Group Deals ────────────────────────────────────────────────────── */
+
+/* Correctif 2 : grille fluide, cartes de hauteur egale, pied aligne. */
+.aj-groupdeals-fusion .ajgd-deals-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
+  align-items: stretch;
+}
+
+.aj-groupdeals-fusion .ajgd-card {
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+}
+
+.aj-groupdeals-fusion .ajgd-card:hover {
+  border-color: #b9cfe6;
+  transform: none;
+}
+
+.aj-groupdeals-fusion .ajgd-card__body {
+  min-width: 0;
+  gap: 10px;
+}
+
+/* Correctif 3 : voile en haut de la photo, un badge par coin. */
+.aj-groupdeals-fusion .ajgd-card__media { aspect-ratio: 16 / 9; }
+
+.aj-groupdeals-fusion .ajgd-card__media::after {
+  inset: 0;
+  height: auto;
+  background: var(--aj-scrim);
+}
+
+.aj-groupdeals-fusion .ajgd-card__badges {
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.aj-groupdeals-fusion .ajgd-badge {
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: none;
+  white-space: nowrap;
+}
+
+.aj-groupdeals-fusion .ajgd-badge--blue { background: rgba(9, 30, 52, 0.72); color: #fff; }
+.aj-groupdeals-fusion .ajgd-badge--green,
+.aj-groupdeals-fusion .ajgd-badge--guaranteed { background: var(--ok); color: #fff; }
+.aj-groupdeals-fusion .ajgd-badge--almost,
+.aj-groupdeals-fusion .ajgd-badge--progress { background: rgba(9, 30, 52, 0.72); color: #fff; }
+.aj-groupdeals-fusion .ajgd-badge--last,
+.aj-groupdeals-fusion .ajgd-badge--request { background: var(--warn); color: #fff; }
+.aj-groupdeals-fusion .ajgd-badge--full { background: var(--neutral); color: #fff; }
+/* Promo : seul cas ou l'orange porte du texte, en brun tres fonce. */
+.aj-groupdeals-fusion .ajgd-badge--orange { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+
+/* Correctif 5 : substitut de visuel, jamais d'icone de fichier casse. */
+.aj-groupdeals-fusion .ajgd-card__media.is-fallback { background: var(--aj-hatch); }
+.aj-groupdeals-fusion .ajgd-card__media.is-fallback img { display: none; }
+
+.aj-groupdeals-fusion .ajgd-card__media.is-fallback::before {
+  content: "VISUEL À VENIR";
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #2e4c66;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 7px;
+  padding: 6px 11px;
+}
+
+/* Correctif 8 : quatre niveaux, titre 17 px, meta sur une ligne lisible. */
+.aj-groupdeals-fusion .ajgd-card__title {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.aj-groupdeals-fusion .ajgd-card__dest,
+.aj-groupdeals-fusion .ajgd-card__meta {
+  font-size: 12.5px;
+  color: var(--body);
+}
+
+.aj-groupdeals-fusion .ajgd-card__meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.aj-groupdeals-fusion .ajgd-card__meta span {
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 0;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--body);
+}
+
+.aj-groupdeals-fusion .ajgd-card__excerpt {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--body);
+}
+
+.aj-groupdeals-fusion .ajgd-card__tags {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--body);
+}
+
+/* Les tags redescendent en neutre : l'orange reste au prix et aux promos. */
+.aj-groupdeals-fusion .ajgd-card__tags span {
+  background: var(--line-soft);
+  color: var(--body);
+  border: 1px solid var(--line);
+  font-weight: 500;
+}
+
+/* Barre de remplissage : 8 px, teinte selon l'etat, chiffre toujours en clair. */
+.aj-groupdeals-fusion .ajgd-card__progress-bar {
+  height: 8px;
+  background: #e2ecf5;
+}
+
+.aj-groupdeals-fusion .ajgd-card__progress-bar span { background: var(--ok); }
+.aj-groupdeals-fusion .ajgd-card__progress.is-warn .ajgd-card__progress-bar span { background: var(--warn); }
+.aj-groupdeals-fusion .ajgd-card__progress.is-full .ajgd-card__progress-bar span { background: var(--neutral); }
+
+.aj-groupdeals-fusion .ajgd-card__progress-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--body);
+  margin-bottom: 7px;
+}
+
+.aj-groupdeals-fusion .ajgd-card__progress-top b { font-weight: 600; color: var(--ok); }
+.aj-groupdeals-fusion .ajgd-card__progress.is-warn .ajgd-card__progress-top b { color: var(--warn); }
+.aj-groupdeals-fusion .ajgd-card__progress.is-full .ajgd-card__progress-top b { color: var(--neutral); }
+
+/* Pied : prix a gauche, une action a droite, aligne d'une carte a l'autre. */
+.aj-groupdeals-fusion .ajgd-card__footer {
+  margin-top: auto;
+  padding-top: 13px;
+  border-top: 1px solid var(--line-soft);
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.aj-groupdeals-fusion .ajgd-card__price small {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--body);
+}
+
+.aj-groupdeals-fusion .ajgd-card__price strong {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.aj-groupdeals-fusion .ajgd-card__price del {
+  color: var(--meta);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.aj-groupdeals-fusion .ajgd-card__price span { font-size: 12.5px; color: var(--body); }
+
+.aj-groupdeals-fusion .ajgd-card__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Correctif 4 : action principale en bleu de marque, secondaire en contour. */
+.aj-groupdeals-fusion .ajgd-btn {
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 44px;
+}
+
+.aj-groupdeals-fusion .ajgd-btn:hover { transform: none; }
+
+.aj-groupdeals-fusion .ajgd-btn--orange {
+  background: var(--brand);
+  color: #fff;
+  box-shadow: none;
+}
+
+.aj-groupdeals-fusion .ajgd-btn--orange:hover {
+  background: var(--brand-dark);
+  box-shadow: none;
+}
+
+.aj-groupdeals-fusion .ajgd-btn--outline-blue {
+  background: var(--surface);
+  border: 1.5px solid var(--brand);
+  color: var(--brand);
+}
+
+.aj-groupdeals-fusion .ajgd-btn--outline-blue:hover { background: var(--line-soft); color: var(--brand-dark); }
+
+.aj-groupdeals-fusion .ajgd-btn.is-disabled {
+  background: var(--neutral);
+  color: #fff;
+  cursor: default;
+}
+
+/* Bandeau d'appel : l'orange reste possible avec le brun fonce. */
+.aj-groupdeals-fusion .ajgd-btn--lg.ajgd-btn--orange {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+
+.aj-groupdeals-fusion .ajgd-btn--lg.ajgd-btn--orange:hover { background: #e07310; color: var(--accent-ink); }
+
+/* Etats vides : meme traitement que les autres catalogues. */
+.aj-groupdeals-fusion .ajgd-empty-state h3 { color: var(--ink); font-size: 16px; font-weight: 600; }
+.aj-groupdeals-fusion .ajgd-empty-state p { color: var(--body); font-size: 13.5px; line-height: 1.55; }
