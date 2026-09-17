@@ -1312,8 +1312,8 @@ $rating_label = static function (float $rating): string {
 
                     <div class="deal-strip">
                         <div>
-                            <strong>Voyages selectionnes avec l'accompagnement Ajinsafro</strong>
-                            <span>Departures, tarifs et disponibilites mis a jour depuis vos offres WordPress.</span>
+                            <strong>Voyages sélectionnés avec l'accompagnement Ajinsafro</strong>
+                            <span>Départs, tarifs et disponibilités mis à jour depuis vos offres WordPress.</span>
                         </div>
                         <a href="<?php echo esc_url($voyages_page_url); ?>" class="deal-strip__link">Explorer</a>
                     </div>
@@ -1326,26 +1326,42 @@ $rating_label = static function (float $rating): string {
                                         <a href="<?php echo esc_url($card['permalink']); ?>" class="photo-link" aria-label="<?php echo esc_attr($card['title']); ?>">
                                             <?php echo $card['image_html']; ?>
                                             <?php if (! empty($card['image_is_fallback'])) { ?>
-                                                <span class="photo-placeholder">Aucune photo</span>
+                                                <span class="photo-placeholder">VISUEL À VENIR</span>
                                             <?php } ?>
                                         </a>
+                                        <?php
+                                        // Un badge par coin : categorie a gauche, disponibilite a droite.
+                                        // Le statut surnumeraire descend en pied de carte pour ne pas empiler.
+                                        $badge_left = $card['is_featured']
+                                            ? 'Sélection Ajinsafro'
+                                            : ( ! empty($card['card_badge']) ? (string) $card['card_badge'] : '' );
+                                        $stock_label = ! empty($card['stock_badge']) ? (string) $card['stock_badge']['label'] : '';
+                                        $stock_tone = '';
+                                        if ($stock_label !== '') {
+                                            $normalized = function_exists('remove_accents') ? strtolower(remove_accents($stock_label)) : strtolower($stock_label);
+                                            if (strpos($normalized, 'complet') !== false) {
+                                                $stock_tone = ' is-full';
+                                            } elseif (strpos($normalized, 'dernier') !== false || strpos($normalized, 'limit') !== false || preg_match('/^\\d+\\s/', $normalized)) {
+                                                $stock_tone = ' is-warn';
+                                            }
+                                        }
+                                        ?>
                                         <div class="photo-badges">
-                                            <?php if ($card['is_featured']) { ?>
-                                                <span class="photo-badge">Selection Ajinsafro</span>
+                                            <?php if ($badge_left !== '') { ?>
+                                                <span class="photo-badge photo-badge--type"><?php echo esc_html($badge_left); ?></span>
                                             <?php } ?>
-                                            <?php if (! empty($card['card_badge']) && strtolower((string) $card['card_badge']) !== 'selection ajinsafro') { ?>
-                                                <span class="photo-badge photo-badge--type"><?php echo esc_html($card['card_badge']); ?></span>
-                                            <?php } ?>
-                                            <?php if ($card['is_promo']) { ?>
+                                            <?php if ($stock_label !== '') { ?>
+                                                <span class="photo-badge photo-badge--stock<?php echo esc_attr($stock_tone); ?>"><?php echo esc_html($stock_label); ?></span>
+                                            <?php } elseif ($card['is_promo']) { ?>
                                                 <span class="photo-badge photo-badge--promo">Promo</span>
-                                            <?php } ?>
-                                            <?php if (! empty($card['stock_badge'])) { ?>
-                                                <span class="photo-badge photo-badge--stock"><?php echo esc_html($card['stock_badge']['label']); ?></span>
                                             <?php } ?>
                                         </div>
                                     </div>
 
                                     <div class="hotel-main">
+                                        <?php if ($card['is_promo'] && $stock_label !== '') { ?>
+                                            <span class="card-status card-status--promo">Promotion en cours</span>
+                                        <?php } ?>
                                         <div class="meta meta--caps meta--compact">
                                             <?php if (! empty($card['tour_types'])) { ?><span><?php echo esc_html(implode(' / ', $card['tour_types'])); ?></span><?php } ?>
                                             <?php if (empty($card['tour_types']) && ! empty($card['themes'])) { ?><span><?php echo esc_html(implode(' / ', $card['themes'])); ?></span><?php } ?>
@@ -1382,14 +1398,14 @@ $rating_label = static function (float $rating): string {
                                         <?php } ?>
 
                                         <div class="price-area">
-                                            <small>A partir de</small>
+                                            <small>dès</small>
                                             <div>
                                                 <?php if ($card['price_reference_label'] !== '') { ?>
                                                     <span class="old-price"><?php echo esc_html($card['price_reference_label']); ?> DH</span>
                                                 <?php } ?>
                                                 <span class="price"><?php echo esc_html($card['price_from_label'] !== '' ? $card['price_from_label'] . ' DH' : 'Prix sur demande'); ?></span>
                                             </div>
-                                            <div class="tax"><?php echo esc_html($card['price_from_label'] !== '' ? 'par personne' : 'selon disponibilite'); ?></div>
+                                            <div class="tax"><?php echo esc_html($card['price_from_label'] !== '' ? 'par personne' : 'selon disponibilité'); ?></div>
                                         </div>
 
                                         <div class="card-actions card-actions--single">

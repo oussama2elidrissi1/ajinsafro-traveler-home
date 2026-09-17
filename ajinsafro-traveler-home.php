@@ -295,6 +295,14 @@ function ajth_enqueue_front_assets()
         }
     }
 
+    // Corrections de visibilite : chargee en dernier pour primer sur les feuilles de page.
+    wp_enqueue_style(
+        'ajth-public-ui-css',
+        AJTH_URL.'assets/css/aj-public-ui.css',
+        ['ajth-home-css'],
+        filemtime(AJTH_DIR.'assets/css/aj-public-ui.css')
+    );
+
     if ($load_home_sections) {
         wp_enqueue_style(
             'ajth-home-reference-accordion-css',
