@@ -487,8 +487,25 @@ if (is_singular('st_hotel')) {
                                 <?php } else { ?>
                                     <div class="aj-hotel-empty-card">
                                         <strong>Chambres à confirmer</strong>
-                                        <p>Les chambres seront confirmées par notre conseiller Ajinsafro. Demandez un devis pour recevoir les disponibilités détaillées.</p>
-                                        <a class="aj-pack-reserve aj-pack-reserve--block" href="<?php echo esc_url($whatsapp_url); ?>" target="_blank" rel="noopener">Demander un devis</a>
+                                        <p>Les chambres de cet établissement sont confirmées au cas par cas par un conseiller Ajinsafro. Envoyez votre demande, nous revenons vers vous avec les disponibilités et le tarif exact.</p>
+                                        <?php
+                                            // Parcours annonce au visiteur : ce qui se passe apres sa demande.
+                                            $request_steps = array(
+                                                array('1', 'Vous envoyez la demande', 'Dates, nombre de voyageurs et de chambres.'),
+                                                array('2', 'Nous vérifions', 'Réponse avec les chambres réellement disponibles.'),
+                                                array('3', 'Vous confirmez', 'Paiement en agence ou par virement, voucher à la clé.'),
+                                            );
+                                        ?>
+                                        <div class="aj-hotel-steps">
+                                            <?php foreach ($request_steps as $request_step) { ?>
+                                                <div class="aj-hotel-step">
+                                                    <b><?php echo esc_html($request_step[0]); ?></b>
+                                                    <strong><?php echo esc_html($request_step[1]); ?></strong>
+                                                    <span><?php echo esc_html($request_step[2]); ?></span>
+                                                </div>
+                                            <?php } ?>
+                                        </div>
+                                        <a class="aj-pack-reserve aj-pack-reserve--block" href="<?php echo esc_url($whatsapp_url); ?>" target="_blank" rel="noopener">Demander un devis pour ces dates</a>
                                     </div>
                                 <?php } ?>
                             </section>
@@ -561,8 +578,21 @@ if (is_singular('st_hotel')) {
                                             <input type="number" min="1" max="6" name="rooms" value="<?php echo esc_attr((string) $room_value); ?>">
                                         </label>
                                     </div>
-                                    <button type="submit" class="aj-pack-reserve aj-pack-reserve--block">Vérifier disponibilité</button>
+                                    <button type="submit" class="aj-pack-reserve aj-pack-reserve--block">Vérifier la disponibilité</button>
                                 </form>
+
+                                <?php // Estimation indicative : le tarif ferme reste celui du conseiller. ?>
+                                <div class="aj-hotel-estimate" data-aj-estimate data-night-price="<?php echo esc_attr((string) (float) $hotel_price); ?>">
+                                    <div class="aj-hotel-estimate-row">
+                                        <span data-aj-estimate-detail>Sélectionnez vos dates</span>
+                                        <b data-aj-estimate-subtotal>&mdash;</b>
+                                    </div>
+                                    <div class="aj-hotel-estimate-row aj-hotel-estimate-total">
+                                        <span>Total estimé</span>
+                                        <b data-aj-estimate-total>&mdash;</b>
+                                    </div>
+                                    <small>Estimation indicative. Le tarif final est confirmé par votre conseiller.</small>
+                                </div>
                                 <a class="aj-pack-secondary aj-pack-secondary--block" href="<?php echo esc_url($whatsapp_url); ?>" target="_blank" rel="noopener">Demander un devis</a>
                                 <?php if ($hotel_phone !== '' || $hotel_email !== '') { ?>
                                     <div class="aj-hotel-contact-quick">
@@ -570,6 +600,15 @@ if (is_singular('st_hotel')) {
                                         <?php if ($hotel_email !== '') { ?><span><?php echo esc_html($hotel_email); ?></span><?php } ?>
                                     </div>
                                 <?php } ?>
+                            </div>
+
+                            <div class="aj-hotel-perks">
+                                <strong>Inclus avec Ajinsafro</strong>
+                                <ul>
+                                    <li>Assistance Ajinsafro pendant tout le séjour</li>
+                                    <li>Paiement en agence ou par virement</li>
+                                    <li>Tarifs négociés, sans frais de dossier</li>
+                                </ul>
                             </div>
                         </aside>
                     </div>
