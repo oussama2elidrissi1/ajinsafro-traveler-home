@@ -33,6 +33,67 @@ if (! function_exists('ajinsafro_get_voyages_context')) {
     }
 }
 
+if (! function_exists('ajinsafro_get_location_titles')) {
+    /**
+     * Titres des posts `location` designes par une meta `multi_location`.
+     *
+     * Le theme stocke « _54_,_55_ ». Les titres sont mis en cache pour la
+     * duree du rendu : une seule requete, quel que soit le nombre de cartes.
+     *
+     * @return array<int, string>
+     */
+    function ajinsafro_get_location_titles(array $ids): array
+    {
+        static $cache = [];
+
+        $missing = array_values(array_diff($ids, array_keys($cache)));
+
+        if ($missing !== []) {
+            $posts = get_posts([
+                'post_type' => 'location',
+                'post__in' => $missing,
+                'posts_per_page' => count($missing),
+                'post_status' => 'publish',
+                'orderby' => 'post__in',
+                'suppress_filters' => false,
+                'no_found_rows' => true,
+                'update_post_meta_cache' => false,
+                'update_post_term_cache' => false,
+            ]);
+
+            foreach ($missing as $id) {
+                $cache[$id] = '';
+            }
+            foreach ($posts as $location_post) {
+                $cache[(int) $location_post->ID] = trim((string) $location_post->post_title);
+            }
+        }
+
+        $titles = [];
+        foreach ($ids as $id) {
+            if (($cache[$id] ?? '') !== '') {
+                $titles[] = $cache[$id];
+            }
+        }
+
+        return $titles;
+    }
+}
+
+if (! function_exists('ajinsafro_parse_multi_location')) {
+    /** Identifiants de lieux contenus dans une meta `multi_location`. */
+    function ajinsafro_parse_multi_location(string $value): array
+    {
+        if (trim($value) === '') {
+            return [];
+        }
+
+        preg_match_all('/_(\d+)_/', $value, $matches);
+
+        return array_values(array_unique(array_map('intval', $matches[1] ?? [])));
+    }
+}
+
 if (! function_exists('ajinsafro_get_tour_destination')) {
     function ajinsafro_get_tour_destination(int $post_id, array $meta = []): string
     {
@@ -48,6 +109,16 @@ if (! function_exists('ajinsafro_get_tour_destination')) {
             $name = trim((string) $taxonomy_names[0]);
             if ($name !== '') {
                 return $name;
+            }
+        }
+
+        // Source principale du theme Traveler : « _54_,_55_ » vers des posts `location`.
+        $multi_location = isset($meta['multi_location'][0]) ? (string) $meta['multi_location'][0] : '';
+        $location_ids = ajinsafro_parse_multi_location($multi_location);
+        if ($location_ids !== []) {
+            $titles = ajinsafro_get_location_titles($location_ids);
+            if ($titles !== []) {
+                return implode(', ', $titles);
             }
         }
 

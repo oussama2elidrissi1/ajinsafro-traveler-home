@@ -1796,6 +1796,15 @@
   box-sizing: border-box;
 }
 
+/* Le theme redefinit `.container` apres cette feuille et remet l'encoche a
+   zero : le titre et le panneau de recherche se collent alors au bord du
+   bandeau. On la verrouille sur un selecteur porte par la page. */
+.page-voyages-ajinsafro .aj-voyages-booking .hero > .container {
+  padding: clamp(22px, 3.4vw, 44px) !important;
+  box-sizing: border-box !important;
+  max-width: 1320px;
+}
+
 .aj-voyages-booking .hero-title {
   font-size: clamp(28px, 3.8vw, 46px);
   font-weight: 600;
