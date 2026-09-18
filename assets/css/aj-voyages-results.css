@@ -1140,20 +1140,20 @@ body.aj-voyages-drawer-open { overflow: hidden; }
 }
 
 .page-voyages-ajinsafro .aj-voyages-booking .hotel-card:hover {
-    border-color: rgba(247, 148, 29, 0.35) !important;
-    box-shadow: 0 16px 40px rgba(7, 59, 112, 0.12) !important;
+    border-color: #b9cfe6 !important;
+    box-shadow: none !important;
 }
 
 .page-voyages-ajinsafro .aj-voyages-booking .filter-title h2 {
-    color: #073B70 !important;
+    color: var(--ink, #0d2137) !important;
 }
 
 .page-voyages-ajinsafro .aj-voyages-booking .accordion summary {
-    color: #073B70 !important;
+    color: #2e4c66 !important;
 }
 
 .page-voyages-ajinsafro .aj-voyages-booking .deal-strip {
-    background: linear-gradient(135deg, #073B70, #0D5EA8) !important;
+    background: var(--brand, #144e8c) !important;
 }
 
 .page-voyages-ajinsafro .aj-voyages-booking .deal-strip__link {
@@ -1162,7 +1162,7 @@ body.aj-voyages-drawer-open { overflow: hidden; }
 }
 
 .page-voyages-ajinsafro .aj-voyages-booking .rating-score {
-    background: #20A86B !important;
+    background: var(--ok, #0f7a44) !important;
 }
 
 .page-voyages-ajinsafro .aj-voyages-booking .search-panel {

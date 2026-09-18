@@ -282,7 +282,9 @@ $normalize_date_filter = static function (string $value): string {
     return '';
 };
 
-$search_text = $get_text('s');
+// `q` et non `s` : ce dernier declenche la recherche native de WordPress
+// et fait perdre le contexte de la page. Il reste lu pour les liens anciens.
+$search_text = $get_text_alias(['q', 's']);
 $location_name = $get_text('location_name');
 $keyword = $location_name !== '' ? $location_name : $search_text;
 $category_slug = $get_text('cat');
@@ -313,7 +315,7 @@ $debug_voyages = current_user_can('manage_options')
     && ((defined('WP_DEBUG') && WP_DEBUG) || $get_bool('debug_voyages'));
 
 $current_filters = array_filter([
-    's' => $search_text,
+    'q' => $search_text,
     'location_name' => $location_name,
     'cat' => $category_slug,
     'tag' => $tag_slug,
@@ -1126,7 +1128,7 @@ if ($results_target !== 'votre sélection') {
 
 $active_filters = [];
 if ($keyword !== '') {
-    $active_filters[] = ['label' => 'Recherche: ' . $keyword, 'url' => $build_url(['s' => '', 'location_name' => ''])];
+    $active_filters[] = ['label' => 'Recherche: ' . $keyword, 'url' => $build_url(['q' => '', 'location_name' => ''])];
 }
 if ($category_slug !== '') {
     foreach ((array) $catalog_themes as $term) {
@@ -1193,11 +1195,11 @@ if ($promo_only) {
     $active_filters[] = ['label' => 'Promotions uniquement', 'url' => $build_url(['promo_only' => ''])];
 }
 if ($available_only) {
-    $active_filters[] = ['label' => 'Disponibilite immediate', 'url' => $build_url(['available_only' => ''])];
+    $active_filters[] = ['label' => 'Disponibilité immédiate', 'url' => $build_url(['available_only' => ''])];
 }
 
 $sort_options = [
-    'recommended' => 'Recommandes',
+    'recommended' => 'Recommandés',
     'price_asc' => 'Prix croissant',
     'price_desc' => 'Prix décroissant',
     'duration_asc' => 'Durée courte',
@@ -1213,7 +1215,7 @@ $rating_label = static function (float $rating): string {
         return 'Excellent';
     }
     if ($rating >= 7) {
-        return 'Tres bien';
+        return 'Très bien';
     }
 
     return 'Correct';
@@ -1245,7 +1247,7 @@ $rating_label = static function (float $rating): string {
                             </select>
                         </div>
                         <div class="search-field search-field--date">
-                            <label for="ajvb-depart-date">Date de depart</label>
+                            <label for="ajvb-depart-date">Date de départ</label>
                             <input id="ajvb-depart-date" name="date_depart" type="date" value="<?php echo esc_attr($depart_date); ?>">
                         </div>
                         <div class="search-field">
@@ -1253,7 +1255,7 @@ $rating_label = static function (float $rating): string {
                             <input id="ajvb-travelers" name="voyageurs" type="number" min="1" value="<?php echo esc_attr($guests_min > 0 ? (string) $guests_min : ''); ?>" placeholder="2">
                         </div>
                         <div class="search-field">
-                            <label for="ajvb-budget">Budget max</label>
+                            <label for="ajvb-budget">Budget maximum</label>
                             <input id="ajvb-budget" name="budget_max" type="number" min="0" value="<?php echo esc_attr($price_max > 0 ? (string) $price_max : ''); ?>" placeholder="12000">
                         </div>
                         <button class="search-btn" type="submit">Rechercher</button>
@@ -1263,14 +1265,15 @@ $rating_label = static function (float $rating): string {
 
             <main class="container main-grid">
                 <aside class="filters" aria-label="Filtres voyages">
-                    <div class="map-card">
-                        <button type="button">Conseils Ajinsafro</button>
-                    </div>
                     <div class="filter-title">
-                        <h2>Filtrer par</h2>
+                        <h2>Filtrer</h2>
                         <a class="clear-link" href="<?php echo esc_url($voyages_page_url); ?>">Tout effacer</a>
                     </div>
                     <?php include AJTH_DIR . 'parts/voyages-filters.php'; ?>
+                    <?php // L'encart de contact ferme la colonne : la maquette ouvre sur les filtres. ?>
+                    <div class="map-card">
+                        <button type="button">Conseils Ajinsafro</button>
+                    </div>
                 </aside>
 
                 <section class="results">
@@ -1302,7 +1305,7 @@ $rating_label = static function (float $rating): string {
                         <div class="chips">
                             <span class="chip"><?php echo esc_html((string) $total_results); ?> voyages visibles</span>
                             <span class="chip"><?php echo esc_html((string) count($destinations)); ?> destinations</span>
-                            <span class="chip"><?php echo esc_html((string) count($upcoming_departure_dates)); ?> departs a venir</span>
+                            <span class="chip"><?php echo esc_html((string) count($upcoming_departure_dates)); ?> départs à venir</span>
                             <?php foreach ($active_filters as $active_filter) { ?>
                                 <a href="<?php echo esc_url($active_filter['url']); ?>" class="chip">
                                     <span><?php echo esc_html($active_filter['label']); ?></span>
@@ -1313,8 +1316,8 @@ $rating_label = static function (float $rating): string {
 
                     <div class="deal-strip">
                         <div>
-                            <strong>Voyages sélectionnés avec l'accompagnement Ajinsafro</strong>
-                            <span>Départs, tarifs et disponibilités mis à jour depuis vos offres WordPress.</span>
+                            <strong>Voyages accompagnés par Ajinsafro</strong>
+                            <span>Départs, tarifs et disponibilités mis à jour en direct depuis notre base.</span>
                         </div>
                         <a href="<?php echo esc_url($voyages_page_url); ?>" class="deal-strip__link">Explorer</a>
                     </div>
