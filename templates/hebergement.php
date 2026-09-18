@@ -211,14 +211,27 @@ if (is_singular('st_hotel')) {
         : $fallback_image;
     $featured_image = $featured_image !== '' ? $featured_image : $fallback_image;
     $gallery_items = array();
-    $gallery_urls = function_exists('get_gallery_urls') ? get_gallery_urls($hotel_id) : array();
     if ($featured_image !== '') {
         $gallery_items[] = $featured_image;
     }
-    foreach ($gallery_urls as $gallery_row) {
-        $gallery_url = trim((string) ($gallery_row['url'] ?? ''));
-        if ($gallery_url !== '') {
-            $gallery_items[] = $gallery_url;
+
+    // Galerie saisie dans l'admin (etape « Details de l'hotel »).
+    if (function_exists('ajth_gallery_attachment_urls')) {
+        foreach (ajth_gallery_attachment_urls($hotel_id, 'large') as $gallery_url) {
+            $gallery_url = trim((string) $gallery_url);
+            if ($gallery_url !== '') {
+                $gallery_items[] = $gallery_url;
+            }
+        }
+    }
+
+    // Repli pour les installations ou le theme expose sa propre galerie.
+    if (count($gallery_items) < 2 && function_exists('get_gallery_urls')) {
+        foreach ((array) get_gallery_urls($hotel_id) as $gallery_row) {
+            $gallery_url = trim((string) (is_array($gallery_row) ? ($gallery_row['url'] ?? '') : $gallery_row));
+            if ($gallery_url !== '') {
+                $gallery_items[] = $gallery_url;
+            }
         }
     }
     $gallery_items = array_values(
