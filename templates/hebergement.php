@@ -177,7 +177,9 @@ if (is_singular('st_hotel')) {
     $hotel_type = trim((string) $meta_first($hotel_id, array('hotel_type_label', 'hotel_type'), 'Hébergement'));
     $hotel_excerpt = trim((string) get_post_field('post_excerpt', $hotel_id));
     $hotel_content = trim((string) get_post_field('post_content', $hotel_id));
-    $hotel_summary = $hotel_excerpt !== '' ? $hotel_excerpt : wp_trim_words(wp_strip_all_tags($hotel_content), 28, '...');
+    // Un extrait redige merite sa place dans le bandeau ; un contenu tronque
+    // ferait doublon avec la section « A propos » juste en dessous.
+    $hotel_summary = $hotel_excerpt;
     $hotel_permalink = get_permalink($hotel_id) ?: $page_url;
     $external_booking_enabled = $meta_first($hotel_id, array('_external_booking'), '0') === '1';
     $external_booking_link = trim((string) $meta_first($hotel_id, array('_external_booking_link')));
@@ -344,11 +346,16 @@ if (is_singular('st_hotel')) {
                             <p class="aj-hotel-hero-location">
                                 <span><?php echo esc_html($hotel_location); ?></span>
                                 <?php if ($hotel_stars > 0) { ?>
+                                    <span class="aj-hotel-hero-sep" aria-hidden="true">|</span>
                                     <span class="aj-hotel-stars" aria-label="<?php echo esc_attr($hotel_stars); ?> étoiles">
                                         <?php for ($star = 0; $star < $hotel_stars; $star++) { ?>
                                             <span aria-hidden="true">★</span>
                                         <?php } ?>
                                     </span>
+                                <?php } ?>
+                                <?php if ($hotel_type !== '') { ?>
+                                    <span class="aj-hotel-hero-sep" aria-hidden="true">|</span>
+                                    <span><?php echo esc_html($hotel_type); ?></span>
                                 <?php } ?>
                             </p>
                             <?php if ($hotel_summary !== '') { ?>

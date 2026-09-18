@@ -2044,6 +2044,18 @@
   font-size: 13px;
 }
 
+/* Ligne de reperes du bandeau : localisation | etoiles | type. */
+.page-hebergement-ajinsafro .aj-hotel-hero-location {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.page-hebergement-ajinsafro .aj-hotel-hero-sep {
+  color: var(--line);
+}
+
 .page-hebergement-ajinsafro .aj-hotel-status {
   font-size: 11.5px;
   font-weight: 600;
